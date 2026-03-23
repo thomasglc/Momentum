@@ -1,0 +1,227 @@
+{
+  "plan": {
+    "id": "hyrox-12w-v1",
+    "name": "Préparation Hyrox 12 semaines",
+    "startDate": "2026-03-23",
+    "totalWeeks": 12
+  },
+  "weeks": [
+    {
+      "weekNumber": 1,
+      "theme": "Mise en route",
+      "sessions": [
+        {
+          "id": "w1-s1",
+          "day": "Lundi",
+          "type": "running",
+          "title": "Sortie endurance fondamentale",
+          "duration": 40,
+          "intensity": "Z2",
+          "description": "Premier footing de la prépa, allure très confortable. L'objectif est de poser les bases aérobies sans se fatiguer.",
+          "details": [
+            "10 min échauffement marche/trot",
+            "25 min Z2 à 65–70% FCmax (allure conversationnelle)",
+            "5 min retour au calme en marchant"
+          ]
+        },
+        {
+          "id": "w1-s2",
+          "day": "Mercredi",
+          "type": "strength",
+          "title": "Renforcement général — bilan",
+          "duration": 55,
+          "intensity": "Modéré",
+          "description": "Circuit de renforcement pour identifier le niveau de départ. Charges légères, technique avant tout.",
+          "details": [
+            "3×10 Squat gobelet (KB 12–16 kg)",
+            "3×12 Rowing haltère chaque bras",
+            "3×15 Fentes marchées",
+            "3×12 Développé épaules haltères",
+            "3×20 Hip thrust au sol",
+            "2×30 s Planche"
+          ]
+        },
+        {
+          "id": "w1-s3",
+          "day": "Vendredi",
+          "type": "hyrox",
+          "title": "Découverte des stations Hyrox",
+          "duration": 50,
+          "intensity": "Modéré",
+          "description": "Prise en main des 8 disciplines Hyrox. Poids légers, focus sur la gestuelle et la respiration.",
+          "details": [
+            "Ski erg : 2×500 m (technique)",
+            "Sled push : 2×20 m (poids light)",
+            "Sled pull : 2×20 m (poids light)",
+            "Burpees broad jump : 2×8",
+            "Rowing : 2×500 m",
+            "Farmer carry : 2×25 m (KB 16 kg chaque main)",
+            "Sandbag lunges : 2×25 m (10 kg)",
+            "Wall balls : 2×15 (6 kg)"
+          ]
+        },
+        {
+          "id": "w1-s4",
+          "day": "Samedi",
+          "type": "running",
+          "title": "Sortie longue tranquille",
+          "duration": 60,
+          "intensity": "Z2",
+          "description": "Sortie longue pour construire le volume aérobie. Allure très facile, jamais essoufflé.",
+          "details": [
+            "5 min marche d'activation",
+            "50 min Z2 régulier — focus sur la foulée et la respiration nasale",
+            "5 min marche retour au calme"
+          ]
+        }
+      ]
+    },
+    {
+      "weekNumber": 2,
+      "theme": "Développement",
+      "sessions": [
+        {
+          "id": "w2-s1",
+          "day": "Lundi",
+          "type": "running",
+          "title": "Intervals aérobies",
+          "duration": 45,
+          "intensity": "Z3",
+          "description": "Introduction des intervalles en zone 3 pour commencer à travailler le seuil aérobie.",
+          "details": [
+            "10 min échauffement trot facile",
+            "4×5 min Z3 (75–80% FCmax) avec 90 s de récup trot",
+            "5 min retour au calme"
+          ]
+        },
+        {
+          "id": "w2-s2",
+          "day": "Mardi",
+          "type": "strength",
+          "title": "Force membres inférieurs",
+          "duration": 60,
+          "intensity": "Modéré-élevé",
+          "description": "Séance dédiée aux jambes — muscles clés pour les stations sled et les lunges.",
+          "details": [
+            "4×8 Squat barre (charge progressive)",
+            "3×12 Leg press",
+            "3×15 Fentes avec haltères",
+            "3×12 Romanian deadlift",
+            "3×20 Mollets debout",
+            "2×45 s Gainage latéral chaque côté"
+          ]
+        },
+        {
+          "id": "w2-s3",
+          "day": "Jeudi",
+          "type": "hyrox",
+          "title": "Circuit stations — volume",
+          "duration": 60,
+          "intensity": "Modéré-élevé",
+          "description": "Enchaînement de stations Hyrox avec 1 km de course entre chaque bloc. On monte le volume.",
+          "details": [
+            "Échauffement : 5 min trot + mobilité hanche",
+            "1 km course à allure Z3",
+            "Ski erg 1×1000 m",
+            "1 km course",
+            "Rowing 1×1000 m",
+            "1 km course",
+            "Wall balls : 3×20 (6 kg)",
+            "1 km course",
+            "Farmer carry : 3×25 m (KB 20 kg)",
+            "Récupération : 5 min marche"
+          ]
+        },
+        {
+          "id": "w2-s4",
+          "day": "Samedi",
+          "type": "running",
+          "title": "Sortie longue — allure progressive",
+          "duration": 70,
+          "intensity": "Z2–Z3",
+          "description": "Sortie longue avec montée progressive en allure : la dernière partie passe en Z3.",
+          "details": [
+            "30 min Z2 facile",
+            "20 min Z2+ (légère accélération)",
+            "15 min Z3 (seuil doux)",
+            "5 min retour au calme"
+          ]
+        }
+      ]
+    },
+    {
+      "weekNumber": 3,
+      "theme": "Intensification",
+      "sessions": [
+        {
+          "id": "w3-s1",
+          "day": "Lundi",
+          "type": "running",
+          "title": "Fractions au seuil",
+          "duration": 50,
+          "intensity": "Z4",
+          "description": "Travail intensif au seuil lactique pour améliorer la tolérance à l'effort soutenu — au cœur de la compétition Hyrox.",
+          "details": [
+            "12 min échauffement progressif",
+            "5×4 min Z4 (85–90% FCmax) — récup 2 min trot Z1",
+            "8 min retour au calme trot + marche"
+          ]
+        },
+        {
+          "id": "w3-s2",
+          "day": "Mardi",
+          "type": "strength",
+          "title": "Force haut du corps & gainage",
+          "duration": 55,
+          "intensity": "Modéré-élevé",
+          "description": "Séance ciblée haut du corps et sangle abdominale pour préparer le ski erg, le rowing et les burpees.",
+          "details": [
+            "4×8 Développé couché",
+            "4×10 Rowing barre",
+            "3×12 Tirage verticaux / Lat pull-down",
+            "3×15 Élévations latérales haltères",
+            "3×12 Curl biceps + extension triceps en superset",
+            "3×30 s Planche dynamique (alternance coudes/mains)",
+            "3×15 Ab wheel"
+          ]
+        },
+        {
+          "id": "w3-s3",
+          "day": "Jeudi",
+          "type": "hyrox",
+          "title": "Simulation race Hyrox — format réduit",
+          "duration": 75,
+          "intensity": "Élevé",
+          "description": "Premier format de simulation : enchaîner 4 stations avec courses intermédiaires à allure compétition. Objectif : gérer l'effort sur la durée.",
+          "details": [
+            "Échauffement : 8 min mobilité + trot",
+            "1 km course allure race (Z3–Z4)",
+            "Ski erg : 1×1000 m",
+            "1 km course allure race",
+            "Sled push : 2×20 m (poids compétition F: 102 kg / H: 152 kg ou adapté)",
+            "1 km course allure race",
+            "Burpees broad jump : 1×20",
+            "1 km course allure race",
+            "Rowing : 1×1000 m",
+            "Récupération : 10 min trot + étirements"
+          ]
+        },
+        {
+          "id": "w3-s4",
+          "day": "Samedi",
+          "type": "running",
+          "title": "Sortie longue — endurance active",
+          "duration": 80,
+          "intensity": "Z2–Z3",
+          "description": "Sortie longue plus soutenue pour construire l'endurance spécifique. Derniers 20 min au seuil doux.",
+          "details": [
+            "35 min Z2 — allure conversation",
+            "25 min Z3 — seuil doux, respiration contrôlée",
+            "20 min Z3+ — seuil (effort perceptible mais maîtrisé)",
+            "Retour : marche 5 min + étirements mollets et quadriceps"
+          ]
+        }
+      ]
+    }
+  ]
+}
