@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run:*)",
       "Bash(GITHUB_PAGES=true npm run build)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(wc:*)"
     ]
   }
 }
