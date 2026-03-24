@@ -1,0 +1,183 @@
+{
+  "stations": [
+    {
+      "id": 1,
+      "name": "SkiErg",
+      "emoji": "⛷️",
+      "volume": "500m chacun · 1 000m total",
+      "description": "Tirage vertical bras tendus, simulant le ski nordique. Excellent pour le cardio, les épaules et les abdos.",
+      "muscles": "Dorsaux, épaules, abdos, cardio",
+      "alternative": "Tirages poulie haute, bandes élastiques overhead",
+      "weight": null,
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "~2:30–3:00/500m", "note": "Technique avant tout" },
+          { "phase": "Phase 2", "label": "~2:15–2:30/500m", "note": "Montée progressive" },
+          { "phase": "Phase 3", "label": "~2:00–2:15/500m", "note": "Tester allure race en S13+" },
+          { "phase": "Race", "label": "~2:00–2:10/500m", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "~2:30–3:00/500m", "note": "Technique avant tout" },
+          { "phase": "Phase 2", "label": "~2:15–2:30/500m", "note": "Montée progressive" },
+          { "phase": "Phase 3", "label": "~2:00–2:15/500m", "note": "Tester allure race en S13+" },
+          { "phase": "Race", "label": "~2:00–2:10/500m", "note": "" }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "name": "Sled Push",
+      "emoji": "🛷",
+      "volume": "2 × 25m chacun · 4 × 25m total",
+      "description": "Poussée d'un traîneau lesté en position basse. Intense sur les quadriceps et le cardio.",
+      "muscles": "Quadriceps, fessiers, épaules, gainage",
+      "alternative": "Squat lesté lourd, Leg press, Prowler",
+      "weight": "Open Mixte : 152 kg (sled inclus) — même sled pour les deux",
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "75–90 kg", "note": "Focus technique, position basse, pas de raideur dos" },
+          { "phase": "Phase 2", "label": "100–125 kg", "note": "S5-S6 : 100 kg · S7-S8 : 115–125 kg" },
+          { "phase": "Phase 3", "label": "128–152 kg", "note": "Poids race atteint en S14–S15" },
+          { "phase": "Race", "label": "152 kg", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "80–100 kg", "note": "Même sled qu'elle, focus technique identique" },
+          { "phase": "Phase 2", "label": "110–138 kg", "note": "S5-S6 : 110 kg · S7-S8 : 128–138 kg" },
+          { "phase": "Phase 3", "label": "138–152 kg", "note": "Poids race atteint en S13" },
+          { "phase": "Race", "label": "152 kg", "note": "" }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "name": "Sled Pull",
+      "emoji": "🧲",
+      "volume": "2 × 25m chacun · 4 × 25m total",
+      "description": "Tirage d'un traîneau vers soi à l'aide d'une corde, en position accroupie. Très intense sur la chaîne postérieure.",
+      "muscles": "Ischio-jambiers, fessiers, dorsaux, biceps",
+      "alternative": "Tirage corde, Romanian deadlift, hip thrust",
+      "weight": "Open Mixte : 103 kg (sled inclus) — même sled pour les deux",
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "50–65 kg", "note": "Position accroupie basse, tirer avec jambes + dos" },
+          { "phase": "Phase 2", "label": "72–90 kg", "note": "S5-S6 : 72 kg · S7-S8 : 85–90 kg" },
+          { "phase": "Phase 3", "label": "92–103 kg", "note": "Poids race atteint en S14–S15" },
+          { "phase": "Race", "label": "103 kg", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "80–100 kg", "note": "Progression rapide possible" },
+          { "phase": "Phase 2", "label": "95–103 kg", "note": "Atteindre poids race dès S7-S8" },
+          { "phase": "Phase 3", "label": "103 kg", "note": "Maintien poids race, focus endurance" },
+          { "phase": "Race", "label": "103 kg", "note": "" }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "name": "Burpee Broad Jumps",
+      "emoji": "🤸",
+      "volume": "40m chacun · 80m total",
+      "description": "Burpee classique suivi d'un saut en longueur maximum. Enchaîner le plus vite possible sans marquer de pause.",
+      "muscles": "Full body, cardio intense, explosivité",
+      "alternative": "Burpees + Box jump, ou burpees seuls si pas d'espace",
+      "weight": null,
+      "progression": null
+    },
+    {
+      "id": 5,
+      "name": "RowErg",
+      "emoji": "🚣",
+      "volume": "500m chacun · 1 000m total",
+      "description": "Rameur classique (Concept2). L'une des stations les plus équitables — pace régulier et technique propre.",
+      "muscles": "Dorsaux, ischio-jambiers, quadriceps, cardio",
+      "alternative": "Rameur autre marque, tirage horizontal câble",
+      "weight": null,
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "~2:30–2:45/500m", "note": "Technique : jambes → dos → bras" },
+          { "phase": "Phase 2", "label": "~2:20–2:30/500m", "note": "Montée progressive" },
+          { "phase": "Phase 3", "label": "~2:10–2:20/500m", "note": "Tester allure race en S13+" },
+          { "phase": "Race", "label": "~2:10–2:20/500m", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "~2:30–2:45/500m", "note": "Technique : jambes → dos → bras" },
+          { "phase": "Phase 2", "label": "~2:20–2:30/500m", "note": "Montée progressive" },
+          { "phase": "Phase 3", "label": "~2:10–2:20/500m", "note": "Tester allure race en S13+" },
+          { "phase": "Race", "label": "~2:10–2:20/500m", "note": "" }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "name": "Farmers Carry",
+      "emoji": "💼",
+      "volume": "100m chacun · 200m total",
+      "description": "Porter deux kettlebells lourds sur 100m. Simple en apparence, très exigeant sur la grip et la posture.",
+      "muscles": "Trapèzes, avant-bras, gainage, épaules",
+      "alternative": "Marche avec haltères lourds, valises pleines",
+      "weight": "Open Mixte : 2 × 24 kg chacun — charges séparées (pas le même équipement)",
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "2 × 12 kg", "note": "Dos droit, épaules en arrière, pas de balancement" },
+          { "phase": "Phase 2", "label": "2 × 14–20 kg", "note": "S5-S6 : 14 kg · S7-S8 : 18–20 kg" },
+          { "phase": "Phase 3", "label": "2 × 20–24 kg", "note": "Poids race atteint en S13" },
+          { "phase": "Race", "label": "2 × 24 kg", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "2 × 14–16 kg", "note": "Bases musculaires à construire" },
+          { "phase": "Phase 2", "label": "2 × 18–22 kg", "note": "S7-S8 : 20–22 kg" },
+          { "phase": "Phase 3", "label": "2 × 22–24 kg", "note": "Poids race atteint en S13" },
+          { "phase": "Race", "label": "2 × 24 kg", "note": "" }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "name": "Sandbag Lunges",
+      "emoji": "🎒",
+      "volume": "50m chacun · 100m total",
+      "description": "Fentes avant continues sur 50m avec un sac de sable posé sur les épaules. Jambes en feu après les runs.",
+      "muscles": "Quadriceps, fessiers, équilibre, gainage",
+      "alternative": "Fentes avec haltères, goblet lunge (dumbbell devant)",
+      "weight": "Open Mixte : 20 kg — même sac pour les deux",
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "8 kg", "note": "Sac sur les épaules (trapèzes), genou avant à 90°" },
+          { "phase": "Phase 2", "label": "10–16 kg", "note": "S5-S6 : 10 kg · S7-S8 : 14–16 kg" },
+          { "phase": "Phase 3", "label": "16–20 kg", "note": "Poids race atteint en S12" },
+          { "phase": "Race", "label": "20 kg", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "14 kg", "note": "Technique cruciale dès le départ" },
+          { "phase": "Phase 2", "label": "18–20 kg", "note": "Tester 20 kg en S8" },
+          { "phase": "Phase 3", "label": "20 kg + séries 22–25 kg", "note": "Poids race + surcharge" },
+          { "phase": "Race", "label": "20 kg", "note": "" }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "name": "Wall Balls",
+      "emoji": "🏀",
+      "volume": "50 répétitions chacun · 100 reps total",
+      "description": "Squat profond + lancer d'un medball sur une cible murale. La station finale — souvent la plus dure mentalement.",
+      "muscles": "Quadriceps, fessiers, épaules, cardio",
+      "alternative": "Goblet squat + press overhead avec haltère",
+      "weight": "Open Mixte : 6 kg · cible à 3m — même medball pour les deux",
+      "progression": {
+        "elle": [
+          { "phase": "Phase 1", "label": "4–6 kg / cible 3m", "note": "Monter à 6 kg dès S2-S3, squat profond" },
+          { "phase": "Phase 2", "label": "6 kg / cible 3m", "note": "Focus endurance : séries de 20–30 reps" },
+          { "phase": "Phase 3", "label": "6 kg race weight", "note": "Objectif : 50 reps non-stop en fin de phase" },
+          { "phase": "Race", "label": "6 kg", "note": "" }
+        ],
+        "lui": [
+          { "phase": "Phase 1", "label": "6 kg / cible 3m", "note": "Poids race dès le début" },
+          { "phase": "Phase 2", "label": "6 kg + séries à 8 kg", "note": "Quelques séries à 8 kg pour l'adaptation" },
+          { "phase": "Phase 3", "label": "6 kg + séries à 8 kg", "note": "Focus endurance et régularité" },
+          { "phase": "Race", "label": "6 kg", "note": "" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "duoFormat": {
+    "targetTime": "1h25 – 1h35",
+    "breakdown": [
+      { "label": "8 × 1km partagés", "value": "~48 min" },
+      { "label": "8 stations (divisées)", "value": "~37–45 min" },
+      { "label": "Transitions", "value": "~2–3 min" }
+    ],
+    "rules": [
+      "Vous courez ensemble les 8 × 1 km — allure dictée par elle",
+      "Chaque station est divisée par 2 : 500m SkiErg chacun, 50 Wall Balls chacun…",
+      "Allure cible commune : 5:45 – 6:00 min/km",
+      "Open Mixte : poids hommes pour tous les équipements partagés",
+      "Farmers Carry uniquement : charges séparées (2 × 24 kg chacun)"
+    ]
+  },
+  "paces": {
+    "lui": {
+      "name": "Lui",
+      "semiTime": "1h35",
+      "semipace": "~4:30 min/km",
+      "strengths": ["Fort en course", "Endurance solide"],
+      "weaknesses": ["Zéro CrossFit au départ"],
+      "priority": "Maîtriser les 8 mouvements Hyrox et développer la force musculaire spécifique. Le moteur cardio est là.",
+      "zones": [
+        { "zone": "Z1", "desc": "Footing récup", "pace": "5:30 – 6:00" },
+        { "zone": "Z2", "desc": "Footing facile", "pace": "5:00 – 5:30" },
+        { "zone": "Z3", "desc": "Tempo confort", "pace": "4:30 – 4:50" },
+        { "zone": "Z4", "desc": "Seuil / tempo dur", "pace": "4:10 – 4:30" },
+        { "zone": "Z5", "desc": "VO2max / fractionné", "pace": "3:55 – 4:10" }
+      ],
+      "raceTarget": "5:45 – 6:00 /km (allure commune)",
+      "note": "Pour les séances communes avec elle, courir à sa zone — ça devient une récupération active. Les séances solo peuvent être plus intenses."
+    },
+    "elle": {
+      "name": "Elle",
+      "semiTime": "2h00",
+      "semipace": "~5:40 min/km",
+      "strengths": ["Bases CrossFit", "Mouvements Hyrox connus"],
+      "weaknesses": ["Endurance course à développer"],
+      "priority": "Améliorer l'endurance course et l'enchaînement course → station sous fatigue. Les mouvements sont connus, il faut les tenir longtemps.",
+      "zones": [
+        { "zone": "Z1", "desc": "Footing récup", "pace": "6:45 – 7:30" },
+        { "zone": "Z2", "desc": "Footing facile", "pace": "6:15 – 6:45" },
+        { "zone": "Z3", "desc": "Tempo confort", "pace": "5:35 – 5:55" },
+        { "zone": "Z4", "desc": "Seuil / tempo dur", "pace": "5:15 – 5:35" },
+        { "zone": "Z5", "desc": "VO2max / fractionné", "pace": "4:55 – 5:15" }
+      ],
+      "raceTarget": "5:45 – 6:00 /km (allure commune)",
+      "note": "L'allure de course le jour J sera ~5:45 – 6:00 /km. Les séances tempo doivent progressivement s'approcher de cette allure cible."
+    }
+  },
+  "progressionRules": {
+    "increase": [
+      "Volume cible complété 2 semaines de suite sans fatigue excessive",
+      "Technique propre à la charge actuelle (pas de compensation posturale)",
+      "Pas de douleur articulaire (genoux, dos, épaules) ni de courbatures le lendemain",
+      "Incrément recommandé : +5 kg sled · +2 kg sac/kettlebell"
+    ],
+    "noIncrease": [
+      "En semaine de décharge (S4, S9, S15) — conserver la charge habituelle",
+      "Si la technique se dégrade sous la fatigue (dos arrondi, genoux qui rentrent)",
+      "En Phase 4 — aucune augmentation, stabiliser uniquement",
+      "Si une séance Hyrox suit une séance de course chargée (mardi/mercredi)"
+    ]
+  },
+  "mobility": {
+    "when": "Le lundi (jour de repos) — optionnelle mais fortement recommandée. Ne jamais la faire si vous êtes trop fatigués — le repos prime.",
+    "duration": "~30 min",
+    "sections": [
+      {
+        "title": "Bas du Corps",
+        "duration": "10 min",
+        "exercises": [
+          "Hip flexor stretch (fente basse) : 2 × 45 s chaque côté",
+          "Étirement pigeon (fessier/hanche) : 2 × 45 s chaque côté",
+          "Étirement ischio-jambiers debout : 2 × 30 s chaque côté",
+          "Mobilité cheville (cercles + squat profond) : 2 × 30 s"
+        ]
+      },
+      {
+        "title": "Haut du Corps",
+        "duration": "10 min",
+        "exercises": [
+          "Étirement épaules (cross-body + derrière la tête) : 2 × 30 s chaque",
+          "Ouverture thoracique (rotation colonne) : 10 reps chaque côté",
+          "Étirement poitrail (porte ou mur) : 2 × 30 s",
+          "Mobilité poignets + avant-bras : 2 × 20 s"
+        ]
+      },
+      {
+        "title": "Rouleau de Massage",
+        "duration": "10 min",
+        "exercises": [
+          "Quadriceps : 60 s chaque jambe (lent, points de tension)",
+          "Mollets + plante des pieds : 45 s chaque",
+          "Dorsaux + thoracique : 60 s",
+          "Fessiers (rouleau ou balle de tennis) : 45 s chaque côté"
+        ]
+      }
+    ]
+  },
+  "raceDay": {
+    "week": [
+      { "day": "Lundi–Mercredi", "content": "Volume réduit, séances très légères, aucune fatigue inutile" },
+      { "day": "Jeudi", "content": "2 × 5 min de course légère + quelques reps par station — activation musculaire uniquement" },
+      { "day": "Vendredi", "content": "Repos total. Hydratation ++. Sommeil 8h minimum" },
+      { "day": "Samedi matin", "content": "Petit-déjeuner léger 3h avant le départ. Arriver 90 min à l'avance" }
+    ],
+    "tips": [
+      "Échauffement : 10 min jogging léger + quelques reps SkiErg et RowErg",
+      "Courir strictement à 5:45–6:00/km ensemble — ne jamais partir trop vite",
+      "Transitions : celui qui attend récupère et prépare la prochaine station",
+      "Communiquer en permanence : rythme, fatigue, récup aux transitions",
+      "Sled Push/Pull : rester bas, pousser avec les jambes, pas le dos",
+      "Wall Balls : rythme régulier, ne pas s'arrêter — mieux vaut lent que stop"
+    ],
+    "nutrition": [
+      "J-3 à J-1 : légère surcharge en glucides (pâtes, riz, patate douce)",
+      "Matin J : flocons d'avoine + banane + café (3h avant le départ)",
+      "Pendant la course : gel énergétique vers 30–40 min, eau à chaque transition",
+      "Après la course : protéines dans les 30 min (shake ou repas léger)"
+    ]
+  }
+}

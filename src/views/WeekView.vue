@@ -4,14 +4,25 @@
     <WeekNav
       :weekNumber="store.currentWeekNumber"
       :theme="currentWeek?.theme || ''"
+      :dateRange="currentWeek?.dateRange || ''"
+      :phase="currentWeek?.phase || null"
+      :isDeload="currentWeek?.isDeload || false"
       :canGoPrev="store.currentWeekNumber > 1"
       :canGoNext="store.currentWeekNumber < totalWeeks"
       @prev="store.setWeek(store.currentWeekNumber - 1)"
       @next="store.setWeek(store.currentWeekNumber + 1)"
     />
 
-    <!-- Barre de progression -->
+    <!-- Barre de progression (séances obligatoires uniquement) -->
     <ProgressBar :progress="progress" />
+
+    <!-- Note de la semaine -->
+    <div
+      v-if="currentWeek?.weekNote"
+      class="mx-4 mt-2 mb-1 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg px-3 py-2"
+    >
+      <p class="text-xs text-orange-800">{{ currentWeek.weekNote }}</p>
+    </div>
 
     <!-- Liste des séances -->
     <div v-if="currentWeek" class="px-4 mt-3 flex flex-col gap-3">
@@ -44,7 +55,7 @@ const store = useTrainingStore()
 const router = useRouter()
 
 const currentWeek = ref(null)
-const totalWeeks = ref(12)
+const totalWeeks = ref(19)
 
 async function loadWeek(n) {
   currentWeek.value = await getWeek(n)
@@ -56,10 +67,14 @@ onMounted(async () => {
   await loadWeek(store.currentWeekNumber)
 })
 
-// Recharger les données quand la semaine change
 watch(() => store.currentWeekNumber, (n) => loadWeek(n))
 
-const progress = computed(() =>
-  store.weekProgress(store.currentWeekNumber, currentWeek.value?.sessions || [])
-)
+// Progression basée sur les séances obligatoires uniquement
+const progress = computed(() => {
+  const sessions = currentWeek.value?.sessions || []
+  const mandatory = sessions.filter(s => !s.optional)
+  if (mandatory.length === 0) return 0
+  const done = mandatory.filter(s => store.isCompleted(s.id)).length
+  return Math.round((done / mandatory.length) * 100)
+})
 </script>

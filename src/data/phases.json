@@ -1,0 +1,100 @@
+{
+  "phases": [
+    {
+      "id": 1,
+      "name": "Fondation",
+      "weeks": "Semaines 1–4",
+      "dates": "18 Mai – 14 Juin",
+      "color": "blue",
+      "volume": "Faible à modéré",
+      "goals": [
+        "Maîtriser les 8 mouvements Hyrox",
+        "Construire la base cardio",
+        "Habituer le corps aux séances Hyrox",
+        "Zéro blessure"
+      ],
+      "weekStructure": [
+        { "day": "Lundi", "type": "rest", "content": "Repos complet · Optionnel : mobilité/étirements 30 min", "duration": "—" },
+        { "day": "Mardi", "type": "running", "content": "Footing facile + 4 × 3 min tempo Z3 (récup 2 min)", "duration": "45–55 min" },
+        { "day": "Mercredi", "type": "hyrox", "content": "Initiation technique 8 mouvements — charges légères, focus forme", "duration": "55–70 min" },
+        { "day": "Jeudi", "type": "running", "content": "Footing Z2 facile et régulier (ensemble)", "duration": "40–50 min" },
+        { "day": "Vendredi", "type": "rest", "content": "Repos complet", "duration": "—" },
+        { "day": "Samedi", "type": "running", "content": "Sortie longue Z1/Z2 ensemble (conversation possible)", "duration": "60–75 min" },
+        { "day": "Dimanche", "type": "hyrox", "content": "Renforcement musculaire général + circuits légers Hyrox", "duration": "50–60 min" }
+      ],
+      "keyNote": "Focus technique sur tous les mouvements. Charges légères, jamais de douleur. S4 = semaine de décharge (–30% volume)."
+    },
+    {
+      "id": 2,
+      "name": "Construction",
+      "weeks": "Semaines 5–9",
+      "dates": "15 Juin – 19 Juillet",
+      "color": "green",
+      "volume": "Modéré à élevé",
+      "goals": [
+        "Augmenter le volume total",
+        "Monter progressivement en charges",
+        "Enchaîner course → station sans pause",
+        "Développer l'endurance spécifique Hyrox"
+      ],
+      "weekStructure": [
+        { "day": "Lundi", "type": "rest", "content": "Repos · Optionnel : mobilité 30 min", "duration": "—" },
+        { "day": "Mardi", "type": "running", "content": "Fractionné : 6–8 × 1 km (récup 90 s jogging)", "duration": "55–65 min" },
+        { "day": "Mercredi", "type": "hyrox", "content": "Hyrox A — circuits techniques + charges croissantes", "duration": "60–75 min" },
+        { "day": "Jeudi", "type": "running", "content": "Footing Z2 récup (ensemble à 5:45/km)", "duration": "40–50 min" },
+        { "day": "Vendredi", "type": "rest", "content": "Repos complet", "duration": "—" },
+        { "day": "Samedi", "type": "brick", "content": "Brick : Course + Stations enchaînées (format mini-race)", "duration": "70–90 min" },
+        { "day": "Dimanche", "type": "hyrox", "content": "Hyrox B — renforcement + endurance stations", "duration": "55–65 min" }
+      ],
+      "keyNote": "S9 = semaine de décharge (–30% volume). Ne pas augmenter les charges en semaine de décharge."
+    },
+    {
+      "id": 3,
+      "name": "Spécificité",
+      "weeks": "Semaines 10–15",
+      "dates": "20 Juillet – 30 Août",
+      "color": "orange",
+      "volume": "Élevé puis décharge",
+      "goals": [
+        "Atteindre les poids de course officiels",
+        "Simulations partielles puis complètes",
+        "Chronométrer chaque station",
+        "Affiner la stratégie duo"
+      ],
+      "weekStructure": [
+        { "day": "Lundi", "type": "rest", "content": "Repos · Optionnel : mobilité 30 min", "duration": "—" },
+        { "day": "Mardi", "type": "running", "content": "Intervalles 6–8 × 1 km à allure race individuelle", "duration": "55–65 min" },
+        { "day": "Mercredi", "type": "hyrox", "content": "Simulation partielle : format (1 km + 1 station) × 4", "duration": "60–75 min" },
+        { "day": "Jeudi", "type": "running", "content": "Footing récup 40 min", "duration": "40 min" },
+        { "day": "Vendredi", "type": "rest", "content": "Repos complet", "duration": "—" },
+        { "day": "Samedi", "type": "brick", "content": "Simulation complète (S13 : 8 × 1km + 8 stations poids race)", "duration": "90–120 min" },
+        { "day": "Dimanche", "type": "rest", "content": "Récup active 30 min + bilan chronos", "duration": "30 min" }
+      ],
+      "keyNote": "S13 = 1ère simulation complète 8 stations (chrono total à noter). S15 = dernière simu avant course (volume –30%)."
+    },
+    {
+      "id": 4,
+      "name": "Affûtage & Taper",
+      "weeks": "Semaines 16–19",
+      "dates": "31 Août – 27 Septembre",
+      "color": "purple",
+      "volume": "Décroissant (–40% à –60%)",
+      "goals": [
+        "Réduire le volume progressivement",
+        "Maintenir l'intensité sans augmenter",
+        "Aucune augmentation de charges",
+        "Arriver frais et confiant le jour J"
+      ],
+      "weekStructure": [
+        { "day": "Lundi", "type": "rest", "content": "Repos · Mobilité légère recommandée", "duration": "—" },
+        { "day": "Mardi", "type": "running", "content": "Fractionné court : 4–5 × 1 km à allure race", "duration": "45 min" },
+        { "day": "Mercredi", "type": "hyrox", "content": "Activation stations — volume réduit 50%, poids race maintenu", "duration": "45 min" },
+        { "day": "Jeudi", "type": "running", "content": "Footing très facile 30 min", "duration": "30 min" },
+        { "day": "Vendredi", "type": "rest", "content": "Repos complet", "duration": "—" },
+        { "day": "Samedi", "type": "brick", "content": "Activation légère : 2–3 stations + 2 km course", "duration": "40 min" },
+        { "day": "Dimanche", "type": "rest", "content": "Repos ou mobilité douce", "duration": "—" }
+      ],
+      "keyNote": "S19 = Race Week. Jeudi : 2 × 5 min course légère + quelques reps par station. Vendredi : repos total. RACE DAY : samedi ou dimanche."
+    }
+  ]
+}
