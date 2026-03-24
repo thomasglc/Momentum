@@ -4,7 +4,9 @@
       "Bash(npm run:*)",
       "Bash(GITHUB_PAGES=true npm run build)",
       "Bash(node:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(npm install:*)",
+      "Bash(npm list:*)"
     ]
   }
 }

@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-stone-100">
 
     <!-- Header fixe -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
-      <div class="max-w-[480px] mx-auto px-4 py-3">
-        <h1 class="text-center text-sm font-bold tracking-widest text-gray-800 uppercase">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-900">
+      <div class="max-w-[480px] mx-auto px-4 py-3.5">
+        <h1 class="text-center text-xs font-black tracking-[0.3em] text-white uppercase">
           Momentum
         </h1>
       </div>
     </header>
 
     <!-- Contenu -->
-    <main class="max-w-[480px] mx-auto pt-12 pb-16">
+    <main class="max-w-[480px] mx-auto pt-11 pb-16">
       <RouterView v-slot="{ Component }">
         <Transition name="fade" mode="out-in">
           <component :is="Component" />
@@ -20,15 +20,19 @@
     </main>
 
     <!-- Bottom Tab Nav -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200">
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200">
       <div class="max-w-[480px] mx-auto flex">
         <RouterLink
           v-for="tab in tabs"
           :key="tab.id"
           :to="tab.to"
-          class="flex-1 flex flex-col items-center py-2 gap-0.5 transition-colors"
-          :class="activeTab === tab.id ? 'text-orange-500' : 'text-gray-400'"
+          class="flex-1 flex flex-col items-center pt-2 pb-3 gap-0.5 transition-colors relative"
+          :class="activeTab === tab.id ? 'text-orange-500' : 'text-stone-400'"
         >
+          <span
+            v-if="activeTab === tab.id"
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-orange-500"
+          />
           <span class="text-lg leading-none">{{ tab.icon }}</span>
           <span class="text-[10px] font-semibold">{{ tab.label }}</span>
         </RouterLink>

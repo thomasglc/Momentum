@@ -19,13 +19,13 @@
     <!-- Note de la semaine -->
     <div
       v-if="currentWeek?.weekNote"
-      class="mx-4 mt-2 mb-1 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg px-3 py-2"
+      class="mx-4 mt-3 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg px-3 py-2"
     >
       <p class="text-xs text-orange-800">{{ currentWeek.weekNote }}</p>
     </div>
 
     <!-- Liste des séances -->
-    <div v-if="currentWeek" class="px-4 mt-3 flex flex-col gap-3">
+    <div v-if="currentWeek" class="px-4 mt-3 flex flex-col gap-2.5">
       <SessionCard
         v-for="session in currentWeek.sessions"
         :key="session.id"
@@ -37,7 +37,7 @@
 
     <!-- État de chargement -->
     <div v-else class="flex items-center justify-center py-16">
-      <p class="text-sm text-gray-400">Chargement du plan…</p>
+      <p class="text-sm text-stone-400">Chargement du plan…</p>
     </div>
   </div>
 </template>
