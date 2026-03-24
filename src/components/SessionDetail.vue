@@ -32,6 +32,42 @@
     <!-- Description -->
     <p class="text-sm text-gray-600 mb-4 leading-relaxed">{{ session.description }}</p>
 
+    <!-- Graphique allures (running uniquement) -->
+    <div v-if="session.type === 'running' && runSegments.length > 0" class="mb-5">
+      <h3 class="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-2">Structure de séance</h3>
+      <!-- Chart -->
+      <div class="flex items-end gap-0.5 rounded-xl bg-gray-100 px-2 pb-2 overflow-hidden" style="height: 72px">
+        <div
+          v-for="(seg, i) in runSegments"
+          :key="i"
+          class="rounded-sm flex-none"
+          :style="{
+            flex: String(seg.duration),
+            minWidth: '5px',
+            height: SEG_STYLES[seg.type]?.h || '38%',
+            backgroundColor: SEG_STYLES[seg.type]?.color || '#86efac',
+          }"
+        />
+      </div>
+      <!-- Légende + paces des blocs clés -->
+      <div class="mt-2 flex flex-col gap-1.5">
+        <div
+          v-for="(seg, i) in runSegmentsSummary"
+          :key="i"
+          class="flex items-center gap-2"
+        >
+          <div class="w-2 h-5 rounded-sm flex-shrink-0" :style="{ backgroundColor: SEG_STYLES[seg.type]?.color }"></div>
+          <div>
+            <span class="text-xs font-semibold text-gray-700">{{ SEG_LABELS[seg.type] }}</span>
+            <span v-if="seg.count > 1" class="text-xs text-gray-400 ml-1">× {{ seg.count }}</span>
+            <span v-if="seg.paces" class="text-xs text-gray-500 ml-1.5">
+              — 👨 {{ seg.paces.lui }} · 👩 {{ seg.paces.elle }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Programme -->
     <div v-if="session.details?.length" class="mb-6">
       <h3 class="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-3">Programme</h3>
@@ -351,4 +387,120 @@ function parseBlock(str) {
 const parsedBlocks = computed(() =>
   (props.session?.details || []).map(parseBlock)
 )
+
+// ─── Running pace chart ──────────────────────────────────────────────────────
+
+const SEG_STYLES = {
+  warmup:   { color: '#bef264', h: '44%' },
+  easy:     { color: '#86efac', h: '36%' },
+  tempo:    { color: '#7f1d1d', h: '94%' },
+  recovery: { color: '#f9a8d4', h: '22%' },
+  cooldown: { color: '#99f6e4', h: '36%' },
+}
+
+const SEG_LABELS = {
+  warmup:   'Échauffement',
+  easy:     'Footing facile',
+  tempo:    'Effort / Tempo',
+  recovery: 'Récupération',
+  cooldown: 'Retour au calme',
+}
+
+function extractRunningSegments(details) {
+  const segs = []
+  const intRécupRe   = /^(\d+)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(km|min)[^\(]*\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\).*?récup\s+(\d+(?:\.\d+)?)\s*(min|s)/i
+  const intNoRécupRe = /^(\d+)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(km|min)[^\(]*\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/i
+
+  for (const str of details) {
+    // Composite: "X min facile + Y min tempo (paces) + Z min facile"
+    if (str.includes(' + ') && /\d+\s*min/.test(str)) {
+      for (const part of str.split(/\s*\+\s*/)) {
+        const m = part.match(/^(\d+)\s*min(.*)$/)
+        if (!m) continue
+        const paceM = part.match(/\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/)
+        const paces = paceM ? { lui: paceM[1].trim(), elle: paceM[2].trim() } : null
+        segs.push({ type: /tempo|seuil/i.test(m[2]) ? 'tempo' : 'easy', duration: parseInt(m[1]), paces })
+      }
+      continue
+    }
+
+    // Interval with récup
+    const m1 = str.match(intRécupRe)
+    if (m1) {
+      const n = parseInt(m1[1])
+      const workMin = m1[3].toLowerCase() === 'km' ? Math.round(parseFloat(m1[2]) * 5) : parseFloat(m1[2])
+      const recupMin = m1[7].toLowerCase() === 's' ? parseFloat(m1[6]) / 60 : parseFloat(m1[6])
+      const paces = { lui: m1[4].trim(), elle: m1[5].trim() }
+      for (let i = 0; i < n; i++) {
+        segs.push({ type: 'tempo', duration: workMin, paces })
+        if (i < n - 1) segs.push({ type: 'recovery', duration: recupMin, paces: null })
+      }
+      continue
+    }
+
+    // Interval without récup
+    const m2 = str.match(intNoRécupRe)
+    if (m2) {
+      const n = parseInt(m2[1])
+      const workMin = m2[3].toLowerCase() === 'km' ? Math.round(parseFloat(m2[2]) * 5) : parseFloat(m2[2])
+      const paces = { lui: m2[4].trim(), elle: m2[5].trim() }
+      for (let i = 0; i < n; i++) {
+        segs.push({ type: 'tempo', duration: workMin, paces })
+        if (i < n - 1) segs.push({ type: 'recovery', duration: 1.5, paces: null })
+      }
+      continue
+    }
+
+    // Warmup
+    if (/^[Éé]chauffement/i.test(str)) {
+      const d = str.match(/(\d+)\s*min/)
+      segs.push({ type: 'warmup', duration: d ? parseInt(d[1]) : 10, paces: null })
+      continue
+    }
+
+    // Cooldown
+    if (/retour au calme/i.test(str)) {
+      const d = str.match(/(\d+)\s*min/)
+      segs.push({ type: 'cooldown', duration: d ? parseInt(d[1]) : 5, paces: null })
+      continue
+    }
+
+    // Easy footing/run starting with "X min ..."
+    const easyM = str.match(/^(\d+)\s*min\s+\w/i)
+    if (easyM) {
+      const paceM = str.match(/\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/)
+      segs.push({ type: 'easy', duration: parseInt(easyM[1]), paces: paceM ? { lui: paceM[1].trim(), elle: paceM[2].trim() } : null })
+      continue
+    }
+    // skip annotations (pace refs, notes, etc.)
+  }
+  return segs
+}
+
+// Grouped summary for the legend (consecutive same-type segments merged with count)
+function summarizeSegments(segs) {
+  const out = []
+  for (const seg of segs) {
+    const last = out[out.length - 1]
+    if (last && last.type === seg.type) {
+      last.count++
+      if (!last.paces && seg.paces) last.paces = seg.paces
+    } else {
+      out.push({ type: seg.type, count: 1, paces: seg.paces })
+    }
+  }
+  // Only show unique types once in legend (keep first occurrence per type)
+  const seen = new Set()
+  return out.filter(s => {
+    if (seen.has(s.type)) return false
+    seen.add(s.type)
+    return true
+  })
+}
+
+const runSegments = computed(() =>
+  props.session?.type === 'running' ? extractRunningSegments(props.session.details || []) : []
+)
+
+const runSegmentsSummary = computed(() => summarizeSegments(runSegments.value))
 </script>

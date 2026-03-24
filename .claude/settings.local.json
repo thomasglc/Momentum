@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm run:*)",
-      "Bash(GITHUB_PAGES=true npm run build)"
+      "Bash(GITHUB_PAGES=true npm run build)",
+      "Bash(node:*)"
     ]
   }
 }
