@@ -5,7 +5,7 @@
     <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div class="max-w-[480px] mx-auto px-4 py-3">
         <h1 class="text-center text-sm font-bold tracking-widest text-gray-800 uppercase">
-          Hyrox Planner
+          Momentum
         </h1>
       </div>
     </header>
