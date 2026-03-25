@@ -4,7 +4,7 @@
     <WeekNav
       :weekNumber="store.currentWeekNumber"
       :theme="currentWeek?.theme || ''"
-      :dateRange="currentWeek?.dateRange || ''"
+      :dateRange="formatDateRange(currentWeek?.startDate, currentWeek?.endDate)"
       :phase="currentWeek?.phase || null"
       :isDeload="currentWeek?.isDeload || false"
       :canGoPrev="store.currentWeekNumber > 1"
@@ -53,6 +53,15 @@ import SessionCard from '@/components/SessionCard.vue'
 
 const store = useTrainingStore()
 const router = useRouter()
+
+const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc']
+function formatDateRange(startDate, endDate) {
+  if (!startDate || !endDate) return ''
+  const s = new Date(startDate), e = new Date(endDate)
+  const sd = s.getDate(), sm = MONTHS[s.getMonth()]
+  const ed = e.getDate(), em = MONTHS[e.getMonth()]
+  return s.getMonth() === e.getMonth() ? `${sd}–${ed} ${sm}` : `${sd} ${sm} – ${ed} ${em}`
+}
 
 const currentWeek = ref(null)
 const totalWeeks = ref(19)

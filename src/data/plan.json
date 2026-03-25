@@ -42,7 +42,8 @@
               "category": "foam_roller",
               "label": "Rouleau de massage : quadriceps 60s, mollets 45s, dorsaux 60s"
             }
-          ]
+          ],
+          "coachTip": "Hanches et chevilles : les deux zones les plus sollicitées en Hyrox. Prenez soin d'elles."
         },
         {
           "id": "w1-run-a",
@@ -83,7 +84,8 @@
               "durationMin": 5,
               "label": "marchant"
             }
-          ]
+          ],
+          "coachTip": "Tempo = inconfort contrôlé. 3-4 mots possibles, pas une phrase complète. Tenez l'allure jusqu'au bout."
         },
         {
           "id": "w1-hyrox-a",
@@ -130,7 +132,9 @@
               "durationMin": 5,
               "label": "étirements ischio-jambiers, épaules, quadriceps"
             }
-          ]
+          ],
+          "focus": "Technique",
+          "coachTip": "La technique se grave pendant les séances légères. À charge max le jour J, votre corps reproduira exactement ce qu'il a répété ici."
         },
         {
           "id": "w1-run-b",
@@ -159,7 +163,8 @@
               "type": "recovery",
               "label": "Respiration nasale si possible"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w1-run-c",
@@ -192,7 +197,8 @@
               "type": "recovery",
               "label": "C'est l'allure cible de la course le jour J"
             }
-          ]
+          ],
+          "coachTip": "Sortie longue = base aérobie. Conversation possible tout au long ? Vous êtes à la bonne allure. Résistez à l'envie d'accélérer."
         },
         {
           "id": "w1-hyrox-b",
@@ -232,7 +238,9 @@
                 "Farmers Carry 30m"
               ]
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -271,7 +279,8 @@
               "category": "foam_roller",
               "label": "Rouleau de massage : quadriceps, mollets, dorsaux"
             }
-          ]
+          ],
+          "coachTip": "Mobilité = investissement à long terme. 30 min aujourd'hui = semaines de blessures évitées."
         },
         {
           "id": "w2-run-a",
@@ -306,7 +315,8 @@
                 "her": "5:45/km"
               }
             }
-          ]
+          ],
+          "coachTip": "Tempo = inconfort contrôlé. 3-4 mots possibles, pas une phrase complète. Tenez l'allure jusqu'au bout."
         },
         {
           "id": "w2-hyrox-a",
@@ -357,7 +367,9 @@
               "durationMin": 5,
               "label": "étirements ischio-jambiers et épaules"
             }
-          ]
+          ],
+          "focus": "Technique",
+          "coachTip": "Construisez votre base Hyrox. La régularité aujourd'hui = confiance le 27 septembre."
         },
         {
           "id": "w2-run-b",
@@ -382,7 +394,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:40/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w2-run-c",
@@ -411,7 +424,8 @@
               "type": "recovery",
               "label": "Maintenir la conversation possible tout au long"
             }
-          ]
+          ],
+          "coachTip": "Sortie longue = base aérobie. Conversation possible tout au long ? Vous êtes à la bonne allure. Résistez à l'envie d'accélérer."
         },
         {
           "id": "w2-hyrox-b",
@@ -451,7 +465,9 @@
                 "Farmers Carry 30m"
               ]
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -490,7 +506,8 @@
               "category": "foam_roller",
               "label": "Rouleau de massage : quadriceps, mollets, dorsaux, fessiers"
             }
-          ]
+          ],
+          "coachTip": "Si vous êtes courbaturés, cette séance est encore plus importante. Allez-y doucement."
         },
         {
           "id": "w3-run-a",
@@ -525,7 +542,8 @@
                 "her": "5:45/km"
               }
             }
-          ]
+          ],
+          "coachTip": "Tempo = inconfort contrôlé. 3-4 mots possibles, pas une phrase complète. Tenez l'allure jusqu'au bout."
         },
         {
           "id": "w3-hyrox-a",
@@ -576,7 +594,9 @@
               "durationMin": 5,
               "label": ""
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Construisez votre base Hyrox. La régularité aujourd'hui = confiance le 27 septembre."
         },
         {
           "id": "w3-run-b",
@@ -601,7 +621,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:40/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w3-run-c",
@@ -634,7 +655,8 @@
               "type": "recovery",
               "label": "Semaine de charge — bien dormir et s'alimenter"
             }
-          ]
+          ],
+          "coachTip": "Sortie longue = base aérobie. Conversation possible tout au long ? Vous êtes à la bonne allure. Résistez à l'envie d'accélérer."
         },
         {
           "id": "w3-hyrox-b",
@@ -669,7 +691,9 @@
                 "Farmers Carry 30m"
               ]
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -708,7 +732,8 @@
               "category": "foam_roller",
               "label": "Rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Rouleau de massage : restez 60s sur les zones sensibles, respirez en continu."
         },
         {
           "id": "w4-run-a",
@@ -743,7 +768,8 @@
                 "her": "5:45/km"
               }
             }
-          ]
+          ],
+          "coachTip": "Regard horizontal, épaules basses, bras à 90°. La bonne forme de course se maintient surtout quand ça devient difficile."
         },
         {
           "id": "w4-hyrox-a",
@@ -773,7 +799,9 @@
               "type": "recovery",
               "label": "Récup complète après"
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Chronométrez tout scrupuleusement — ces données sont votre référence de départ. Dans 8 semaines, vous mesurerez votre progression sur ces mêmes chiffres."
         },
         {
           "id": "w4-run-b",
@@ -802,7 +830,8 @@
               "type": "recovery",
               "label": "Aucun effort supplémentaire"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w4-run-c",
@@ -831,7 +860,8 @@
               "type": "recovery",
               "label": "Aucun effort — semaine de décharge"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w4-hyrox-b",
@@ -867,7 +897,9 @@
               "type": "recovery",
               "label": "10 min étirements : ischio-jambiers, quadriceps, épaules, dorsaux"
             }
-          ]
+          ],
+          "focus": "Technique",
+          "coachTip": "La technique se grave pendant les séances légères. À charge max le jour J, votre corps reproduira exactement ce qu'il a répété ici."
         }
       ]
     },
@@ -902,7 +934,8 @@
               "category": "foam_roller",
               "label": "Rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Le repos actif vaut autant que l'entraînement. Respirez, relâchez."
         },
         {
           "id": "w5-run-a",
@@ -938,7 +971,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Récupérez VRAIMENT entre les répétitions. Une bonne récup = un meilleur effort suivant. Qualité > quantité."
         },
         {
           "id": "w5-hyrox-a",
@@ -981,7 +1015,9 @@
                 "3×12 Dead Bug"
               ]
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "AMRAP : partez à 80% max. La bonne gestion des 5 premières minutes détermine toute la séance. Notez votre nombre de tours."
         },
         {
           "id": "w5-run-b",
@@ -1007,7 +1043,8 @@
               "type": "recovery",
               "label": "Léger si les jambes sont lourdes après le mardi"
             }
-          ]
+          ],
+          "coachTip": "Tempo = inconfort contrôlé. 3-4 mots possibles, pas une phrase complète. Tenez l'allure jusqu'au bout."
         },
         {
           "id": "w5-brick",
@@ -1022,18 +1059,28 @@
           "intensityScore": 7,
           "structuredDetails": [
             {
-              "type": "recovery",
-              "label": "Partie 1 : 60 min course ensemble à 5:50–6:10/km (lui récup · elle Z2–Z3)"
+              "type": "brick_run",
+              "durationMin": 60,
+              "pace": {
+                "min": "5:50/km",
+                "max": "6:10/km"
+              },
+              "note": "Les 10 dernières min : monter à 5:45/km pour arriver avec de la fatigue"
             },
             {
-              "type": "recovery",
-              "label": "Les 10 dernières min : monter à 5:45/km pour arriver avec de la fatigue"
-            },
-            {
-              "type": "recovery",
-              "label": "Partie 2 — 4 stations directement enchaînées (sans pause) : SkiErg 300m + RowErg 300m + Farmers Carry 60m + 20 Wall Balls"
+              "type": "station_block",
+              "stations": [
+                "SkiErg 300m",
+                "RowErg 300m",
+                "Farmers Carry 60m",
+                "20 Wall Balls"
+              ],
+              "brickFormat": "standard",
+              "formatNote": "Enchaînez les stations sans pause — reproduisez la continuité de la course."
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Première brick ! L'objectif : sentir la transition course → stations. Vos jambes seront lourdes — c'est voulu, c'est l'adaptation recherchée."
         },
         {
           "id": "w5-hyrox-b",
@@ -1068,7 +1115,9 @@
                 "20m Farmers Carry"
               ]
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -1098,7 +1147,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Hanches et chevilles : les deux zones les plus sollicitées en Hyrox. Prenez soin d'elles."
         },
         {
           "id": "w6-run-a",
@@ -1134,7 +1184,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Récupérez VRAIMENT entre les répétitions. Une bonne récup = un meilleur effort suivant. Qualité > quantité."
         },
         {
           "id": "w6-hyrox-a",
@@ -1180,7 +1231,9 @@
                 "3×12 Dead Bug"
               ]
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "AMRAP : partez à 80% max. La bonne gestion des 5 premières minutes détermine toute la séance. Notez votre nombre de tours."
         },
         {
           "id": "w6-run-b",
@@ -1202,7 +1255,8 @@
               "him": "4:40/km",
               "her": "5:45/km"
             }
-          ]
+          ],
+          "coachTip": "Tempo = inconfort contrôlé. 3-4 mots possibles, pas une phrase complète. Tenez l'allure jusqu'au bout."
         },
         {
           "id": "w6-brick",
@@ -1217,14 +1271,28 @@
           "intensityScore": 7,
           "structuredDetails": [
             {
-              "type": "recovery",
-              "label": "Partie 1 : 60 min course ensemble à 5:50–6:10/km"
+              "type": "brick_run",
+              "durationMin": 60,
+              "pace": {
+                "min": "5:50/km",
+                "max": "6:10/km"
+              }
             },
             {
-              "type": "recovery",
-              "label": "Partie 2 — 5 stations (sans pause) : SkiErg 300m + RowErg 300m + Farmers Carry 60m + 20 Wall Balls + Sandbag Lunges 50m"
+              "type": "station_block",
+              "stations": [
+                "SkiErg 300m",
+                "RowErg 300m",
+                "Farmers Carry 60m",
+                "20 Wall Balls",
+                "Sandbag Lunges 50m"
+              ],
+              "brickFormat": "pyramid",
+              "formatNote": "Distances ou charges progressives à chaque round — plus difficile à chaque passage. C'est voulu."
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Première brick ! L'objectif : sentir la transition course → stations. Vos jambes seront lourdes — c'est voulu, c'est l'adaptation recherchée."
         },
         {
           "id": "w6-hyrox-b",
@@ -1259,7 +1327,9 @@
                 "20m Farmers Carry"
               ]
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -1289,7 +1359,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Mobilité = investissement à long terme. 30 min aujourd'hui = semaines de blessures évitées."
         },
         {
           "id": "w7-run-a",
@@ -1325,7 +1396,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Récupérez VRAIMENT entre les répétitions. Une bonne récup = un meilleur effort suivant. Qualité > quantité."
         },
         {
           "id": "w7-hyrox-a",
@@ -1359,7 +1431,7 @@
               ]
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Comparer avec S6 — viser au minimum le même nombre de tours"
             },
             {
@@ -1371,7 +1443,9 @@
                 "3×12 Dead Bug"
               ]
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "AMRAP : partez à 80% max. La bonne gestion des 5 premières minutes détermine toute la séance. Notez votre nombre de tours."
         },
         {
           "id": "w7-run-b",
@@ -1393,7 +1467,8 @@
               "him": "4:40/km",
               "her": "5:45/km"
             }
-          ]
+          ],
+          "coachTip": "Tempo = inconfort contrôlé. 3-4 mots possibles, pas une phrase complète. Tenez l'allure jusqu'au bout."
         },
         {
           "id": "w7-brick",
@@ -1408,14 +1483,41 @@
           "intensityScore": 7,
           "structuredDetails": [
             {
-              "type": "recovery",
-              "label": "Partie 1 : 65 min course ensemble à 5:50–6:05/km"
+              "type": "brick_run",
+              "durationMin": 65,
+              "pace": {
+                "min": "5:50/km",
+                "max": "6:05/km"
+              }
             },
             {
-              "type": "recovery",
-              "label": "Partie 2 — 5 stations + 1km run intercalé : SkiErg 300m + 1km @ 5:45/km + RowErg 300m + Sandbag Lunges 50m + Farmers Carry 60m + 1km @ 5:45/km + 20 Wall Balls"
+              "type": "station_block",
+              "sequence": [
+                {"kind": "station", "name": "SkiErg 300m"},
+                {"kind": "run", "distanceKm": 1, "pace": {"min": "5:45/km", "max": "5:45/km"}},
+                {"kind": "station", "name": "RowErg 300m"},
+                {"kind": "station", "name": "Sandbag Lunges 50m"},
+                {"kind": "station", "name": "Farmers Carry 60m"},
+                {"kind": "run", "distanceKm": 1, "pace": {"min": "5:45/km", "max": "5:45/km"}},
+                {"kind": "station", "name": "20 Wall Balls"}
+              ],
+              "brickFormat": "follow_the_leader",
+              "formatNote": "Duo : Elle commence les stations impaires pendant que Lui récupère, puis switch. Pratiquez le signal 'go' pour chaque passage.",
+              "duoRoles": {
+                "elle": [
+                  "SkiErg 300m",
+                  "Sandbag Lunges 50m",
+                  "20 Wall Balls"
+                ],
+                "lui": [
+                  "RowErg 300m",
+                  "Farmers Carry 60m"
+                ]
+              }
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Communiquez ! Le Hyrox Doubles se gagne dans les transitions. Pratiquez le passage de relais maintenant pour que ce soit automatique le jour J."
         },
         {
           "id": "w7-hyrox-b",
@@ -1450,7 +1552,9 @@
                 "20m Farmers Carry"
               ]
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -1480,7 +1584,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage complet"
             }
-          ]
+          ],
+          "coachTip": "Si vous êtes courbaturés, cette séance est encore plus importante. Allez-y doucement."
         },
         {
           "id": "w8-run-a",
@@ -1520,7 +1625,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Récupérez VRAIMENT entre les répétitions. Une bonne récup = un meilleur effort suivant. Qualité > quantité."
         },
         {
           "id": "w8-hyrox-a",
@@ -1554,7 +1660,7 @@
               ]
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Le AMRAP le plus chargé de la préparation — comparer avec S7"
             },
             {
@@ -1566,7 +1672,9 @@
                 "3×12 Dead Bug"
               ]
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "AMRAP : partez à 80% max. La bonne gestion des 5 premières minutes détermine toute la séance. Notez votre nombre de tours."
         },
         {
           "id": "w8-run-b",
@@ -1596,7 +1704,8 @@
               "type": "recovery",
               "label": "Si les jambes sont lourdes, réduire à 30 min ou marcher"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w8-brick",
@@ -1611,14 +1720,43 @@
           "intensityScore": 5,
           "structuredDetails": [
             {
-              "type": "recovery",
-              "label": "Partie 1 : 70 min course ensemble à 5:50–6:05/km"
+              "type": "brick_run",
+              "durationMin": 70,
+              "pace": {
+                "min": "5:50/km",
+                "max": "6:05/km"
+              }
             },
             {
-              "type": "recovery",
-              "label": "Partie 2 — 6 stations + 2 × 1km runs intercalés : SkiErg 300m + 1km → RowErg 300m + Sandbag 50m + 1km → Farmers Carry 60m + 20 Wall Balls + Burpees 20m"
+              "type": "station_block",
+              "sequence": [
+                {"kind": "station", "name": "SkiErg 300m"},
+                {"kind": "run", "distanceKm": 1},
+                {"kind": "station", "name": "RowErg 300m"},
+                {"kind": "station", "name": "Sandbag 50m"},
+                {"kind": "run", "distanceKm": 1},
+                {"kind": "station", "name": "Farmers Carry 60m"},
+                {"kind": "station", "name": "20 Wall Balls"},
+                {"kind": "station", "name": "Burpees 20m"}
+              ],
+              "brickFormat": "follow_the_leader",
+              "formatNote": "Duo : Elle commence les stations impaires pendant que Lui récupère, puis switch. Pratiquez le signal 'go' pour chaque passage.",
+              "duoRoles": {
+                "elle": [
+                  "SkiErg 300m",
+                  "Sandbag 50m",
+                  "20 Wall Balls"
+                ],
+                "lui": [
+                  "RowErg 300m",
+                  "Farmers Carry 60m",
+                  "Burpees 20m"
+                ]
+              }
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Communiquez ! Le Hyrox Doubles se gagne dans les transitions. Pratiquez le passage de relais maintenant pour que ce soit automatique le jour J."
         },
         {
           "id": "w8-hyrox-b",
@@ -1652,7 +1790,9 @@
               "type": "recovery",
               "label": "Finisher 4 rounds (repos 90s) : SkiErg 200m + 10 Wall Balls (6kg) + 20m Farmers Carry (2×24kg F / 2×28kg H)"
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -1682,7 +1822,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Rouleau de massage : restez 60s sur les zones sensibles, respirez en continu."
         },
         {
           "id": "w9-run-a",
@@ -1718,7 +1859,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w9-hyrox-a",
@@ -1760,7 +1902,9 @@
                 "3×10 Dead Bug"
               ]
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "AMRAP : partez à 80% max. La bonne gestion des 5 premières minutes détermine toute la séance. Notez votre nombre de tours."
         },
         {
           "id": "w9-run-b",
@@ -1785,7 +1929,8 @@
               "him": "5:15–5:30/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w9-brick",
@@ -1800,18 +1945,26 @@
           "intensityScore": 4,
           "structuredDetails": [
             {
-              "type": "run",
+              "type": "brick_run",
               "durationMin": 50,
               "pace": {
-                "him": "5:55–6:15/km",
-                "her": "5:55–6:15/km"
+                "min": "5:55/km",
+                "max": "6:15/km"
               }
             },
             {
-              "type": "recovery",
-              "label": "3 stations techniques (charges habituelles) : SkiErg 300m + RowErg 300m + Farmers Carry 60m"
+              "type": "station_block",
+              "stations": [
+                "SkiErg 300m",
+                "RowErg 300m",
+                "Farmers Carry 60m"
+              ],
+              "brickFormat": "emom",
+              "formatNote": "Every Minute On the Minute : lancez la station au top de chaque minute. Le temps restant = récupération active. Restez réguliers."
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "EMOM = gestion du rythme. Partez conservateur la première moitié — vous aurez encore de l'énergie pour finir fort."
         },
         {
           "id": "w9-hyrox-b",
@@ -1855,7 +2008,9 @@
               "type": "recovery",
               "label": "10 min mobilité : étirements ischio-jambiers, quadriceps, épaules"
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La force que vous construisez ici rend les Farmers Carry et Wall Balls supportables en fin de race. Chaque série compte."
         }
       ]
     },
@@ -1885,7 +2040,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Le repos actif vaut autant que l'entraînement. Respirez, relâchez."
         },
         {
           "id": "w10-run-a",
@@ -1922,7 +2078,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w10-hyrox-a",
@@ -1952,7 +2109,9 @@
               "type": "recovery",
               "label": "1km @ 5:45–6:00/km → Farmers Carry 80m + Sandbag Lunges 60m"
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "Simulation : traitez-la comme la vraie course. Échauffement, concentration, chronos. Ces données vous guideront jusqu'au 27 septembre."
         },
         {
           "id": "w10-run-b",
@@ -1978,7 +2137,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w10-simu",
@@ -1999,14 +2159,23 @@
               "recoveryMin": 0
             },
             {
-              "type": "recovery",
-              "label": "4 stations aux poids race : SkiErg 500m · Sled Push/Pull alternatif · RowErg 500m · Wall Balls 50 reps"
+              "type": "station_block",
+              "stations": [
+                "SkiErg 500m",
+                "Sled Push/Pull alternatif",
+                "RowErg 500m",
+                "Wall Balls 50 reps"
+              ],
+              "brickFormat": "standard",
+              "formatNote": "Enchaînez les stations sans pause — reproduisez la continuité de la course."
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Chronomètrer chaque section — noter et comparer lors des prochaines simulations"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w10-recup",
@@ -2032,7 +2201,8 @@
               "type": "recovery",
               "label": "Identifier les 2 stations à travailler prioritairement"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         }
       ]
     },
@@ -2062,7 +2232,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Hanches et chevilles : les deux zones les plus sollicitées en Hyrox. Prenez soin d'elles."
         },
         {
           "id": "w11-run-a",
@@ -2098,7 +2269,8 @@
               "type": "recovery",
               "label": "Régularité absolue sur les 8 répétitions"
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w11-hyrox-a",
@@ -2121,10 +2293,12 @@
               "label": "Chronométrer chaque station — noter les plus longues"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Allure course : 5:45–6:00/km ensemble"
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "Simulation : traitez-la comme la vraie course. Échauffement, concentration, chronos. Ces données vous guideront jusqu'au 27 septembre."
         },
         {
           "id": "w11-run-b",
@@ -2150,7 +2324,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w11-simu",
@@ -2175,10 +2350,12 @@
               "label": "6 stations aux poids race (toutes sauf 2 au choix)"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Chronomètrer chaque station — noter et comparer avec S10"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w11-recup",
@@ -2204,7 +2381,8 @@
               "type": "recovery",
               "label": "Ces 2 stations seront le focus de S12"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         }
       ]
     },
@@ -2234,7 +2412,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Mobilité = investissement à long terme. 30 min aujourd'hui = semaines de blessures évitées."
         },
         {
           "id": "w12-run-a",
@@ -2270,7 +2449,8 @@
               "type": "recovery",
               "label": "Viser la régularité : dernier km = même allure que le premier"
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w12-hyrox-a",
@@ -2293,10 +2473,12 @@
               "label": "Volume ×1,5 sur les stations ciblées"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Transitions chronométrées — noter les temps de passage course→station"
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Phase finale. Restez concentrés, restez techniques. Vous êtes prêts."
         },
         {
           "id": "w12-run-b",
@@ -2322,7 +2504,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w12-simu",
@@ -2347,10 +2530,12 @@
               "label": "6 stations aux poids race — mêmes 6 stations qu'en S11"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Comparer chaque chrono avec S11 — les stations faibles doivent avoir progressé"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w12-recup",
@@ -2376,7 +2561,8 @@
               "type": "recovery",
               "label": "S13 : préparer mentalement la première simulation complète 8 stations"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         }
       ]
     },
@@ -2406,7 +2592,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Si vous êtes courbaturés, cette séance est encore plus importante. Allez-y doucement."
         },
         {
           "id": "w13-run-a",
@@ -2443,7 +2630,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w13-hyrox-a",
@@ -2466,10 +2654,12 @@
               "label": "Charges normales — pas d'effort maximal"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Focus : technique et fluidité des transitions"
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Phase finale. Restez concentrés, restez techniques. Vous êtes prêts."
         },
         {
           "id": "w13-run-b",
@@ -2498,7 +2688,8 @@
               "type": "recovery",
               "label": "Si les jambes sont lourdes : réduire à 20 min ou repos complet"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w13-simu",
@@ -2513,7 +2704,7 @@
           "intensityScore": 5,
           "structuredDetails": [
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Format exact race : 1km course → Station → (× 8)"
             },
             {
@@ -2527,14 +2718,16 @@
               "label": "8 stations aux poids race officiels"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Chronomètrer : chrono total + temps de chaque station + temps de chaque km"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Simulation duo si possible : partager les stations entre Elle et Lui"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w13-recup",
@@ -2560,7 +2753,8 @@
               "type": "recovery",
               "label": "Chrono de référence noté — c'est votre baseline pour S14"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         }
       ]
     },
@@ -2590,7 +2784,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Rouleau de massage : restez 60s sur les zones sensibles, respirez en continu."
         },
         {
           "id": "w14-run-a",
@@ -2625,7 +2820,8 @@
               "type": "recovery",
               "label": "Régularité > vitesse maximale"
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w14-hyrox-a",
@@ -2644,14 +2840,16 @@
               "label": "4 × (1km + 1 station) — focus sur les stations faibles identifiées en S13"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Pratique des transitions duo : passage de relais chronométré"
             },
             {
               "type": "recovery",
               "label": "Tester la répartition finale des stations"
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Phase finale. Restez concentrés, restez techniques. Vous êtes prêts."
         },
         {
           "id": "w14-run-b",
@@ -2677,7 +2875,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w14-simu",
@@ -2706,10 +2905,12 @@
               "label": "Tester la nouvelle répartition duo (qui commence chaque station)"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Comparer chrono total et par station avec S13"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w14-recup",
@@ -2735,7 +2936,8 @@
               "type": "recovery",
               "label": "Cette stratégie ne change plus avant la course"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         }
       ]
     },
@@ -2765,7 +2967,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Le repos actif vaut autant que l'entraînement. Respirez, relâchez."
         },
         {
           "id": "w15-run-a",
@@ -2802,7 +3005,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w15-hyrox-a",
@@ -2825,10 +3029,12 @@
               "label": "Charges normales — maintien uniquement"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Focus sur la fluidité des transitions"
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "Dernière ligne droite. Chaque simulation vous rapproche du jour J. Finissez fort et restez concentrés sur les transitions duo."
         },
         {
           "id": "w15-run-b",
@@ -2853,7 +3059,8 @@
               "him": "5:15–5:30/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w15-simu",
@@ -2878,14 +3085,16 @@
               "label": "4 stations aux poids race (70% d'effort — pas de sprint)"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Focus : transitions parfaites et communication duo"
             },
             {
               "type": "recovery",
               "label": "C'est la DERNIÈRE simulation — après, plus de séance intense"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w15-recup",
@@ -2907,7 +3116,8 @@
               "type": "recovery",
               "label": "Bilan Phase 3 complet — vous êtes prêts pour Phase 4"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         }
       ]
     },
@@ -2937,7 +3147,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Hanches et chevilles : les deux zones les plus sollicitées en Hyrox. Prenez soin d'elles."
         },
         {
           "id": "w16-run-a",
@@ -2973,7 +3184,8 @@
               "durationMin": 10,
               "label": ""
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w16-hyrox-a",
@@ -2999,7 +3211,9 @@
               "type": "recovery",
               "label": "Aucune augmentation de charges"
             }
-          ]
+          ],
+          "focus": "Race_Simulation",
+          "coachTip": "Dernière ligne droite. Chaque simulation vous rapproche du jour J. Finissez fort et restez concentrés sur les transitions duo."
         },
         {
           "id": "w16-run-b",
@@ -3025,7 +3239,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:45/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w16-simu",
@@ -3053,7 +3268,9 @@
               "type": "recovery",
               "label": "Maintien du niveau, pas d'effort maximal"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         },
         {
           "id": "w16-hyrox-b",
@@ -3075,7 +3292,9 @@
               "type": "recovery",
               "label": "Aucune augmentation de charges — maintien uniquement"
             }
-          ]
+          ],
+          "focus": "Strength",
+          "coachTip": "La technique se grave pendant les séances légères. À charge max le jour J, votre corps reproduira exactement ce qu'il a répété ici."
         }
       ]
     },
@@ -3105,7 +3324,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité + rouleau de massage"
             }
-          ]
+          ],
+          "coachTip": "Mobilité = investissement à long terme. 30 min aujourd'hui = semaines de blessures évitées."
         },
         {
           "id": "w17-run-a",
@@ -3140,7 +3360,8 @@
               "type": "recovery",
               "label": "Volume –40% vs pic Phase 3"
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w17-hyrox-a",
@@ -3155,7 +3376,7 @@
           "intensityScore": 5,
           "structuredDetails": [
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Activation technique sur les 8 mouvements"
             },
             {
@@ -3166,7 +3387,9 @@
               "type": "recovery",
               "label": "Maintien des automatismes techniques"
             }
-          ]
+          ],
+          "focus": "Technique",
+          "coachTip": "La technique se grave pendant les séances légères. À charge max le jour J, votre corps reproduira exactement ce qu'il a répété ici."
         },
         {
           "id": "w17-run-b",
@@ -3191,7 +3414,8 @@
               "him": "5:10–5:25/km",
               "her": "6:20–6:40/km"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w17-brick",
@@ -3206,11 +3430,11 @@
           "intensityScore": 5,
           "structuredDetails": [
             {
-              "type": "run",
+              "type": "brick_run",
               "durationMin": 50,
               "pace": {
-                "him": "5:50–6:10/km",
-                "her": "5:50–6:10/km"
+                "min": "5:50/km",
+                "max": "6:10/km"
               }
             },
             {
@@ -3221,7 +3445,9 @@
               "type": "recovery",
               "label": "Pas d'effort maximal"
             }
-          ]
+          ],
+          "focus": "Transition",
+          "coachTip": "Restez techniques même fatigués. En course, vous serez aussi épuisés qu'ici — et votre technique sera votre meilleure arme."
         }
       ]
     },
@@ -3251,7 +3477,8 @@
               "category": "stretching",
               "label": "Étirements + mobilité légère"
             }
-          ]
+          ],
+          "coachTip": "Si vous êtes courbaturés, cette séance est encore plus importante. Allez-y doucement."
         },
         {
           "id": "w18-run-a",
@@ -3285,7 +3512,8 @@
               "type": "recovery",
               "label": "Objectif : sensations, pas la performance"
             }
-          ]
+          ],
+          "coachTip": "Chaque répétition forge votre VO2max. Restez sur votre allure cible — ni plus vite, ni plus lent."
         },
         {
           "id": "w18-hyrox-a",
@@ -3300,14 +3528,16 @@
           "intensityScore": 2,
           "structuredDetails": [
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Activation : 3 stations × 2 min, charges légères"
             },
             {
               "type": "recovery",
               "label": "Objectif : maintenir les automatismes techniques uniquement"
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Phase finale. Restez concentrés, restez techniques. Vous êtes prêts."
         },
         {
           "id": "w18-run-b",
@@ -3336,7 +3566,8 @@
               "type": "recovery",
               "label": "Aucune intensité — se faire du bien uniquement"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w18-run-c",
@@ -3364,7 +3595,8 @@
               "type": "recovery",
               "label": "15 min étirements statiques en fin de séance"
             }
-          ]
+          ],
+          "coachTip": "Cette allure est votre allure de course le jour J. Gravez-la dans vos jambes — c'est elle qui vous ramènera à la ligne d'arrivée."
         }
       ]
     },
@@ -3398,7 +3630,8 @@
               "type": "recovery",
               "label": "4 accélérations de 100m à allure course — jambes réactives"
             }
-          ]
+          ],
+          "coachTip": "Séance de récupération : si vous vous sentez trop à l'aise, c'est que vous allez à la bonne allure. Ne cherchez pas la performance ici."
         },
         {
           "id": "w19-hyrox-a",
@@ -3424,7 +3657,9 @@
               "type": "recovery",
               "label": "Charges légères — uniquement pour activer les muscles"
             }
-          ]
+          ],
+          "focus": "Endurance",
+          "coachTip": "Phase finale. Restez concentrés, restez techniques. Vous êtes prêts."
         },
         {
           "id": "w19-recup-jeu",
@@ -3450,7 +3685,8 @@
               "type": "recovery",
               "label": "Confirmer l'heure de départ et le lieu"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         },
         {
           "id": "w19-recup-ven",
@@ -3480,7 +3716,8 @@
               "type": "recovery",
               "label": "Voyage/déplacement si nécessaire"
             }
-          ]
+          ],
+          "coachTip": "Focalisez sur la qualité d'exécution. La performance suit la technique — jamais l'inverse."
         },
         {
           "id": "w19-race",
@@ -3495,30 +3732,32 @@
           "intensityScore": 5,
           "structuredDetails": [
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Activation : 10 min jogging léger + quelques reps SkiErg et RowErg"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Allure course : 5:45–6:00/km ENSEMBLE — ne pas partir trop vite"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Transitions : celui qui attend récupère et prépare la prochaine station"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Communication : 'go' pour le passage de relais"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Stations 7 et 8 : mantras préparés — tenir jusqu'au bout !"
             },
             {
-              "type": "recovery",
+              "type": "race_advice",
               "label": "Profiter — regarder la foule, sourire, c'est une fête sportive !"
             }
-          ]
+          ],
+          "focus": "Race",
+          "coachTip": "C'est le jour J. Faites confiance à 19 semaines de travail. Partez ensemble, finissez ensemble — chaque seconde compte et se partage."
         }
       ]
     }

@@ -9,6 +9,7 @@
           <span>{{ cfg.icon }}</span>{{ cfg.label }}
         </span>
         <span v-if="session.optional" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/70">Optionnel</span>
+        <span v-if="session.focus" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/80 border border-white/20">{{ focusLabel }}</span>
       </div>
       <h2 class="text-xl font-bold text-white leading-snug mb-2">{{ session.title }}</h2>
       <div class="flex items-center gap-2 text-sm flex-wrap" :class="cfg.heroText">
@@ -18,6 +19,16 @@
         </template>
         <span>·</span>
         <span class="font-medium">{{ session.intensityLabel }}</span>
+        <template v-if="session.intensityScore">
+          <span>·</span>
+          <span class="flex items-center gap-0.5">
+            <span
+              v-for="n in 5" :key="n"
+              class="w-2 h-2 rounded-full"
+              :class="n * 2 <= session.intensityScore ? 'bg-white' : 'bg-white/25'"
+            />
+          </span>
+        </template>
       </div>
     </div>
 
@@ -33,6 +44,12 @@
 
       <!-- Description -->
       <p class="text-sm text-stone-600 mb-4 leading-relaxed">{{ session.description }}</p>
+
+      <!-- Coach tip -->
+      <div v-if="session.coachTip" class="mb-4 flex items-start gap-2.5 bg-stone-50 border border-stone-200 rounded-xl px-3 py-3">
+        <span class="text-base flex-shrink-0">💬</span>
+        <p class="text-xs text-stone-600 leading-relaxed italic">{{ session.coachTip }}</p>
+      </div>
 
       <!-- Graphique allures (running uniquement) -->
       <SessionPaceChart
@@ -80,6 +97,12 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle'])
 
-const cfg          = computed(() => getSessionTypeConfig(props.session?.type))
+const FOCUS_LABELS = {
+  Technique: '🎯 Technique', Strength: '💪 Force', Endurance: '🫀 Endurance',
+  Transition: '🔗 Transition', Race_Simulation: '⏱ Simulation', Race: '🏁 Race Day', Recovery: '😴 Récup',
+}
+
+const cfg        = computed(() => getSessionTypeConfig(props.session?.type))
+const focusLabel = computed(() => FOCUS_LABELS[props.session?.focus] ?? '')
 const parsedBlocks = computed(() => (props.session?.structuredDetails ?? []).map(structuredDetailToBlock))
 </script>

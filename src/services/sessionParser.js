@@ -112,6 +112,39 @@ export function structuredDetailToBlock(d) {
     case 'target_pace':
       return { type: 'pace', paces: { lui: d.him, elle: d.her } }
 
+    case 'brick_run':
+      return { type: 'brick_run', durationMin: d.durationMin, pace: d.pace ?? null, note: d.note ?? null }
+
+    case 'station_block': {
+      const duoRoles = d.duoRoles
+        ? { elle: d.duoRoles.elle.map(parseExercise), lui: d.duoRoles.lui.map(parseExercise) }
+        : null
+      const sequence = d.sequence
+        ? d.sequence.map(item => {
+            if (item.kind !== 'station') return item
+            const parsed = parseExercise(item.name)
+            let who = null
+            if (duoRoles) {
+              if (duoRoles.elle.some(e => e.name === parsed.name)) who = 'elle'
+              else if (duoRoles.lui.some(e => e.name === parsed.name)) who = 'lui'
+            }
+            return { kind: 'station', ...parsed, who }
+          })
+        : null
+      return {
+        type: 'station_block',
+        sequence,
+        exercises: (d.stations ?? []).map(parseExercise),
+        intercalatedRuns: d.intercalatedRuns ?? null,
+        brickFormat: d.brickFormat ?? null,
+        formatNote: d.formatNote ?? null,
+        duoRoles,
+      }
+    }
+
+    case 'race_advice':
+      return { type: 'race_advice', label: d.label }
+
     default: // exercise, nutrition, recovery, instruction
       return { type: 'text', content: d.label }
   }
