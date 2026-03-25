@@ -23,7 +23,7 @@
           >Optionnel</span>
         </div>
         <p class="font-semibold text-stone-800 text-sm leading-snug">{{ session.title }}</p>
-        <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium" :class="cfg.badgeBg">{{ session.intensity }}</span>
+        <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium" :class="cfg.badgeBg">{{ session.intensityLabel }}</span>
       </div>
 
       <!-- Completion -->

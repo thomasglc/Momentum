@@ -17,7 +17,7 @@
           <span>·</span><span>{{ session.duration }} min</span>
         </template>
         <span>·</span>
-        <span class="font-medium">{{ session.intensity }}</span>
+        <span class="font-medium">{{ session.intensityLabel }}</span>
       </div>
     </div>
 
