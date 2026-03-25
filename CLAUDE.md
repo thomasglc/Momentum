@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+- Répondre de façon concise
+- Ne jamais renvoyer de fichiers complets sauf si demandé explicitement
+- Préférer les diffs ou patches
+- Optimiser l'utilisation des tokens
+
 ## Commands
 
 ```bash
