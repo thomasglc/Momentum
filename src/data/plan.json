@@ -22,7 +22,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Séance de récupération active optionnelle. À faire uniquement si vous n'êtes pas trop fatigués — le repos complet prime toujours.",
           "details": [
             "Étirements statiques ischio-jambiers, quadriceps, fessiers",
@@ -37,7 +37,7 @@
           "optional": false,
           "title": "Course A — Footing + Tempo",
           "duration": 50,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Premier footing de la prépa avec quelques portions tempo pour activer le seuil.",
           "details": [
             "Échauffement : 40 min footing confortable (lui ~5:10/km · elle ~6:20/km)",
@@ -52,7 +52,7 @@
           "optional": false,
           "title": "Hyrox A — Initiation Technique",
           "duration": 65,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "2 passages du circuit technique à charges légères (50%). Aucun effort — uniquement la qualité de mouvement.",
           "details": [
             "Échauffement 10 min : 5 min cardio léger + mobilité épaules/hanches/chevilles",
@@ -68,7 +68,7 @@
           "optional": false,
           "title": "Course B — Footing Facile",
           "duration": 35,
-          "intensity": "Z2",
+          "intensityLabel":"Z2",
           "description": "Footing de récupération, jambes légères après le mercredi.",
           "details": [
             "35 min footing facile continu",
@@ -83,7 +83,7 @@
           "optional": false,
           "title": "Course C — Sortie Longue Ensemble",
           "duration": 55,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Sortie longue à deux, conversation possible tout au long. Pas d'effort.",
           "details": [
             "55 min ensemble à 5:50–6:10/km",
@@ -98,7 +98,7 @@
           "optional": false,
           "title": "Hyrox B — Renforcement Spécifique",
           "duration": 55,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Séance de force de base ciblant les muscles sollicités par les stations Hyrox.",
           "details": [
             "Échauffement 8 min : 5 min rameur Z1 · 10 squats · 10 hip hinge · 10 face pull élastique",
@@ -123,7 +123,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": [
             "Étirements statiques ischio-jambiers, quadriceps, fessiers",
@@ -138,7 +138,7 @@
           "optional": false,
           "title": "Course A — Footing + Tempo",
           "duration": 50,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Augmenter légèrement le volume tempo.",
           "details": [
             "40 min footing (lui ~5:10/km · elle ~6:20/km)",
@@ -152,13 +152,14 @@
           "optional": false,
           "title": "Hyrox A — Consolidation",
           "duration": 65,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "3 passages du circuit, charges 55–60%. Enchaîner SkiErg → RowErg sans pause.",
           "details": [
-            "Échauffement 10 min : cardio léger + mobilité dynamique",
-            "Circuit technique × 3 passages (repos 2 min entre) — même format S1 mais charges +5%",
-            "Focus : enchaîner SkiErg → RowErg sans pause entre les deux",
-            "Renforcement complémentaire : 3×10 RDL · 3×12 Goblet Squat · 2×30s planche"
+            "Échauffement 10 min : cardio léger + mobilité épaules/hanches/chevilles",
+            "Circuit × 3 passages (repos 2 min entre) : SkiErg 150m · Rameur 200m · Farmers Carry 2×30m (2×16kg F / 2×20kg H) · Sandbag Lunges 20m (10kg F / 12kg H) · Wall Balls 10 reps (6kg) · Burpee Broad Jump 5 sauts",
+            "Consigne : enchaîner SkiErg → Rameur sans pause entre les deux",
+            "Renforcement complémentaire : 3×10 Romanian Deadlift · 3×12 Goblet Squat · 2×30s planche",
+            "Retour au calme 5 min : étirements ischio-jambiers et épaules"
           ]
         },
         {
@@ -168,7 +169,7 @@
           "optional": false,
           "title": "Course B — Footing Facile",
           "duration": 40,
-          "intensity": "Z2",
+          "intensityLabel":"Z2",
           "description": "Récupération active.",
           "details": [
             "40 min footing facile continu",
@@ -182,7 +183,7 @@
           "optional": false,
           "title": "Course C — Sortie Longue",
           "duration": 60,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Sortie longue ensemble, légèrement plus longue qu'en S1.",
           "details": [
             "60 min ensemble à 5:50–6:10/km",
@@ -196,10 +197,11 @@
           "optional": false,
           "title": "Hyrox B — Renforcement",
           "duration": 55,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Charges +5% vs S1. 3 tours du finisher.",
           "details": [
-            "Bloc force identique S1 — charges +5%",
+            "Échauffement 8 min : 5 min rameur Z1 · 10 squats · 10 hip hinge · 10 face pull élastique",
+            "Bloc force 4 séries (repos 90s) : Box/Goblet Squat 4×10 (charges +5% vs S1) · Hip Thrust 4×12 · Tirage horizontal 4×10 · Overhead Press 3×12",
             "Finisher 3 tours (repos 3 min entre) : SkiErg 200m + 10 Wall Balls + Farmers Carry 30m"
           ]
         }
@@ -220,7 +222,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle — recommandée cette semaine de charge.",
           "details": [
             "Étirements statiques ischio-jambiers, quadriceps, fessiers",
@@ -235,7 +237,7 @@
           "optional": false,
           "title": "Course A — Footing + Tempo",
           "duration": 55,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Semaine de charge — volume légèrement augmenté.",
           "details": [
             "40 min footing (lui ~5:10/km · elle ~6:20/km)",
@@ -249,13 +251,14 @@
           "optional": false,
           "title": "Hyrox A — Montée en Charge",
           "duration": 70,
-          "intensity": "Modéré/Élevé",
+          "intensityLabel":"Modéré/Élevé",
           "description": "3 passages, charges 60–65%. Objectif : enchaîner 3 stations sans pause.",
           "details": [
-            "Échauffement 10 min",
-            "Circuit × 3 passages (repos 2 min entre), charges 60–65%",
-            "Focus : enchaîner SkiErg + RowErg + Farmers Carry sans pause",
-            "Renforcement complémentaire : 3×10 RDL · 3×12 Goblet Squat · 2×30s planche"
+            "Échauffement 10 min : cardio léger + mobilité dynamique",
+            "Circuit × 3 passages (repos 2 min entre) — charges 60–65% : SkiErg 150m · Rameur 200m · Farmers Carry 2×30m (2×18kg F / 2×22kg H) · Sandbag Lunges 20m (10kg F / 14kg H) · Wall Balls 10 reps (6kg) · Burpee Broad Jump 5 sauts",
+            "Consigne : enchaîner SkiErg + Rameur + Farmers Carry sans pause entre eux",
+            "Renforcement complémentaire : 3×10 Romanian Deadlift · 3×12 Goblet Squat · 2×30s planche",
+            "Retour au calme 5 min"
           ]
         },
         {
@@ -265,7 +268,7 @@
           "optional": false,
           "title": "Course B — Footing Facile",
           "duration": 40,
-          "intensity": "Z2",
+          "intensityLabel":"Z2",
           "description": "Récupération — rester facile après la charge de mercredi.",
           "details": [
             "40 min footing facile",
@@ -279,7 +282,7 @@
           "optional": false,
           "title": "Course C — Sortie Longue Progressive",
           "duration": 65,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Sortie longue avec fin légèrement accélérée.",
           "details": [
             "65 min ensemble à 5:50–6:00/km",
@@ -294,7 +297,7 @@
           "optional": false,
           "title": "Hyrox B — Bloc Force Lourd",
           "duration": 60,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Séance de force avec charges plus importantes. 3 tours finisher.",
           "details": [
             "Bloc force — charges progressives cette semaine : Box/Goblet Squat 4×10 · Hip Thrust 4×12 · Tirage horizontal 4×10 · Overhead Press 3×12",
@@ -318,7 +321,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": [
             "Étirements statiques ischio-jambiers, quadriceps, fessiers",
@@ -333,7 +336,7 @@
           "optional": false,
           "title": "Course A — Footing Réduit",
           "duration": 45,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Semaine de décharge — volume réduit.",
           "details": [
             "35 min footing (lui ~5:10/km · elle ~6:20/km)",
@@ -347,7 +350,7 @@
           "optional": false,
           "title": "Hyrox A — Mini-Test",
           "duration": 60,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Mini-test de référence : 4 stations aux poids habituels + 2 km courus. Noter le temps total.",
           "details": [
             "Échauffement complet 10 min",
@@ -363,7 +366,7 @@
           "optional": false,
           "title": "Course B — Récupération",
           "duration": 35,
-          "intensity": "Z1",
+          "intensityLabel":"Z1",
           "description": "Footing très facile de récupération après le mini-test.",
           "details": [
             "35 min footing récup",
@@ -378,7 +381,7 @@
           "optional": false,
           "title": "Course C — Sortie Légère",
           "duration": 50,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Sortie très légère ensemble, récupération active.",
           "details": [
             "50 min ensemble à 5:50–6:10/km",
@@ -392,12 +395,13 @@
           "optional": false,
           "title": "Hyrox B — Technique & Mobilité",
           "duration": 45,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Séance légère de technique et mobilité. Charges –20%.",
           "details": [
-            "Technique sur les mouvements déficients identifiés en S1–S3",
-            "Charges –20% vs S3",
-            "Étirements et mobilité en fin de séance"
+            "Révision technique des 6 mouvements (charges –20% vs S3) : SkiErg · Rameur · Farmers Carry · Sandbag Lunges · Wall Balls · Burpee Broad Jump",
+            "2×8 reps de chaque mouvement — focus posture, respiration et fluidité uniquement",
+            "Bloc force allégé : Goblet Squat 2×10 · Hip Thrust 2×12 · Tirage horizontal 2×10",
+            "10 min étirements : ischio-jambiers, quadriceps, épaules, dorsaux"
           ]
         }
       ]
@@ -417,7 +421,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": [
             "Étirements statiques + mobilité dynamique",
@@ -431,7 +435,7 @@
           "optional": false,
           "title": "Course A — Intervalles 4 × 1km",
           "duration": 55,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "Première séance de fractionné longs. Récupération 90s entre les efforts.",
           "details": [
             "Échauffement 15 min Z1/Z2",
@@ -446,7 +450,7 @@
           "optional": false,
           "title": "Hyrox A — AMRAP 20 min",
           "duration": 65,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "AMRAP (As Many Rounds As Possible) sur 20 minutes. Compter le nombre de tours complets.",
           "details": [
             "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
@@ -461,7 +465,7 @@
           "optional": false,
           "title": "Course B — Tempo",
           "duration": 45,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Séance tempo progressive.",
           "details": [
             "10 min facile + 15 min tempo (lui 4:40/km · elle 5:45/km) + 10 min facile retour",
@@ -475,7 +479,7 @@
           "optional": false,
           "title": "Brick — Course + 4 Stations Hyrox",
           "duration": 95,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Première brick session. Course longue puis stations directement enchaînées sans pause.",
           "details": [
             "Partie 1 : 60 min course ensemble à 5:50–6:10/km (lui récup · elle Z2–Z3)",
@@ -490,7 +494,7 @@
           "optional": false,
           "title": "Hyrox B — Force & Puissance",
           "duration": 60,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Séance de force lourde + finisher.",
           "details": [
             "Bloc force : Back Squat 5×5 (charges lourdes) · Leg Press heavy 4×8 · Pull-ups/Assisted 4×8 · KB Swing 3×15",
@@ -514,7 +518,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -525,7 +529,7 @@
           "optional": false,
           "title": "Course A — Intervalles 5 × 1km",
           "duration": 58,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "Volume augmenté par rapport à S5.",
           "details": [
             "Échauffement 15 min Z1/Z2",
@@ -540,12 +544,13 @@
           "optional": false,
           "title": "Hyrox A — AMRAP 22 min",
           "duration": 70,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "AMRAP 22 minutes, charges 72%. Comparer avec S5.",
           "details": [
-            "Échauffement 10 min",
-            "AMRAP 22 min (même circuit qu'en S5, charges 72%) — comparer le nombre de tours",
-            "Gainage & Core 10 min"
+            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
+            "AMRAP 22 min — noter le nombre de tours : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×20kg F / 2×26kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (12kg F / 18kg H)",
+            "Objectif : faire au minimum le même nombre de tours qu'en S5",
+            "Gainage & Core 10 min : 3×45s planche + 3×12 Dead Bug"
           ]
         },
         {
@@ -555,7 +560,7 @@
           "optional": false,
           "title": "Course B — Tempo",
           "duration": 50,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Tempo plus long qu'en S5.",
           "details": [
             "10 min facile + 20 min tempo (lui 4:40/km · elle 5:45/km) + 10 min facile"
@@ -568,7 +573,7 @@
           "optional": false,
           "title": "Brick — Course + 5 Stations Hyrox",
           "duration": 100,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Une station de plus qu'en S5. Ajouter les Sandbag Lunges.",
           "details": [
             "Partie 1 : 60 min course ensemble à 5:50–6:10/km",
@@ -582,7 +587,7 @@
           "optional": false,
           "title": "Hyrox B — Force Progression",
           "duration": 60,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Charges +2–3% vs S5. Finisher 4 rounds.",
           "details": [
             "Bloc force avec charges +2–3% vs S5 : Back Squat · Leg Press · Pull-ups · KB Swing 3×15",
@@ -606,7 +611,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -617,7 +622,7 @@
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km",
           "duration": 62,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "6 répétitions à allure soutenue.",
           "details": [
             "Échauffement 15 min",
@@ -632,12 +637,13 @@
           "optional": false,
           "title": "Hyrox A — AMRAP 25 min",
           "duration": 75,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "AMRAP 25 minutes, charges 75%.",
           "details": [
-            "Échauffement 10 min",
-            "AMRAP 25 min (même circuit, charges 75%)",
-            "Gainage & Core 10 min"
+            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
+            "AMRAP 25 min — noter le nombre de tours : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×22kg F / 2×28kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (14kg F / 18kg H)",
+            "Comparer avec S6 — viser au minimum le même nombre de tours",
+            "Gainage & Core 10 min : 3×45s planche + 3×12 Dead Bug"
           ]
         },
         {
@@ -647,7 +653,7 @@
           "optional": false,
           "title": "Course B — Tempo",
           "duration": 50,
-          "intensity": "Z2/Z3",
+          "intensityLabel":"Z2/Z3",
           "description": "Tempo maintenu.",
           "details": [
             "10 min facile + 20 min tempo (lui 4:40/km · elle 5:45/km) + 10 min facile"
@@ -660,7 +666,7 @@
           "optional": false,
           "title": "Brick — Course + 5 Stations + 1km Run Intercalé",
           "duration": 105,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Première brick avec un run intercalé entre les stations — reproduire le format race.",
           "details": [
             "Partie 1 : 65 min course ensemble à 5:50–6:05/km",
@@ -674,7 +680,7 @@
           "optional": false,
           "title": "Hyrox B — Force Lourde",
           "duration": 65,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Séance force avec charges lourdes. 5 séries.",
           "details": [
             "Bloc force 5 séries : Back Squat heavy · Leg Press 4×8 · Pull-ups 4×8 · KB Swing 3×15",
@@ -698,7 +704,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active — fortement recommandée cette semaine de pic.",
           "details": ["Étirements + mobilité + rouleau de massage complet"]
         },
@@ -709,7 +715,7 @@
           "optional": false,
           "title": "Course A — Intervalles 8 × 1km",
           "duration": 70,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "Séance la plus volumineuse du plan en intervalles. Gérer l'allure sur les 8 répétitions.",
           "details": [
             "Échauffement 15 min",
@@ -725,12 +731,13 @@
           "optional": false,
           "title": "Hyrox A — AMRAP 25 min Chargé",
           "duration": 75,
-          "intensity": "Très élevé",
+          "intensityLabel":"Très élevé",
           "description": "AMRAP 25 minutes, charges proches des poids de course.",
           "details": [
-            "Échauffement 10 min",
-            "AMRAP 25 min (charges proches poids race)",
-            "Gainage & Core 10 min"
+            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
+            "AMRAP 25 min — noter le nombre de tours : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×24kg F / 2×28kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (14kg F / 20kg H)",
+            "Le AMRAP le plus chargé de la préparation — comparer avec S7",
+            "Gainage & Core 10 min : 3×45s planche + 3×12 Dead Bug"
           ]
         },
         {
@@ -740,7 +747,7 @@
           "optional": false,
           "title": "Course B — Récupération Active",
           "duration": 40,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Footing facile — ne pas forcer après le mardi chargé.",
           "details": [
             "40 min footing facile récup",
@@ -755,7 +762,7 @@
           "optional": false,
           "title": "Brick — Course + 6 Stations + 2 Runs Intercalés",
           "duration": 110,
-          "intensity": "Très élevé",
+          "intensityLabel":"Très élevé",
           "description": "La brick la plus complète de la Phase 2. Format qui s'approche du race day.",
           "details": [
             "Partie 1 : 70 min course ensemble à 5:50–6:05/km",
@@ -769,11 +776,12 @@
           "optional": false,
           "title": "Hyrox B — Séance Complète Lourde",
           "duration": 65,
-          "intensity": "Très élevé",
+          "intensityLabel":"Très élevé",
           "description": "Séance de force complète avec toutes les charges lourdes.",
           "details": [
-            "Bloc force complet avec charges maximales Phase 2",
-            "Finisher 4 rounds : 200m SkiErg + 10 Wall Balls + 20m Farmers Carry"
+            "Échauffement 8 min : 5 min rameur Z1 + mobilité",
+            "Bloc force — charges maximales Phase 2 : Back Squat 5×5 · Leg Press 4×8 · Pull-ups/Assisted 4×8 · KB Swing 3×15",
+            "Finisher 4 rounds (repos 90s) : SkiErg 200m + 10 Wall Balls (6kg) + 20m Farmers Carry (2×24kg F / 2×28kg H)"
           ]
         }
       ]
@@ -793,7 +801,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -804,7 +812,7 @@
           "optional": false,
           "title": "Course A — Intervalles Réduits 4 × 1km",
           "duration": 50,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "Volume réduit, intensité maintenue. Ne pas compenser en ajoutant des répétitions.",
           "details": [
             "Échauffement 15 min",
@@ -819,12 +827,12 @@
           "optional": false,
           "title": "Hyrox A — AMRAP Allégé 18 min",
           "duration": 55,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "AMRAP réduit à 18 minutes. Charges normales — ni plus, ni plus longtemps.",
           "details": [
-            "Échauffement 10 min",
-            "AMRAP 18 min (charges normales — maintenir, ne pas augmenter)",
-            "Gainage léger 10 min"
+            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
+            "AMRAP 18 min — noter le nombre de tours (semaine de décharge, maintenir le rythme de S8) : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×24kg F / 2×28kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (14kg F / 20kg H)",
+            "Gainage léger 10 min : 3×30s planche + 3×10 Dead Bug"
           ]
         },
         {
@@ -834,7 +842,7 @@
           "optional": false,
           "title": "Course B — Footing Facile",
           "duration": 35,
-          "intensity": "Z2",
+          "intensityLabel":"Z2",
           "description": "Footing récupération.",
           "details": [
             "35 min footing facile",
@@ -848,7 +856,7 @@
           "optional": false,
           "title": "Brick Légère — Course + 3 Stations Techniques",
           "duration": 70,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Brick réduite et légère. Focus technique, pas d'effort maximal.",
           "details": [
             "50 min course ensemble à 5:55–6:15/km",
@@ -862,12 +870,13 @@
           "optional": false,
           "title": "Hyrox B — Force Légère + Mobilité",
           "duration": 45,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Séance légère de maintien. 2 tours finisher seulement.",
           "details": [
-            "Force légère (–20% charges) + technique",
-            "Finisher 2 tours : SkiErg 200m + 10 Wall Balls + Farmers Carry 30m",
-            "10 min mobilité en fin de séance"
+            "Échauffement 8 min : 5 min rameur Z1 + mobilité",
+            "Bloc force allégé –20% (repos 90s) : Back Squat 4×8 · Leg Press 3×8 · Pull-ups/Assisted 3×8 · KB Swing 3×12",
+            "Finisher 2 tours (repos 3 min) : SkiErg 200m + 10 Wall Balls (6kg) + 20m Farmers Carry",
+            "10 min mobilité : étirements ischio-jambiers, quadriceps, épaules"
           ]
         }
       ]
@@ -887,7 +896,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -898,7 +907,7 @@
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km (Allure Race)",
           "duration": 60,
-          "intensity": "Z4/Z5",
+          "intensityLabel":"Z4/Z5",
           "description": "Allures qui s'approchent de celles de la course individuelle.",
           "details": [
             "Échauffement 15 min",
@@ -913,7 +922,7 @@
           "optional": false,
           "title": "Hyrox A — Simulation Partielle 4 × (1km + Station)",
           "duration": 70,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Format mini-race : 1km suivi directement d'une station, sans pause.",
           "details": [
             "1km @ 5:45–6:00/km → SkiErg 400m → repos 90s",
@@ -929,7 +938,7 @@
           "optional": false,
           "title": "Course B — Récupération",
           "duration": 40,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Footing récupération avant la simulation du samedi.",
           "details": [
             "40 min footing récup",
@@ -943,7 +952,7 @@
           "optional": false,
           "title": "Simulation 4 Stations — Poids Race",
           "duration": 90,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Première simulation avec les poids officiels de course. Chronométrer chaque section.",
           "details": [
             "4 × 1km à 5:45–6:00/km ensemble",
@@ -958,7 +967,7 @@
           "optional": false,
           "title": "Récupération Active + Bilan",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active et analyse des chronos de la simulation S10.",
           "details": [
             "30 min récupération active (marche, vélo léger ou natation)",
@@ -983,7 +992,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -994,7 +1003,7 @@
           "optional": false,
           "title": "Course A — Intervalles 8 × 1km",
           "duration": 70,
-          "intensity": "Z4/Z5",
+          "intensityLabel":"Z4/Z5",
           "description": "Séance qualitative principale.",
           "details": [
             "Échauffement 15 min",
@@ -1009,7 +1018,7 @@
           "optional": false,
           "title": "Hyrox A — Simulation Partielle Rotation 8 Stations",
           "duration": 75,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Rotation sur les 8 stations pour identifier les points faibles.",
           "details": [
             "4 × (1km + 1 station) — rotation sur les 8 stations disponibles",
@@ -1024,7 +1033,7 @@
           "optional": false,
           "title": "Course B — Récupération",
           "duration": 40,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Footing récupération.",
           "details": [
             "40 min footing récup",
@@ -1038,7 +1047,7 @@
           "optional": false,
           "title": "Simulation 6 Stations + 6km Course",
           "duration": 105,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "6 stations au format race. Chronomètrer chaque station — noter les plus chronophages.",
           "details": [
             "6 × 1km à 5:45–6:00/km ensemble",
@@ -1053,7 +1062,7 @@
           "optional": false,
           "title": "Récupération Active + Analyse",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération et analyse des stations les plus chronophages.",
           "details": [
             "30 min récupération active",
@@ -1078,7 +1087,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -1089,7 +1098,7 @@
           "optional": false,
           "title": "Course A — Intervalles 8 × 1km",
           "duration": 70,
-          "intensity": "Z4/Z5",
+          "intensityLabel":"Z4/Z5",
           "description": "Régularité absolue — viser des splits identiques sur les 8 répétitions.",
           "details": [
             "Échauffement 15 min",
@@ -1104,7 +1113,7 @@
           "optional": false,
           "title": "Hyrox A — Focus Stations Faibles",
           "duration": 75,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Cibler les 2 stations les plus faibles identifiées en S11 avec volume ×1,5.",
           "details": [
             "4 × (1km + 1 station) — les stations faibles de S11 répétées 2× chacune",
@@ -1119,7 +1128,7 @@
           "optional": false,
           "title": "Course B — Récupération",
           "duration": 40,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Footing récupération.",
           "details": [
             "40 min footing récup",
@@ -1133,7 +1142,7 @@
           "optional": false,
           "title": "Simulation 6 Stations — Comparer S11",
           "duration": 105,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Même simulation que S11 pour mesurer la progression sur les stations ciblées.",
           "details": [
             "6 × 1km à 5:45–6:00/km + transitions chronométrées",
@@ -1148,7 +1157,7 @@
           "optional": false,
           "title": "Récupération Active",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération et préparation mentale pour la simulation complète de S13.",
           "details": [
             "30 min récupération active",
@@ -1173,7 +1182,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle — recommandée pour arriver frais samedi.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -1184,7 +1193,7 @@
           "optional": false,
           "title": "Course A — Intervalles Légers 5 × 1km",
           "duration": 55,
-          "intensity": "Z3/Z4",
+          "intensityLabel":"Z3/Z4",
           "description": "Volume réduit pour économiser les jambes pour la simulation de samedi.",
           "details": [
             "Échauffement 15 min",
@@ -1199,7 +1208,7 @@
           "optional": false,
           "title": "Hyrox A — Activation 4 × (1km + Station)",
           "duration": 65,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Activation détendue pour préparer les muscles sans les fatiguer.",
           "details": [
             "4 × (1km + 1 station) à allure détendue",
@@ -1214,7 +1223,7 @@
           "optional": false,
           "title": "Course B — Footing Très Léger",
           "duration": 35,
-          "intensity": "Z1",
+          "intensityLabel":"Z1",
           "description": "Footing très léger — jambes fraîches pour samedi.",
           "details": [
             "35 min footing très léger",
@@ -1229,7 +1238,7 @@
           "optional": false,
           "title": "🏁 SIMULATION COMPLÈTE — 8 Stations + 8km",
           "duration": 120,
-          "intensity": "Race Pace",
+          "intensityLabel":"Race Pace",
           "description": "La séance la plus importante de la préparation. Format exact du race day. Chronométrer absolument tout.",
           "details": [
             "Format exact race : 1km course → Station → (× 8)",
@@ -1246,7 +1255,7 @@
           "optional": false,
           "title": "Récupération + Bilan Détaillé",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active et analyse complète de la simulation.",
           "details": [
             "30 min récupération active",
@@ -1271,7 +1280,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -1282,7 +1291,7 @@
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km Réguliers",
           "duration": 60,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "Régularité absolue — viser des splits identiques.",
           "details": [
             "Échauffement 15 min",
@@ -1297,7 +1306,7 @@
           "optional": false,
           "title": "Hyrox A — Retravail Stations Faibles S13",
           "duration": 75,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "Cibler les stations qui ont posé problème en S13. Pratiquer les transitions duo.",
           "details": [
             "4 × (1km + 1 station) — focus sur les stations faibles identifiées en S13",
@@ -1312,7 +1321,7 @@
           "optional": false,
           "title": "Course B — Récupération",
           "duration": 40,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Footing récupération.",
           "details": [
             "40 min footing récup",
@@ -1326,7 +1335,7 @@
           "optional": false,
           "title": "Simulation Complète — Nouvelle Stratégie Duo",
           "duration": 120,
-          "intensity": "Race Pace",
+          "intensityLabel":"Race Pace",
           "description": "Deuxième simulation complète avec la stratégie duo affinée. Comparer avec S13.",
           "details": [
             "8 × 1km à 5:45–6:00/km ensemble",
@@ -1342,7 +1351,7 @@
           "optional": false,
           "title": "Récupération + Décision Stratégique Finale",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération et validation définitive de la stratégie du jour J.",
           "details": [
             "30 min récupération active",
@@ -1367,7 +1376,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -1378,7 +1387,7 @@
           "optional": false,
           "title": "Course A — Intervalles Réduits 4 × 1km",
           "duration": 50,
-          "intensity": "Z3/Z4",
+          "intensityLabel":"Z3/Z4",
           "description": "Volume réduit pour la décharge.",
           "details": [
             "Échauffement 15 min",
@@ -1393,7 +1402,7 @@
           "optional": false,
           "title": "Hyrox A — Simulation Partielle Réduite",
           "duration": 60,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "4 × (1km + station) à allure détendue. Maintien du rythme, pas d'effort.",
           "details": [
             "4 × (1km + 1 station) — allure détendue",
@@ -1408,7 +1417,7 @@
           "optional": false,
           "title": "Course B — Footing Facile",
           "duration": 35,
-          "intensity": "Z2",
+          "intensityLabel":"Z2",
           "description": "Footing récupération.",
           "details": [
             "35 min footing facile",
@@ -1422,7 +1431,7 @@
           "optional": false,
           "title": "Dernière Simulation — 4 Stations à 70%",
           "duration": 75,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Dernière vraie simulation avant la course. 4 stations à 70% d'effort, focus transitions.",
           "details": [
             "4 × 1km à 5:45–6:00/km ensemble",
@@ -1438,7 +1447,7 @@
           "optional": false,
           "title": "Récupération Active + Mobilité",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active et mobilité.",
           "details": [
             "30 min récupération active + mobilité",
@@ -1462,7 +1471,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -1473,7 +1482,7 @@
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km",
           "duration": 60,
-          "intensity": "Z4",
+          "intensityLabel":"Z4",
           "description": "Volume légèrement inférieur à Phase 3. Maintenir l'intensité.",
           "details": [
             "Échauffement 15 min",
@@ -1488,7 +1497,7 @@
           "optional": false,
           "title": "Hyrox A — Simulation 6 Stations",
           "duration": 70,
-          "intensity": "Élevé",
+          "intensityLabel":"Élevé",
           "description": "6 stations aux charges normales. Maintien du niveau.",
           "details": [
             "6 stations aux charges normales (poids race)",
@@ -1503,7 +1512,7 @@
           "optional": false,
           "title": "Course B — Récupération",
           "duration": 40,
-          "intensity": "Z1/Z2",
+          "intensityLabel":"Z1/Z2",
           "description": "Footing récupération.",
           "details": [
             "40 min footing récup",
@@ -1517,7 +1526,7 @@
           "optional": false,
           "title": "Simulation 4 Stations + 4km",
           "duration": 75,
-          "intensity": "Modéré/Élevé",
+          "intensityLabel":"Modéré/Élevé",
           "description": "Volume réduit par rapport à Phase 3.",
           "details": [
             "4 × 1km à 5:45–6:00/km ensemble",
@@ -1532,7 +1541,7 @@
           "optional": false,
           "title": "Hyrox B — Force Légère + Technique",
           "duration": 45,
-          "intensity": "Modéré",
+          "intensityLabel":"Modéré",
           "description": "Maintien de la force. Aucune augmentation de charges.",
           "details": [
             "Force légère + technique sur les mouvements",
@@ -1556,7 +1565,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité + rouleau de massage"]
         },
@@ -1567,7 +1576,7 @@
           "optional": false,
           "title": "Course A — Intervalles 4 × 1km + Footing",
           "duration": 55,
-          "intensity": "Z3/Z4",
+          "intensityLabel":"Z3/Z4",
           "description": "Réduction progressive du volume.",
           "details": [
             "4 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km)",
@@ -1582,7 +1591,7 @@
           "optional": false,
           "title": "Hyrox A — Technique + Activation",
           "duration": 50,
-          "intensity": "Léger/Modéré",
+          "intensityLabel":"Léger/Modéré",
           "description": "Séance d'activation légère. Volume –40%.",
           "details": [
             "Activation technique sur les 8 mouvements",
@@ -1597,7 +1606,7 @@
           "optional": false,
           "title": "Course B — Footing Facile",
           "duration": 35,
-          "intensity": "Z2",
+          "intensityLabel":"Z2",
           "description": "Footing de maintien.",
           "details": [
             "35 min footing facile",
@@ -1611,7 +1620,7 @@
           "optional": false,
           "title": "Course + Quelques Stations Légères",
           "duration": 65,
-          "intensity": "Léger/Modéré",
+          "intensityLabel":"Léger/Modéré",
           "description": "Course légère + quelques stations pour maintenir les sensations.",
           "details": [
             "50 min course ensemble à 5:50–6:10/km",
@@ -1636,7 +1645,7 @@
           "optional": true,
           "title": "Mobilité & Étirements",
           "duration": 30,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Récupération active optionnelle.",
           "details": ["Étirements + mobilité légère"]
         },
@@ -1647,7 +1656,7 @@
           "optional": false,
           "title": "Course A — Très Léger 3 × 1km",
           "duration": 45,
-          "intensity": "Z3",
+          "intensityLabel":"Z3",
           "description": "Volume très réduit. Maintenir les sensations sans se fatiguer.",
           "details": [
             "3 × 1km (lui 4:30/km · elle 5:40/km)",
@@ -1662,7 +1671,7 @@
           "optional": false,
           "title": "Hyrox A — Activation Minimale",
           "duration": 35,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Activation minimale sur 3 stations. Maintenir les automatismes.",
           "details": [
             "Activation : 3 stations × 2 min, charges légères",
@@ -1676,7 +1685,7 @@
           "optional": false,
           "title": "Course B — Footing Très Léger",
           "duration": 30,
-          "intensity": "Z1",
+          "intensityLabel":"Z1",
           "description": "Footing très léger. Aucune intensité.",
           "details": [
             "30 min footing très léger",
@@ -1691,7 +1700,7 @@
           "optional": false,
           "title": "Sortie Courte Ensemble + Étirements",
           "duration": 45,
-          "intensity": "Z1",
+          "intensityLabel":"Z1",
           "description": "Dernière sortie légère ensemble avant la race week.",
           "details": [
             "30 min course légère ensemble à 6:00–6:15/km",
@@ -1715,7 +1724,7 @@
           "optional": false,
           "title": "Jogging Léger + Accélérations",
           "duration": 25,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Activation légère pour entretenir les sensations sans se fatiguer.",
           "details": [
             "20 min jogging léger (lui 5:30–5:50/km · elle 6:30–6:50/km)",
@@ -1729,7 +1738,7 @@
           "optional": false,
           "title": "Activation — 2 Tours Légers × 3 Stations",
           "duration": 20,
-          "intensity": "Léger",
+          "intensityLabel":"Léger",
           "description": "Activation musculaire minimale. 5 minutes au total de travail effectif.",
           "details": [
             "2 tours légers × 3 stations (SkiErg, RowErg, Wall Balls)",
@@ -1744,7 +1753,7 @@
           "optional": false,
           "title": "Repos — Préparation Équipement",
           "duration": 0,
-          "intensity": "Repos",
+          "intensityLabel":"Repos",
           "description": "Repos complet. Préparer l'équipement, la nutrition, la logistique.",
           "details": [
             "Repos complet — aucun entraînement",
@@ -1759,7 +1768,7 @@
           "optional": false,
           "title": "Repos Total — Hydratation",
           "duration": 0,
-          "intensity": "Repos",
+          "intensityLabel":"Repos",
           "description": "Repos total. Hydratation ++. Sommeil 8h minimum.",
           "details": [
             "Repos absolu — aucun entraînement",
@@ -1775,7 +1784,7 @@
           "optional": false,
           "title": "🏁 RACE DAY — Hyrox Doubles",
           "duration": 95,
-          "intensity": "Race Pace",
+          "intensityLabel":"Race Pace",
           "description": "Le jour J ! 19 semaines de préparation. Tout donner ensemble.",
           "details": [
             "Activation : 10 min jogging léger + quelques reps SkiErg et RowErg",
