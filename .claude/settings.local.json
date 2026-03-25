@@ -6,7 +6,8 @@
       "Bash(node:*)",
       "Bash(wc:*)",
       "Bash(npm install:*)",
-      "Bash(npm list:*)"
+      "Bash(npm list:*)",
+      "Bash(mv:*)"
     ]
   }
 }

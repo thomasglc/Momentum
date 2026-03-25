@@ -35,10 +35,10 @@
 
 <script setup>
 import { computed } from 'vue'
-import { extractRunningSegments, summarizeSegments } from '@/services/sessionParser'
+import { extractRunningSegmentsFromStructured, summarizeSegments } from '@/services/sessionParser'
 
 const props = defineProps({
-  details: { type: Array, required: true },
+  structuredDetails: { type: Array, required: true },
 })
 
 const SEG_STYLES = {
@@ -57,6 +57,6 @@ const SEG_LABELS = {
   cooldown: 'Retour au calme',
 }
 
-const segments = computed(() => extractRunningSegments(props.details))
+const segments = computed(() => extractRunningSegmentsFromStructured(props.structuredDetails))
 const summary  = computed(() => summarizeSegments(segments.value))
 </script>

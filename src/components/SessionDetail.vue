@@ -36,12 +36,12 @@
 
       <!-- Graphique allures (running uniquement) -->
       <SessionPaceChart
-        v-if="session.type === 'running' && session.details?.length"
-        :details="session.details"
+        v-if="session.type === 'running' && session.structuredDetails?.length"
+        :structuredDetails="session.structuredDetails"
       />
 
       <!-- Programme -->
-      <div v-if="session.details?.length" class="mb-6">
+      <div v-if="session.structuredDetails?.length" class="mb-6">
         <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
         <div class="space-y-2">
           <SessionProgramBlock
@@ -69,7 +69,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
-import { parseBlock } from '@/services/sessionParser'
+import { structuredDetailToBlock } from '@/services/sessionParser'
 import SessionPaceChart    from './session/SessionPaceChart.vue'
 import SessionProgramBlock from './session/SessionProgramBlock.vue'
 
@@ -81,5 +81,5 @@ const props = defineProps({
 const emit = defineEmits(['toggle'])
 
 const cfg          = computed(() => getSessionTypeConfig(props.session?.type))
-const parsedBlocks = computed(() => (props.session?.details ?? []).map(parseBlock))
+const parsedBlocks = computed(() => (props.session?.structuredDetails ?? []).map(structuredDetailToBlock))
 </script>

@@ -70,148 +70,105 @@ export function parseExercise(raw) {
   return { emoji: exerciseEmoji(name), name: name.trim(), value: (value ?? '').trim(), note }
 }
 
-// ─── Detail block parser ─────────────────────────────────────────────────────
+// ─── structuredDetail → block (for SessionProgramBlock) ──────────────────────
 
-/**
- * Parses a single detail string into a typed block object.
- *
- * Block types: warmup | cooldown | circuit | strength | finisher |
- *              interval | pace | section | text
- */
-export function parseBlock(str) {
-  const colonIdx = str.indexOf(' : ')
+export function structuredDetailToBlock(d) {
+  switch (d.type) {
+    case 'warmup':
+      return { type: 'warmup', header: `Échauffement ${d.durationMin} min`, content: d.label || null }
 
-  if (colonIdx === -1) {
-    const s = str.toLowerCase()
+    case 'cooldown':
+      return { type: 'cooldown', header: `Retour au calme ${d.durationMin} min`, content: d.label || null }
 
-    // Running interval: "2 × 3 min tempo (lui 4:40/km · elle 5:45/km) — récup …"
-    const intervalM = str.match(/^(.+?)\s*\(lui\s*~?([0-9:–\-]+\/km)\s*·\s*elle\s*~?([0-9:–\-]+\/km)\)(.*)$/)
-    if (intervalM) {
-      const note = intervalM[4].replace(/^\s*[—–-]\s*/, '').trim()
-      return { type: 'interval', header: intervalM[1].trim(), paces: { lui: intervalM[2], elle: intervalM[3] }, note }
+    case 'circuit': {
+      const hdr = d.label ?? `Circuit × ${d.rounds} passage${d.rounds !== 1 ? 's' : ''}`
+      const rest = d.restBetweenMin > 0 ? ` — repos ${d.restBetweenMin} min` : ''
+      return { type: 'circuit', header: hdr + rest, exercises: d.stations?.map(parseExercise) ?? null, content: null }
     }
 
-    if (s.startsWith('échauffement') || s.startsWith('echauffement'))
-      return { type: 'warmup', header: str, content: null }
-    if (s.startsWith('retour au calme'))
-      return { type: 'cooldown', header: str, content: null }
-    if (s.startsWith('circuit') || s.startsWith('amrap'))
-      return { type: 'circuit', header: str, exercises: null, content: str }
-    if (s.startsWith('finisher'))
-      return { type: 'finisher', header: str, exercises: null, content: str }
-    if (s.startsWith('bloc force') || s.startsWith('bloc '))
-      return { type: 'strength', header: str, exercises: null, content: str }
+    case 'strength': {
+      const parts = []
+      if (d.sets > 0) parts.push(`${d.sets} séries`)
+      if (d.restSec > 0) parts.push(`repos ${d.restSec}s`)
+      return { type: 'strength', header: parts.length ? `Force — ${parts.join(', ')}` : 'Renforcement', exercises: d.exercises?.map(parseExercise) ?? null, content: null }
+    }
 
-    return { type: 'text', content: str }
+    case 'finisher': {
+      const rest = d.restBetweenMin > 0 ? ` — repos ${d.restBetweenMin} min` : ''
+      return { type: 'finisher', header: `Finisher × ${d.rounds}${rest}`, exercises: d.exercises?.map(parseExercise) ?? null, content: null }
+    }
+
+    case 'intervals': {
+      const dist = d.setDistanceKm != null ? `${d.setDistanceKm} km` : `${d.setDurationMin} min`
+      const note = d.recoveryMin > 0 ? `récup ${d.recoveryMin} min` : null
+      const paces = d.pace ? { lui: d.pace.him, elle: d.pace.her } : null
+      return { type: 'interval', header: `${d.sets} × ${dist}`, paces, note }
+    }
+
+    case 'run':
+      if (d.pace) return { type: 'pace', paces: { lui: d.pace.him, elle: d.pace.her } }
+      return { type: 'text', content: `${d.durationMin} min` }
+
+    case 'target_pace':
+      return { type: 'pace', paces: { lui: d.him, elle: d.her } }
+
+    default: // exercise, nutrition, recovery, instruction
+      return { type: 'text', content: d.label }
   }
-
-  const header  = str.slice(0, colonIdx).trim()
-  const content = str.slice(colonIdx + 3).trim()
-  const h       = header.toLowerCase()
-
-  // Pace line: "Lui : 5:10–5:25/km · Elle : 6:20–6:40/km"
-  if (h === 'lui' || h === 'elle') {
-    const parts = content.split(/\s*·\s*Elle\s*:\s*/i)
-    return { type: 'pace', paces: { lui: parts[0].trim(), elle: (parts[1] ?? '').trim() } }
-  }
-
-  if (h.startsWith('échauffement') || h.startsWith('echauffement'))
-    return { type: 'warmup', header, content }
-  if (h.startsWith('retour au calme'))
-    return { type: 'cooldown', header, content }
-
-  if (h.includes('circuit') || h.includes('amrap'))
-    return { type: 'circuit',  header, exercises: content.split(/\s+[·+]\s+/).map(parseExercise) }
-  if (h.includes('renforcement') || h.includes('bloc force') || (h.includes('force') && !h.includes('confort')))
-    return { type: 'strength', header, exercises: content.split(/\s+[·+]\s+/).map(parseExercise) }
-  if (h.includes('finisher'))
-    return { type: 'finisher', header, exercises: content.split(/\s+[·+]\s+/).map(parseExercise) }
-
-  return { type: 'section', header, content }
 }
 
-// ─── Running segment extractor ───────────────────────────────────────────────
+// ─── Running segment extractor (structured) ───────────────────────────────────
 
-const INT_RÉCUP_RE    = /^(\d+)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(km|min)[^\(]*\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\).*?récup\s+(\d+(?:\.\d+)?)\s*(min|s)/i
-const INT_NO_RÉCUP_RE = /^(\d+)\s*[×x]\s*(\d+(?:\.\d+)?)\s*(km|min)[^\(]*\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/i
-
-/**
- * Converts raw detail strings of a running session into visual chart segments.
- * Each segment: { type, duration (minutes), paces: { lui, elle } | null }
- */
-export function extractRunningSegments(details) {
+export function extractRunningSegmentsFromStructured(structuredDetails) {
   const segs = []
 
-  for (const str of details) {
-    // Composite: "X min facile + Y min tempo (paces) + Z min facile"
-    if (str.includes(' + ') && /\d+\s*min/.test(str)) {
-      for (const part of str.split(/\s*\+\s*/)) {
-        const m = part.match(/^(\d+)\s*min(.*)$/)
-        if (!m) continue
-        const paceM = part.match(/\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/)
-        const paces = paceM ? { lui: paceM[1].trim(), elle: paceM[2].trim() } : null
-        segs.push({ type: /tempo|seuil/i.test(m[2]) ? 'tempo' : 'easy', duration: parseInt(m[1]), paces })
+  for (const d of structuredDetails) {
+    switch (d.type) {
+      case 'warmup':
+        segs.push({ type: 'warmup', duration: d.durationMin, paces: null })
+        break
+
+      case 'cooldown':
+        segs.push({ type: 'cooldown', duration: d.durationMin, paces: null })
+        break
+
+      case 'run': {
+        const paces = d.pace ? { lui: d.pace.him, elle: d.pace.her } : null
+        segs.push({ type: 'easy', duration: d.durationMin, paces })
+        break
       }
-      continue
-    }
 
-    // Interval with récup
-    const m1 = str.match(INT_RÉCUP_RE)
-    if (m1) {
-      const n       = parseInt(m1[1])
-      const workMin = m1[3].toLowerCase() === 'km' ? Math.round(parseFloat(m1[2]) * 5) : parseFloat(m1[2])
-      const recupMin = m1[7].toLowerCase() === 's' ? parseFloat(m1[6]) / 60 : parseFloat(m1[6])
-      const paces   = { lui: m1[4].trim(), elle: m1[5].trim() }
-      for (let i = 0; i < n; i++) {
-        segs.push({ type: 'tempo', duration: workMin, paces })
-        if (i < n - 1) segs.push({ type: 'recovery', duration: recupMin, paces: null })
+      case 'intervals': {
+        const workMin = d.setDistanceKm != null ? Math.round(d.setDistanceKm * 5) : d.setDurationMin
+        const recovMin = d.recoveryMin ?? 1.5
+        const paces = d.pace ? { lui: d.pace.him, elle: d.pace.her } : null
+        for (let i = 0; i < d.sets; i++) {
+          segs.push({ type: 'tempo', duration: workMin, paces })
+          if (i < d.sets - 1) segs.push({ type: 'recovery', duration: recovMin, paces: null })
+        }
+        break
       }
-      continue
-    }
 
-    // Interval without récup
-    const m2 = str.match(INT_NO_RÉCUP_RE)
-    if (m2) {
-      const n       = parseInt(m2[1])
-      const workMin = m2[3].toLowerCase() === 'km' ? Math.round(parseFloat(m2[2]) * 5) : parseFloat(m2[2])
-      const paces   = { lui: m2[4].trim(), elle: m2[5].trim() }
-      for (let i = 0; i < n; i++) {
-        segs.push({ type: 'tempo', duration: workMin, paces })
-        if (i < n - 1) segs.push({ type: 'recovery', duration: 1.5, paces: null })
+      case 'recovery': {
+        // Composite "10 min facile + 15 min tempo (...) + 10 min facile" fallen through
+        const label = d.label || ''
+        if (label.includes(' + ') && /\d+\s*min/.test(label)) {
+          for (const part of label.split(/\s*\+\s*/)) {
+            const m = part.match(/^(\d+)\s*min(.*)$/)
+            if (!m) continue
+            const paceM = part.match(/\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/)
+            const paces = paceM ? { lui: paceM[1].trim(), elle: paceM[2].trim() } : null
+            segs.push({ type: /tempo|seuil/i.test(m[2]) ? 'tempo' : 'easy', duration: parseInt(m[1]), paces })
+          }
+        }
+        break
       }
-      continue
     }
-
-    // Warmup
-    if (/^[Éé]chauffement/i.test(str)) {
-      const d = str.match(/(\d+)\s*min/)
-      segs.push({ type: 'warmup', duration: d ? parseInt(d[1]) : 10, paces: null })
-      continue
-    }
-
-    // Cooldown
-    if (/retour au calme/i.test(str)) {
-      const d = str.match(/(\d+)\s*min/)
-      segs.push({ type: 'cooldown', duration: d ? parseInt(d[1]) : 5, paces: null })
-      continue
-    }
-
-    // Easy footing starting with "X min ..."
-    const easyM = str.match(/^(\d+)\s*min\s+\w/i)
-    if (easyM) {
-      const paceM = str.match(/\(lui\s*~?([^\s·)]+)[^)]*·[^e]*elle\s*~?([^)]+)\)/)
-      segs.push({
-        type: 'easy',
-        duration: parseInt(easyM[1]),
-        paces: paceM ? { lui: paceM[1].trim(), elle: paceM[2].trim() } : null,
-      })
-      continue
-    }
-    // Annotations, pace refs, etc. — skipped
   }
 
   return segs
 }
+
 
 /**
  * Reduces consecutive same-type segments to a summary list for the legend.

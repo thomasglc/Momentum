@@ -11,7 +11,8 @@
       "weekNumber": 1,
       "phase": 1,
       "theme": "Découverte & Apprentissage",
-      "dateRange": "18–24 Mai",
+      "startDate": "2026-05-18",
+      "endDate": "2026-05-24",
       "isDeload": false,
       "weekNote": "Charges 50% · Aucun chrono · Forme parfaite sur chaque mouvement",
       "sessions": [
@@ -21,13 +22,26 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Séance de récupération active optionnelle. À faire uniquement si vous n'êtes pas trop fatigués — le repos complet prime toujours.",
-          "details": [
-            "Étirements statiques ischio-jambiers, quadriceps, fessiers",
-            "Mobilité hanches (fente basse 2×45s), épaules (cross-body 2×30s), chevilles (cercles)",
-            "Rouleau de massage : quadriceps 60s, mollets 45s, dorsaux 60s"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements statiques ischio-jambiers, quadriceps, fessiers"
+            },
+            {
+              "type": "recovery",
+              "label": "Mobilité hanches (fente basse 2×45s), épaules (cross-body 2×30s), chevilles (cercles)"
+            },
+            {
+              "type": "exercise",
+              "category": "foam_roller",
+              "label": "Rouleau de massage : quadriceps 60s, mollets 45s, dorsaux 60s"
+            }
           ]
         },
         {
@@ -36,13 +50,39 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Footing + Tempo",
-          "duration": 50,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Premier footing de la prépa avec quelques portions tempo pour activer le seuil.",
-          "details": [
-            "Échauffement : 40 min footing confortable (lui ~5:10/km · elle ~6:20/km)",
-            "2 × 3 min tempo (lui 4:40/km · elle 5:45/km) — récup 2 min entre",
-            "Retour au calme 5 min marchant"
+          "duration": 50,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 40,
+              "label": "footing confortable",
+              "pace": {
+                "him": "5:10/km",
+                "her": "6:20/km"
+              }
+            },
+            {
+              "type": "intervals",
+              "sets": 2,
+              "setDurationMin": 3,
+              "recoveryMin": 2,
+              "pace": {
+                "him": "4:40/km",
+                "her": "5:45/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 5,
+              "label": "marchant"
+            }
           ]
         },
         {
@@ -51,14 +91,45 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Initiation Technique",
-          "duration": 65,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "2 passages du circuit technique à charges légères (50%). Aucun effort — uniquement la qualité de mouvement.",
-          "details": [
-            "Échauffement 10 min : 5 min cardio léger + mobilité épaules/hanches/chevilles",
-            "Circuit technique × 2 passages (repos 2 min entre) : SkiErg 150m · Rameur 200m · Farmers Carry 2×30m (2×14kg F / 2×20kg H) · Sandbag Lunges 20m (8kg F / 12kg H) · Wall Balls 10 reps (6kg) · Burpee Broad Jump 5 sauts",
-            "Renforcement complémentaire : 3×10 Romanian Deadlift léger · 3×12 Goblet Squat · 2×30s planche",
-            "Retour au calme 5 min : étirements ischio-jambiers, épaules, quadriceps"
+          "duration": 65,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "5 min cardio léger + mobilité épaules/hanches/chevilles"
+            },
+            {
+              "type": "circuit",
+              "rounds": 2,
+              "restBetweenMin": 2,
+              "stations": [
+                "SkiErg 150m",
+                "Rameur 200m",
+                "Farmers Carry 2×30m (2×14kg F / 2×20kg H)",
+                "Sandbag Lunges 20m (8kg F / 12kg H)",
+                "Wall Balls 10 reps (6kg)",
+                "Burpee Broad Jump 5 sauts"
+              ]
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×10 Romanian Deadlift léger",
+                "3×12 Goblet Squat",
+                "2×30s planche"
+              ]
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 5,
+              "label": "étirements ischio-jambiers, épaules, quadriceps"
+            }
           ]
         },
         {
@@ -67,13 +138,27 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Facile",
-          "duration": 35,
-          "intensityLabel":"Z2",
+          "intensityZones": [
+            "Z2"
+          ],
           "description": "Footing de récupération, jambes légères après le mercredi.",
-          "details": [
-            "35 min footing facile continu",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:40/km",
-            "Respiration nasale si possible"
+          "duration": 35,
+          "intensityLabel": "Z2",
+          "intensityScore": 3,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:40/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Respiration nasale si possible"
+            }
           ]
         },
         {
@@ -82,13 +167,31 @@
           "type": "running",
           "optional": false,
           "title": "Course C — Sortie Longue Ensemble",
-          "duration": 55,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Sortie longue à deux, conversation possible tout au long. Pas d'effort.",
-          "details": [
-            "55 min ensemble à 5:50–6:10/km",
-            "Test : pouvoir parler en phrases complètes",
-            "C'est l'allure cible de la course le jour J"
+          "duration": 55,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 55,
+              "pace": {
+                "him": "5:50–6:10/km",
+                "her": "5:50–6:10/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Test : pouvoir parler en phrases complètes"
+            },
+            {
+              "type": "recovery",
+              "label": "C'est l'allure cible de la course le jour J"
+            }
           ]
         },
         {
@@ -97,13 +200,38 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Renforcement Spécifique",
-          "duration": 55,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Séance de force de base ciblant les muscles sollicités par les stations Hyrox.",
-          "details": [
-            "Échauffement 8 min : 5 min rameur Z1 · 10 squats · 10 hip hinge · 10 face pull élastique",
-            "Bloc force 4 séries (repos 90s) : Box/Goblet Squat 4×10 · Hip Thrust 4×12 · Tirage horizontal 4×10 · Overhead Press léger 3×12",
-            "Finisher 2 tours (repos 3 min entre) : SkiErg 200m + 10 Wall Balls + Farmers Carry 30m"
+          "duration": 55,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 8,
+              "label": "5 min rameur Z1 · 10 squats · 10 hip hinge · 10 face pull élastique"
+            },
+            {
+              "type": "strength",
+              "sets": 4,
+              "restSec": 90,
+              "exercises": [
+                "Box/Goblet Squat 4×10",
+                "Hip Thrust 4×12",
+                "Tirage horizontal 4×10",
+                "Overhead Press léger 3×12"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 2,
+              "restBetweenMin": 3,
+              "exercises": [
+                "SkiErg 200m",
+                "10 Wall Balls",
+                "Farmers Carry 30m"
+              ]
+            }
           ]
         }
       ]
@@ -112,7 +240,8 @@
       "weekNumber": 2,
       "phase": 1,
       "theme": "Consolidation Technique",
-      "dateRange": "25–31 Mai",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-31",
       "isDeload": false,
       "weekNote": "Charges +5–10% si S1 correcte · Commencer à enchaîner 2 stations",
       "sessions": [
@@ -122,13 +251,26 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": [
-            "Étirements statiques ischio-jambiers, quadriceps, fessiers",
-            "Mobilité hanches, épaules, chevilles",
-            "Rouleau de massage : quadriceps, mollets, dorsaux"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements statiques ischio-jambiers, quadriceps, fessiers"
+            },
+            {
+              "type": "recovery",
+              "label": "Mobilité hanches, épaules, chevilles"
+            },
+            {
+              "type": "exercise",
+              "category": "foam_roller",
+              "label": "Rouleau de massage : quadriceps, mollets, dorsaux"
+            }
           ]
         },
         {
@@ -137,12 +279,33 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Footing + Tempo",
-          "duration": 50,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Augmenter légèrement le volume tempo.",
-          "details": [
-            "40 min footing (lui ~5:10/km · elle ~6:20/km)",
-            "3 × 3 min tempo (lui 4:40/km · elle 5:45/km) — récup 2 min entre"
+          "duration": 50,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40,
+              "pace": {
+                "him": "5:10/km",
+                "her": "6:20/km"
+              }
+            },
+            {
+              "type": "intervals",
+              "sets": 3,
+              "setDurationMin": 3,
+              "recoveryMin": 2,
+              "pace": {
+                "him": "4:40/km",
+                "her": "5:45/km"
+              }
+            }
           ]
         },
         {
@@ -151,15 +314,49 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Consolidation",
-          "duration": 65,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "3 passages du circuit, charges 55–60%. Enchaîner SkiErg → RowErg sans pause.",
-          "details": [
-            "Échauffement 10 min : cardio léger + mobilité épaules/hanches/chevilles",
-            "Circuit × 3 passages (repos 2 min entre) : SkiErg 150m · Rameur 200m · Farmers Carry 2×30m (2×16kg F / 2×20kg H) · Sandbag Lunges 20m (10kg F / 12kg H) · Wall Balls 10 reps (6kg) · Burpee Broad Jump 5 sauts",
-            "Consigne : enchaîner SkiErg → Rameur sans pause entre les deux",
-            "Renforcement complémentaire : 3×10 Romanian Deadlift · 3×12 Goblet Squat · 2×30s planche",
-            "Retour au calme 5 min : étirements ischio-jambiers et épaules"
+          "duration": 65,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "cardio léger + mobilité épaules/hanches/chevilles"
+            },
+            {
+              "type": "circuit",
+              "rounds": 3,
+              "restBetweenMin": 2,
+              "stations": [
+                "SkiErg 150m",
+                "Rameur 200m",
+                "Farmers Carry 2×30m (2×16kg F / 2×20kg H)",
+                "Sandbag Lunges 20m (10kg F / 12kg H)",
+                "Wall Balls 10 reps (6kg)",
+                "Burpee Broad Jump 5 sauts"
+              ]
+            },
+            {
+              "type": "instruction",
+              "label": "enchaîner SkiErg → Rameur sans pause entre les deux"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×10 Romanian Deadlift",
+                "3×12 Goblet Squat",
+                "2×30s planche"
+              ]
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 5,
+              "label": "étirements ischio-jambiers et épaules"
+            }
           ]
         },
         {
@@ -168,12 +365,23 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Facile",
-          "duration": 40,
-          "intensityLabel":"Z2",
+          "intensityZones": [
+            "Z2"
+          ],
           "description": "Récupération active.",
-          "details": [
-            "40 min footing facile continu",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:40/km"
+          "duration": 40,
+          "intensityLabel": "Z2",
+          "intensityScore": 3,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:40/km"
+            }
           ]
         },
         {
@@ -182,12 +390,27 @@
           "type": "running",
           "optional": false,
           "title": "Course C — Sortie Longue",
-          "duration": 60,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Sortie longue ensemble, légèrement plus longue qu'en S1.",
-          "details": [
-            "60 min ensemble à 5:50–6:10/km",
-            "Maintenir la conversation possible tout au long"
+          "duration": 60,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 60,
+              "pace": {
+                "him": "5:50–6:10/km",
+                "her": "5:50–6:10/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Maintenir la conversation possible tout au long"
+            }
           ]
         },
         {
@@ -196,13 +419,38 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Renforcement",
-          "duration": 55,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Charges +5% vs S1. 3 tours du finisher.",
-          "details": [
-            "Échauffement 8 min : 5 min rameur Z1 · 10 squats · 10 hip hinge · 10 face pull élastique",
-            "Bloc force 4 séries (repos 90s) : Box/Goblet Squat 4×10 (charges +5% vs S1) · Hip Thrust 4×12 · Tirage horizontal 4×10 · Overhead Press 3×12",
-            "Finisher 3 tours (repos 3 min entre) : SkiErg 200m + 10 Wall Balls + Farmers Carry 30m"
+          "duration": 55,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 8,
+              "label": "5 min rameur Z1 · 10 squats · 10 hip hinge · 10 face pull élastique"
+            },
+            {
+              "type": "strength",
+              "sets": 4,
+              "restSec": 90,
+              "exercises": [
+                "Box/Goblet Squat 4×10 (charges +5% vs S1)",
+                "Hip Thrust 4×12",
+                "Tirage horizontal 4×10",
+                "Overhead Press 3×12"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 3,
+              "restBetweenMin": 3,
+              "exercises": [
+                "SkiErg 200m",
+                "10 Wall Balls",
+                "Farmers Carry 30m"
+              ]
+            }
           ]
         }
       ]
@@ -211,7 +459,8 @@
       "weekNumber": 3,
       "phase": 1,
       "theme": "Montée en Charge",
-      "dateRange": "1–7 Juin",
+      "startDate": "2026-06-01",
+      "endDate": "2026-06-07",
       "isDeload": false,
       "weekNote": "Charges 60–65% · Enchaîner 3 stations d'affilée · Bien récupérer",
       "sessions": [
@@ -221,13 +470,26 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle — recommandée cette semaine de charge.",
-          "details": [
-            "Étirements statiques ischio-jambiers, quadriceps, fessiers",
-            "Mobilité hanches, épaules, chevilles",
-            "Rouleau de massage : quadriceps, mollets, dorsaux, fessiers"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements statiques ischio-jambiers, quadriceps, fessiers"
+            },
+            {
+              "type": "recovery",
+              "label": "Mobilité hanches, épaules, chevilles"
+            },
+            {
+              "type": "exercise",
+              "category": "foam_roller",
+              "label": "Rouleau de massage : quadriceps, mollets, dorsaux, fessiers"
+            }
           ]
         },
         {
@@ -236,12 +498,33 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Footing + Tempo",
-          "duration": 55,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Semaine de charge — volume légèrement augmenté.",
-          "details": [
-            "40 min footing (lui ~5:10/km · elle ~6:20/km)",
-            "4 × 3 min tempo (lui 4:40/km · elle 5:45/km) — récup 2 min entre"
+          "duration": 55,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40,
+              "pace": {
+                "him": "5:10/km",
+                "her": "6:20/km"
+              }
+            },
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDurationMin": 3,
+              "recoveryMin": 2,
+              "pace": {
+                "him": "4:40/km",
+                "her": "5:45/km"
+              }
+            }
           ]
         },
         {
@@ -250,15 +533,49 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Montée en Charge",
-          "duration": 70,
-          "intensityLabel":"Modéré/Élevé",
+          "intensityZones": [],
           "description": "3 passages, charges 60–65%. Objectif : enchaîner 3 stations sans pause.",
-          "details": [
-            "Échauffement 10 min : cardio léger + mobilité dynamique",
-            "Circuit × 3 passages (repos 2 min entre) — charges 60–65% : SkiErg 150m · Rameur 200m · Farmers Carry 2×30m (2×18kg F / 2×22kg H) · Sandbag Lunges 20m (10kg F / 14kg H) · Wall Balls 10 reps (6kg) · Burpee Broad Jump 5 sauts",
-            "Consigne : enchaîner SkiErg + Rameur + Farmers Carry sans pause entre eux",
-            "Renforcement complémentaire : 3×10 Romanian Deadlift · 3×12 Goblet Squat · 2×30s planche",
-            "Retour au calme 5 min"
+          "duration": 70,
+          "intensityLabel": "Modéré/Élevé",
+          "intensityScore": 6,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "cardio léger + mobilité dynamique"
+            },
+            {
+              "type": "circuit",
+              "rounds": 3,
+              "restBetweenMin": 2,
+              "stations": [
+                "SkiErg 150m",
+                "Rameur 200m",
+                "Farmers Carry 2×30m (2×18kg F / 2×22kg H)",
+                "Sandbag Lunges 20m (10kg F / 14kg H)",
+                "Wall Balls 10 reps (6kg)",
+                "Burpee Broad Jump 5 sauts"
+              ]
+            },
+            {
+              "type": "instruction",
+              "label": "enchaîner SkiErg + Rameur + Farmers Carry sans pause entre eux"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×10 Romanian Deadlift",
+                "3×12 Goblet Squat",
+                "2×30s planche"
+              ]
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 5,
+              "label": ""
+            }
           ]
         },
         {
@@ -267,12 +584,23 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Facile",
-          "duration": 40,
-          "intensityLabel":"Z2",
+          "intensityZones": [
+            "Z2"
+          ],
           "description": "Récupération — rester facile après la charge de mercredi.",
-          "details": [
-            "40 min footing facile",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:40/km"
+          "duration": 40,
+          "intensityLabel": "Z2",
+          "intensityScore": 3,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:40/km"
+            }
           ]
         },
         {
@@ -281,13 +609,31 @@
           "type": "running",
           "optional": false,
           "title": "Course C — Sortie Longue Progressive",
-          "duration": 65,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Sortie longue avec fin légèrement accélérée.",
-          "details": [
-            "65 min ensemble à 5:50–6:00/km",
-            "10 dernières minutes : monter à 5:45/km",
-            "Semaine de charge — bien dormir et s'alimenter"
+          "duration": 65,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 65,
+              "pace": {
+                "him": "5:50–6:00/km",
+                "her": "5:50–6:00/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "10 dernières minutes : monter à 5:45/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Semaine de charge — bien dormir et s'alimenter"
+            }
           ]
         },
         {
@@ -296,12 +642,33 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Bloc Force Lourd",
-          "duration": 60,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Séance de force avec charges plus importantes. 3 tours finisher.",
-          "details": [
-            "Bloc force — charges progressives cette semaine : Box/Goblet Squat 4×10 · Hip Thrust 4×12 · Tirage horizontal 4×10 · Overhead Press 3×12",
-            "Finisher 3 tours : SkiErg 200m + 10 Wall Balls + Farmers Carry 30m"
+          "duration": 60,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "Box/Goblet Squat 4×10",
+                "Hip Thrust 4×12",
+                "Tirage horizontal 4×10",
+                "Overhead Press 3×12"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 3,
+              "restBetweenMin": 0,
+              "exercises": [
+                "SkiErg 200m",
+                "10 Wall Balls",
+                "Farmers Carry 30m"
+              ]
+            }
           ]
         }
       ]
@@ -310,7 +677,8 @@
       "weekNumber": 4,
       "phase": 1,
       "theme": "Mini-Test & Repos",
-      "dateRange": "8–14 Juin",
+      "startDate": "2026-06-08",
+      "endDate": "2026-06-14",
       "isDeload": true,
       "weekNote": "⚡ Semaine de décharge · Volume –20% · Garder le chrono du mini-test comme référence",
       "sessions": [
@@ -320,13 +688,26 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": [
-            "Étirements statiques ischio-jambiers, quadriceps, fessiers",
-            "Mobilité hanches, épaules, chevilles",
-            "Rouleau de massage"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements statiques ischio-jambiers, quadriceps, fessiers"
+            },
+            {
+              "type": "recovery",
+              "label": "Mobilité hanches, épaules, chevilles"
+            },
+            {
+              "type": "exercise",
+              "category": "foam_roller",
+              "label": "Rouleau de massage"
+            }
           ]
         },
         {
@@ -335,12 +716,33 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Footing Réduit",
-          "duration": 45,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Semaine de décharge — volume réduit.",
-          "details": [
-            "35 min footing (lui ~5:10/km · elle ~6:20/km)",
-            "3 × 3 min tempo (lui 4:40/km · elle 5:45/km) — récup 2 min entre"
+          "duration": 45,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35,
+              "pace": {
+                "him": "5:10/km",
+                "her": "6:20/km"
+              }
+            },
+            {
+              "type": "intervals",
+              "sets": 3,
+              "setDurationMin": 3,
+              "recoveryMin": 2,
+              "pace": {
+                "him": "4:40/km",
+                "her": "5:45/km"
+              }
+            }
           ]
         },
         {
@@ -349,14 +751,28 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Mini-Test",
-          "duration": 60,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Mini-test de référence : 4 stations aux poids habituels + 2 km courus. Noter le temps total.",
-          "details": [
-            "Échauffement complet 10 min",
-            "Mini-test : 2 × 1km @ 5:45–6:00/km + 4 stations aux charges habituelles S3",
-            "Chronométrer chaque section — c'est votre référence de départ",
-            "Récup complète après"
+          "duration": 60,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Échauffement complet 10 min"
+            },
+            {
+              "type": "recovery",
+              "label": "Mini-test : 2 × 1km @ 5:45–6:00/km + 4 stations aux charges habituelles S3"
+            },
+            {
+              "type": "recovery",
+              "label": "Chronométrer chaque section — c'est votre référence de départ"
+            },
+            {
+              "type": "recovery",
+              "label": "Récup complète après"
+            }
           ]
         },
         {
@@ -365,13 +781,27 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération",
-          "duration": 35,
-          "intensityLabel":"Z1",
+          "intensityZones": [
+            "Z1"
+          ],
           "description": "Footing très facile de récupération après le mini-test.",
-          "details": [
-            "35 min footing récup",
-            "Lui : 5:20–5:40/km · Elle : 6:30–6:50/km",
-            "Aucun effort supplémentaire"
+          "duration": 35,
+          "intensityLabel": "Z1",
+          "intensityScore": 1,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35
+            },
+            {
+              "type": "target_pace",
+              "him": "5:20–5:40/km",
+              "her": "6:30–6:50/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Aucun effort supplémentaire"
+            }
           ]
         },
         {
@@ -380,12 +810,27 @@
           "type": "running",
           "optional": false,
           "title": "Course C — Sortie Légère",
-          "duration": 50,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Sortie très légère ensemble, récupération active.",
-          "details": [
-            "50 min ensemble à 5:50–6:10/km",
-            "Aucun effort — semaine de décharge"
+          "duration": 50,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 50,
+              "pace": {
+                "him": "5:50–6:10/km",
+                "her": "5:50–6:10/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Aucun effort — semaine de décharge"
+            }
           ]
         },
         {
@@ -394,14 +839,34 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Technique & Mobilité",
-          "duration": 45,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Séance légère de technique et mobilité. Charges –20%.",
-          "details": [
-            "Révision technique des 6 mouvements (charges –20% vs S3) : SkiErg · Rameur · Farmers Carry · Sandbag Lunges · Wall Balls · Burpee Broad Jump",
-            "2×8 reps de chaque mouvement — focus posture, respiration et fluidité uniquement",
-            "Bloc force allégé : Goblet Squat 2×10 · Hip Thrust 2×12 · Tirage horizontal 2×10",
-            "10 min étirements : ischio-jambiers, quadriceps, épaules, dorsaux"
+          "duration": 45,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Révision technique des 6 mouvements (charges –20% vs S3) : SkiErg · Rameur · Farmers Carry · Sandbag Lunges · Wall Balls · Burpee Broad Jump"
+            },
+            {
+              "type": "recovery",
+              "label": "2×8 reps de chaque mouvement — focus posture, respiration et fluidité uniquement"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "Goblet Squat 2×10",
+                "Hip Thrust 2×12",
+                "Tirage horizontal 2×10"
+              ]
+            },
+            {
+              "type": "recovery",
+              "label": "10 min étirements : ischio-jambiers, quadriceps, épaules, dorsaux"
+            }
           ]
         }
       ]
@@ -410,7 +875,8 @@
       "weekNumber": 5,
       "phase": 2,
       "theme": "Introduction Brick",
-      "dateRange": "15–21 Juin",
+      "startDate": "2026-06-15",
+      "endDate": "2026-06-21",
       "isDeload": false,
       "weekNote": "Charges 70% · 4 × 1km mardi · Première brick session samedi",
       "sessions": [
@@ -420,12 +886,22 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": [
-            "Étirements statiques + mobilité dynamique",
-            "Rouleau de massage"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements statiques + mobilité dynamique"
+            },
+            {
+              "type": "exercise",
+              "category": "foam_roller",
+              "label": "Rouleau de massage"
+            }
           ]
         },
         {
@@ -434,13 +910,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 4 × 1km",
-          "duration": 55,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "Première séance de fractionné longs. Récupération 90s entre les efforts.",
-          "details": [
-            "Échauffement 15 min Z1/Z2",
-            "4 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — récup 90s jogging",
-            "Retour au calme 10 min"
+          "duration": 55,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": "Z1/Z2"
+            },
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -449,13 +946,41 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — AMRAP 20 min",
-          "duration": 65,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "AMRAP (As Many Rounds As Possible) sur 20 minutes. Compter le nombre de tours complets.",
-          "details": [
-            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
-            "AMRAP 20 min (noter le nombre de tours) : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×20kg F / 2×24kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (12kg F / 16kg H)",
-            "Gainage & Core 10 min : 3×45s planche + 30s latérale chaque côté · 3×12 Dead Bug"
+          "duration": 65,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "500m rameur Z1 + mobilité dynamique"
+            },
+            {
+              "type": "circuit",
+              "rounds": 0,
+              "restBetweenMin": 0,
+              "label": "AMRAP 20 min",
+              "stations": [
+                "SkiErg 250m",
+                "Rameur 250m",
+                "12 Wall Balls (6kg)",
+                "Farmers Carry 40m (2×20kg F / 2×24kg H)",
+                "10 Burpee Broad Jumps",
+                "Sandbag Lunges 30m (12kg F / 16kg H)"
+              ]
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×45s planche",
+                "30s latérale chaque côté",
+                "3×12 Dead Bug"
+              ]
+            }
           ]
         },
         {
@@ -464,12 +989,24 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Tempo",
-          "duration": 45,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Séance tempo progressive.",
-          "details": [
-            "10 min facile + 15 min tempo (lui 4:40/km · elle 5:45/km) + 10 min facile retour",
-            "Léger si les jambes sont lourdes après le mardi"
+          "duration": 45,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "target_pace",
+              "him": "4:40/km",
+              "her": "5:45/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Léger si les jambes sont lourdes après le mardi"
+            }
           ]
         },
         {
@@ -478,13 +1015,24 @@
           "type": "brick",
           "optional": false,
           "title": "Brick — Course + 4 Stations Hyrox",
-          "duration": 95,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Première brick session. Course longue puis stations directement enchaînées sans pause.",
-          "details": [
-            "Partie 1 : 60 min course ensemble à 5:50–6:10/km (lui récup · elle Z2–Z3)",
-            "Les 10 dernières min : monter à 5:45/km pour arriver avec de la fatigue",
-            "Partie 2 — 4 stations directement enchaînées (sans pause) : SkiErg 300m + RowErg 300m + Farmers Carry 60m + 20 Wall Balls"
+          "duration": 95,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Partie 1 : 60 min course ensemble à 5:50–6:10/km (lui récup · elle Z2–Z3)"
+            },
+            {
+              "type": "recovery",
+              "label": "Les 10 dernières min : monter à 5:45/km pour arriver avec de la fatigue"
+            },
+            {
+              "type": "recovery",
+              "label": "Partie 2 — 4 stations directement enchaînées (sans pause) : SkiErg 300m + RowErg 300m + Farmers Carry 60m + 20 Wall Balls"
+            }
           ]
         },
         {
@@ -493,12 +1041,33 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Force & Puissance",
-          "duration": 60,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Séance de force lourde + finisher.",
-          "details": [
-            "Bloc force : Back Squat 5×5 (charges lourdes) · Leg Press heavy 4×8 · Pull-ups/Assisted 4×8 · KB Swing 3×15",
-            "Finisher 3 rounds : 200m SkiErg + 10 Wall Balls + 20m Farmers Carry — repos 90s entre rounds"
+          "duration": 60,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "Back Squat 5×5 (charges lourdes)",
+                "Leg Press heavy 4×8",
+                "Pull-ups/Assisted 4×8",
+                "KB Swing 3×15"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 3,
+              "restBetweenMin": 1.5,
+              "exercises": [
+                "200m SkiErg",
+                "10 Wall Balls",
+                "20m Farmers Carry"
+              ]
+            }
           ]
         }
       ]
@@ -507,7 +1076,8 @@
       "weekNumber": 6,
       "phase": 2,
       "theme": "Montée de Volume",
-      "dateRange": "22–28 Juin",
+      "startDate": "2026-06-22",
+      "endDate": "2026-06-28",
       "isDeload": false,
       "weekNote": "Charges 72% · 5 × 1km mardi · Brick 5 stations samedi",
       "sessions": [
@@ -517,10 +1087,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w6-run-a",
@@ -528,13 +1106,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 5 × 1km",
-          "duration": 58,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "Volume augmenté par rapport à S5.",
-          "details": [
-            "Échauffement 15 min Z1/Z2",
-            "5 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — récup 90s jogging",
-            "Retour au calme 10 min"
+          "duration": 58,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": "Z1/Z2"
+            },
+            {
+              "type": "intervals",
+              "sets": 5,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -543,14 +1142,44 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — AMRAP 22 min",
-          "duration": 70,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "AMRAP 22 minutes, charges 72%. Comparer avec S5.",
-          "details": [
-            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
-            "AMRAP 22 min — noter le nombre de tours : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×20kg F / 2×26kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (12kg F / 18kg H)",
-            "Objectif : faire au minimum le même nombre de tours qu'en S5",
-            "Gainage & Core 10 min : 3×45s planche + 3×12 Dead Bug"
+          "duration": 70,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "500m rameur Z1 + mobilité dynamique"
+            },
+            {
+              "type": "circuit",
+              "rounds": 0,
+              "restBetweenMin": 0,
+              "label": "AMRAP 22 min",
+              "stations": [
+                "SkiErg 250m",
+                "Rameur 250m",
+                "12 Wall Balls (6kg)",
+                "Farmers Carry 40m (2×20kg F / 2×26kg H)",
+                "10 Burpee Broad Jumps",
+                "Sandbag Lunges 30m (12kg F / 18kg H)"
+              ]
+            },
+            {
+              "type": "recovery",
+              "label": "Objectif : faire au minimum le même nombre de tours qu'en S5"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×45s planche",
+                "3×12 Dead Bug"
+              ]
+            }
           ]
         },
         {
@@ -559,11 +1188,20 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Tempo",
-          "duration": 50,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Tempo plus long qu'en S5.",
-          "details": [
-            "10 min facile + 20 min tempo (lui 4:40/km · elle 5:45/km) + 10 min facile"
+          "duration": 50,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "target_pace",
+              "him": "4:40/km",
+              "her": "5:45/km"
+            }
           ]
         },
         {
@@ -572,12 +1210,20 @@
           "type": "brick",
           "optional": false,
           "title": "Brick — Course + 5 Stations Hyrox",
-          "duration": 100,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Une station de plus qu'en S5. Ajouter les Sandbag Lunges.",
-          "details": [
-            "Partie 1 : 60 min course ensemble à 5:50–6:10/km",
-            "Partie 2 — 5 stations (sans pause) : SkiErg 300m + RowErg 300m + Farmers Carry 60m + 20 Wall Balls + Sandbag Lunges 50m"
+          "duration": 100,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Partie 1 : 60 min course ensemble à 5:50–6:10/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Partie 2 — 5 stations (sans pause) : SkiErg 300m + RowErg 300m + Farmers Carry 60m + 20 Wall Balls + Sandbag Lunges 50m"
+            }
           ]
         },
         {
@@ -586,12 +1232,33 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Force Progression",
-          "duration": 60,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Charges +2–3% vs S5. Finisher 4 rounds.",
-          "details": [
-            "Bloc force avec charges +2–3% vs S5 : Back Squat · Leg Press · Pull-ups · KB Swing 3×15",
-            "Finisher 4 rounds : 200m SkiErg + 10 Wall Balls + 20m Farmers Carry — repos 90s"
+          "duration": 60,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "Back Squat",
+                "Leg Press",
+                "Pull-ups",
+                "KB Swing 3×15"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 4,
+              "restBetweenMin": 1.5,
+              "exercises": [
+                "200m SkiErg",
+                "10 Wall Balls",
+                "20m Farmers Carry"
+              ]
+            }
           ]
         }
       ]
@@ -600,7 +1267,8 @@
       "weekNumber": 7,
       "phase": 2,
       "theme": "Première Charge Significative",
-      "dateRange": "29 Juin – 5 Juillet",
+      "startDate": "2026-06-29",
+      "endDate": "2026-07-05",
       "isDeload": false,
       "weekNote": "Charges 75% · 6 × 1km mardi · Brick 5 stations + 1km run intercalé",
       "sessions": [
@@ -610,10 +1278,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w7-run-a",
@@ -621,13 +1297,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km",
-          "duration": 62,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "6 répétitions à allure soutenue.",
-          "details": [
-            "Échauffement 15 min",
-            "6 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — récup 90s jogging",
-            "Retour au calme 10 min"
+          "duration": 62,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 6,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -636,14 +1333,44 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — AMRAP 25 min",
-          "duration": 75,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "AMRAP 25 minutes, charges 75%.",
-          "details": [
-            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
-            "AMRAP 25 min — noter le nombre de tours : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×22kg F / 2×28kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (14kg F / 18kg H)",
-            "Comparer avec S6 — viser au minimum le même nombre de tours",
-            "Gainage & Core 10 min : 3×45s planche + 3×12 Dead Bug"
+          "duration": 75,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "500m rameur Z1 + mobilité dynamique"
+            },
+            {
+              "type": "circuit",
+              "rounds": 0,
+              "restBetweenMin": 0,
+              "label": "AMRAP 25 min",
+              "stations": [
+                "SkiErg 250m",
+                "Rameur 250m",
+                "12 Wall Balls (6kg)",
+                "Farmers Carry 40m (2×22kg F / 2×28kg H)",
+                "10 Burpee Broad Jumps",
+                "Sandbag Lunges 30m (14kg F / 18kg H)"
+              ]
+            },
+            {
+              "type": "recovery",
+              "label": "Comparer avec S6 — viser au minimum le même nombre de tours"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×45s planche",
+                "3×12 Dead Bug"
+              ]
+            }
           ]
         },
         {
@@ -652,11 +1379,20 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Tempo",
-          "duration": 50,
-          "intensityLabel":"Z2/Z3",
+          "intensityZones": [
+            "Z2",
+            "Z3"
+          ],
           "description": "Tempo maintenu.",
-          "details": [
-            "10 min facile + 20 min tempo (lui 4:40/km · elle 5:45/km) + 10 min facile"
+          "duration": 50,
+          "intensityLabel": "Z2/Z3",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "target_pace",
+              "him": "4:40/km",
+              "her": "5:45/km"
+            }
           ]
         },
         {
@@ -665,12 +1401,20 @@
           "type": "brick",
           "optional": false,
           "title": "Brick — Course + 5 Stations + 1km Run Intercalé",
-          "duration": 105,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Première brick avec un run intercalé entre les stations — reproduire le format race.",
-          "details": [
-            "Partie 1 : 65 min course ensemble à 5:50–6:05/km",
-            "Partie 2 — 5 stations + 1km run intercalé : SkiErg 300m + 1km @ 5:45/km + RowErg 300m + Sandbag Lunges 50m + Farmers Carry 60m + 1km @ 5:45/km + 20 Wall Balls"
+          "duration": 105,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Partie 1 : 65 min course ensemble à 5:50–6:05/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Partie 2 — 5 stations + 1km run intercalé : SkiErg 300m + 1km @ 5:45/km + RowErg 300m + Sandbag Lunges 50m + Farmers Carry 60m + 1km @ 5:45/km + 20 Wall Balls"
+            }
           ]
         },
         {
@@ -679,12 +1423,33 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Force Lourde",
-          "duration": 65,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Séance force avec charges lourdes. 5 séries.",
-          "details": [
-            "Bloc force 5 séries : Back Squat heavy · Leg Press 4×8 · Pull-ups 4×8 · KB Swing 3×15",
-            "Finisher 4 rounds : 200m SkiErg + 10 Wall Balls + 20m Farmers Carry"
+          "duration": 65,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "strength",
+              "sets": 5,
+              "restSec": 0,
+              "exercises": [
+                "Back Squat heavy",
+                "Leg Press 4×8",
+                "Pull-ups 4×8",
+                "KB Swing 3×15"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 4,
+              "restBetweenMin": 0,
+              "exercises": [
+                "200m SkiErg",
+                "10 Wall Balls",
+                "20m Farmers Carry"
+              ]
+            }
           ]
         }
       ]
@@ -693,7 +1458,8 @@
       "weekNumber": 8,
       "phase": 2,
       "theme": "Pic de Charge Phase 2",
-      "dateRange": "6–12 Juillet",
+      "startDate": "2026-07-06",
+      "endDate": "2026-07-12",
       "isDeload": false,
       "weekNote": "⚡ Semaine la plus chargée de la Phase 2 · Charges 77–80% · 8 × 1km · Brick 6 stations",
       "sessions": [
@@ -703,10 +1469,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active — fortement recommandée cette semaine de pic.",
-          "details": ["Étirements + mobilité + rouleau de massage complet"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage complet"
+            }
+          ]
         },
         {
           "id": "w8-run-a",
@@ -714,14 +1488,38 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 8 × 1km",
-          "duration": 70,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "Séance la plus volumineuse du plan en intervalles. Gérer l'allure sur les 8 répétitions.",
-          "details": [
-            "Échauffement 15 min",
-            "8 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — récup 90s jogging",
-            "Objectif : splits réguliers sur les 8 répétitions",
-            "Retour au calme 10 min"
+          "duration": 70,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 8,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Objectif : splits réguliers sur les 8 répétitions"
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -730,14 +1528,44 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — AMRAP 25 min Chargé",
-          "duration": 75,
-          "intensityLabel":"Très élevé",
+          "intensityZones": [],
           "description": "AMRAP 25 minutes, charges proches des poids de course.",
-          "details": [
-            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
-            "AMRAP 25 min — noter le nombre de tours : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×24kg F / 2×28kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (14kg F / 20kg H)",
-            "Le AMRAP le plus chargé de la préparation — comparer avec S7",
-            "Gainage & Core 10 min : 3×45s planche + 3×12 Dead Bug"
+          "duration": 75,
+          "intensityLabel": "Très élevé",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "500m rameur Z1 + mobilité dynamique"
+            },
+            {
+              "type": "circuit",
+              "rounds": 0,
+              "restBetweenMin": 0,
+              "label": "AMRAP 25 min",
+              "stations": [
+                "SkiErg 250m",
+                "Rameur 250m",
+                "12 Wall Balls (6kg)",
+                "Farmers Carry 40m (2×24kg F / 2×28kg H)",
+                "10 Burpee Broad Jumps",
+                "Sandbag Lunges 30m (14kg F / 20kg H)"
+              ]
+            },
+            {
+              "type": "recovery",
+              "label": "Le AMRAP le plus chargé de la préparation — comparer avec S7"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×45s planche",
+                "3×12 Dead Bug"
+              ]
+            }
           ]
         },
         {
@@ -746,13 +1574,28 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération Active",
-          "duration": 40,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Footing facile — ne pas forcer après le mardi chargé.",
-          "details": [
-            "40 min footing facile récup",
-            "Lui : 5:10–5:30/km · Elle : 6:20–6:45/km",
-            "Si les jambes sont lourdes, réduire à 30 min ou marcher"
+          "duration": 40,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:30/km",
+              "her": "6:20–6:45/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Si les jambes sont lourdes, réduire à 30 min ou marcher"
+            }
           ]
         },
         {
@@ -761,12 +1604,20 @@
           "type": "brick",
           "optional": false,
           "title": "Brick — Course + 6 Stations + 2 Runs Intercalés",
-          "duration": 110,
-          "intensityLabel":"Très élevé",
+          "intensityZones": [],
           "description": "La brick la plus complète de la Phase 2. Format qui s'approche du race day.",
-          "details": [
-            "Partie 1 : 70 min course ensemble à 5:50–6:05/km",
-            "Partie 2 — 6 stations + 2 × 1km runs intercalés : SkiErg 300m + 1km → RowErg 300m + Sandbag 50m + 1km → Farmers Carry 60m + 20 Wall Balls + Burpees 20m"
+          "duration": 110,
+          "intensityLabel": "Très élevé",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Partie 1 : 70 min course ensemble à 5:50–6:05/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Partie 2 — 6 stations + 2 × 1km runs intercalés : SkiErg 300m + 1km → RowErg 300m + Sandbag 50m + 1km → Farmers Carry 60m + 20 Wall Balls + Burpees 20m"
+            }
           ]
         },
         {
@@ -775,13 +1626,32 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Séance Complète Lourde",
-          "duration": 65,
-          "intensityLabel":"Très élevé",
+          "intensityZones": [],
           "description": "Séance de force complète avec toutes les charges lourdes.",
-          "details": [
-            "Échauffement 8 min : 5 min rameur Z1 + mobilité",
-            "Bloc force — charges maximales Phase 2 : Back Squat 5×5 · Leg Press 4×8 · Pull-ups/Assisted 4×8 · KB Swing 3×15",
-            "Finisher 4 rounds (repos 90s) : SkiErg 200m + 10 Wall Balls (6kg) + 20m Farmers Carry (2×24kg F / 2×28kg H)"
+          "duration": 65,
+          "intensityLabel": "Très élevé",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 8,
+              "label": "5 min rameur Z1 + mobilité"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "Back Squat 5×5",
+                "Leg Press 4×8",
+                "Pull-ups/Assisted 4×8",
+                "KB Swing 3×15"
+              ]
+            },
+            {
+              "type": "recovery",
+              "label": "Finisher 4 rounds (repos 90s) : SkiErg 200m + 10 Wall Balls (6kg) + 20m Farmers Carry (2×24kg F / 2×28kg H)"
+            }
           ]
         }
       ]
@@ -790,7 +1660,8 @@
       "weekNumber": 9,
       "phase": 2,
       "theme": "Récupération Active",
-      "dateRange": "13–19 Juillet",
+      "startDate": "2026-07-13",
+      "endDate": "2026-07-19",
       "isDeload": true,
       "weekNote": "⚡ Semaine de décharge · Volume –20% · Corps frais pour attaquer la Phase 3",
       "sessions": [
@@ -800,10 +1671,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w9-run-a",
@@ -811,13 +1690,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles Réduits 4 × 1km",
-          "duration": 50,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "Volume réduit, intensité maintenue. Ne pas compenser en ajoutant des répétitions.",
-          "details": [
-            "Échauffement 15 min",
-            "4 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — récup 2 min",
-            "Retour au calme 10 min"
+          "duration": 50,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 2,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -826,13 +1726,40 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — AMRAP Allégé 18 min",
-          "duration": 55,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "AMRAP réduit à 18 minutes. Charges normales — ni plus, ni plus longtemps.",
-          "details": [
-            "Échauffement 10 min : 500m rameur Z1 + mobilité dynamique",
-            "AMRAP 18 min — noter le nombre de tours (semaine de décharge, maintenir le rythme de S8) : SkiErg 250m · Rameur 250m · 12 Wall Balls (6kg) · Farmers Carry 40m (2×24kg F / 2×28kg H) · 10 Burpee Broad Jumps · Sandbag Lunges 30m (14kg F / 20kg H)",
-            "Gainage léger 10 min : 3×30s planche + 3×10 Dead Bug"
+          "duration": 55,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 10,
+              "label": "500m rameur Z1 + mobilité dynamique"
+            },
+            {
+              "type": "circuit",
+              "rounds": 0,
+              "restBetweenMin": 0,
+              "label": "AMRAP 18 min",
+              "stations": [
+                "SkiErg 250m",
+                "Rameur 250m",
+                "12 Wall Balls (6kg)",
+                "Farmers Carry 40m (2×24kg F / 2×28kg H)",
+                "10 Burpee Broad Jumps",
+                "Sandbag Lunges 30m (14kg F / 20kg H)"
+              ]
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "3×30s planche",
+                "3×10 Dead Bug"
+              ]
+            }
           ]
         },
         {
@@ -841,12 +1768,23 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Facile",
-          "duration": 35,
-          "intensityLabel":"Z2",
+          "intensityZones": [
+            "Z2"
+          ],
           "description": "Footing récupération.",
-          "details": [
-            "35 min footing facile",
-            "Lui : 5:15–5:30/km · Elle : 6:20–6:45/km"
+          "duration": 35,
+          "intensityLabel": "Z2",
+          "intensityScore": 3,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35
+            },
+            {
+              "type": "target_pace",
+              "him": "5:15–5:30/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -855,12 +1793,24 @@
           "type": "brick",
           "optional": false,
           "title": "Brick Légère — Course + 3 Stations Techniques",
-          "duration": 70,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Brick réduite et légère. Focus technique, pas d'effort maximal.",
-          "details": [
-            "50 min course ensemble à 5:55–6:15/km",
-            "3 stations techniques (charges habituelles) : SkiErg 300m + RowErg 300m + Farmers Carry 60m"
+          "duration": 70,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 50,
+              "pace": {
+                "him": "5:55–6:15/km",
+                "her": "5:55–6:15/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "3 stations techniques (charges habituelles) : SkiErg 300m + RowErg 300m + Farmers Carry 60m"
+            }
           ]
         },
         {
@@ -869,14 +1819,42 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Force Légère + Mobilité",
-          "duration": 45,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Séance légère de maintien. 2 tours finisher seulement.",
-          "details": [
-            "Échauffement 8 min : 5 min rameur Z1 + mobilité",
-            "Bloc force allégé –20% (repos 90s) : Back Squat 4×8 · Leg Press 3×8 · Pull-ups/Assisted 3×8 · KB Swing 3×12",
-            "Finisher 2 tours (repos 3 min) : SkiErg 200m + 10 Wall Balls (6kg) + 20m Farmers Carry",
-            "10 min mobilité : étirements ischio-jambiers, quadriceps, épaules"
+          "duration": 45,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 8,
+              "label": "5 min rameur Z1 + mobilité"
+            },
+            {
+              "type": "strength",
+              "sets": 0,
+              "restSec": 0,
+              "exercises": [
+                "Back Squat 4×8",
+                "Leg Press 3×8",
+                "Pull-ups/Assisted 3×8",
+                "KB Swing 3×12"
+              ]
+            },
+            {
+              "type": "finisher",
+              "rounds": 2,
+              "restBetweenMin": 3,
+              "exercises": [
+                "SkiErg 200m",
+                "10 Wall Balls (6kg)",
+                "20m Farmers Carry"
+              ]
+            },
+            {
+              "type": "recovery",
+              "label": "10 min mobilité : étirements ischio-jambiers, quadriceps, épaules"
+            }
           ]
         }
       ]
@@ -885,7 +1863,8 @@
       "weekNumber": 10,
       "phase": 3,
       "theme": "Entrée en Spécificité",
-      "dateRange": "20–26 Juillet",
+      "startDate": "2026-07-20",
+      "endDate": "2026-07-26",
       "isDeload": false,
       "weekNote": "Poids race introduits · Première simulation 4 stations · Chronométrer chaque section",
       "sessions": [
@@ -895,10 +1874,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w10-run-a",
@@ -906,13 +1893,35 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km (Allure Race)",
-          "duration": 60,
-          "intensityLabel":"Z4/Z5",
+          "intensityZones": [
+            "Z4",
+            "Z5"
+          ],
           "description": "Allures qui s'approchent de celles de la course individuelle.",
-          "details": [
-            "Échauffement 15 min",
-            "6 × 1km (lui 4:15–4:20/km · elle 5:15–5:25/km) — récup 90s jogging",
-            "Retour au calme 10 min"
+          "duration": 60,
+          "intensityLabel": "Z4/Z5",
+          "intensityScore": 8,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 6,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:15–4:20/km",
+                "her": "5:15–5:25/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -921,14 +1930,28 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Simulation Partielle 4 × (1km + Station)",
-          "duration": 70,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Format mini-race : 1km suivi directement d'une station, sans pause.",
-          "details": [
-            "1km @ 5:45–6:00/km → SkiErg 400m → repos 90s",
-            "1km @ 5:45–6:00/km → RowErg 400m → repos 90s",
-            "1km @ 5:45–6:00/km → Wall Balls 40 reps → repos 90s",
-            "1km @ 5:45–6:00/km → Farmers Carry 80m + Sandbag Lunges 60m"
+          "duration": 70,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "1km @ 5:45–6:00/km → SkiErg 400m → repos 90s"
+            },
+            {
+              "type": "recovery",
+              "label": "1km @ 5:45–6:00/km → RowErg 400m → repos 90s"
+            },
+            {
+              "type": "recovery",
+              "label": "1km @ 5:45–6:00/km → Wall Balls 40 reps → repos 90s"
+            },
+            {
+              "type": "recovery",
+              "label": "1km @ 5:45–6:00/km → Farmers Carry 80m + Sandbag Lunges 60m"
+            }
           ]
         },
         {
@@ -937,12 +1960,24 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération",
-          "duration": 40,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Footing récupération avant la simulation du samedi.",
-          "details": [
-            "40 min footing récup",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:45/km"
+          "duration": 40,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -951,13 +1986,26 @@
           "type": "brick",
           "optional": false,
           "title": "Simulation 4 Stations — Poids Race",
-          "duration": 90,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Première simulation avec les poids officiels de course. Chronométrer chaque section.",
-          "details": [
-            "4 × 1km à 5:45–6:00/km ensemble",
-            "4 stations aux poids race : SkiErg 500m · Sled Push/Pull alternatif · RowErg 500m · Wall Balls 50 reps",
-            "Chronomètrer chaque section — noter et comparer lors des prochaines simulations"
+          "duration": 90,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "4 stations aux poids race : SkiErg 500m · Sled Push/Pull alternatif · RowErg 500m · Wall Balls 50 reps"
+            },
+            {
+              "type": "recovery",
+              "label": "Chronomètrer chaque section — noter et comparer lors des prochaines simulations"
+            }
           ]
         },
         {
@@ -966,13 +2014,24 @@
           "type": "recovery",
           "optional": false,
           "title": "Récupération Active + Bilan",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active et analyse des chronos de la simulation S10.",
-          "details": [
-            "30 min récupération active (marche, vélo léger ou natation)",
-            "Bilan chrono S10 : quelles stations ont pris le plus de temps ?",
-            "Identifier les 2 stations à travailler prioritairement"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "30 min récupération active (marche, vélo léger ou natation)"
+            },
+            {
+              "type": "recovery",
+              "label": "Bilan chrono S10 : quelles stations ont pris le plus de temps ?"
+            },
+            {
+              "type": "recovery",
+              "label": "Identifier les 2 stations à travailler prioritairement"
+            }
           ]
         }
       ]
@@ -981,7 +2040,8 @@
       "weekNumber": 11,
       "phase": 3,
       "theme": "Extension à 6 Stations",
-      "dateRange": "27 Juil – 2 Août",
+      "startDate": "2026-07-27",
+      "endDate": "2026-08-02",
       "isDeload": false,
       "weekNote": "6 stations en simulation · Identifier les stations les plus coûteuses en temps",
       "sessions": [
@@ -991,10 +2051,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w11-run-a",
@@ -1002,13 +2070,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 8 × 1km",
-          "duration": 70,
-          "intensityLabel":"Z4/Z5",
+          "intensityZones": [
+            "Z4",
+            "Z5"
+          ],
           "description": "Séance qualitative principale.",
-          "details": [
-            "Échauffement 15 min",
-            "8 × 1km (lui 4:10–4:20/km · elle 5:15–5:25/km) — récup 90s jogging",
-            "Régularité absolue sur les 8 répétitions"
+          "duration": 70,
+          "intensityLabel": "Z4/Z5",
+          "intensityScore": 8,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 8,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:10–4:20/km",
+                "her": "5:15–5:25/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Régularité absolue sur les 8 répétitions"
+            }
           ]
         },
         {
@@ -1017,13 +2106,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Simulation Partielle Rotation 8 Stations",
-          "duration": 75,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Rotation sur les 8 stations pour identifier les points faibles.",
-          "details": [
-            "4 × (1km + 1 station) — rotation sur les 8 stations disponibles",
-            "Chronométrer chaque station — noter les plus longues",
-            "Allure course : 5:45–6:00/km ensemble"
+          "duration": 75,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "4 × (1km + 1 station) — rotation sur les 8 stations disponibles"
+            },
+            {
+              "type": "recovery",
+              "label": "Chronométrer chaque station — noter les plus longues"
+            },
+            {
+              "type": "recovery",
+              "label": "Allure course : 5:45–6:00/km ensemble"
+            }
           ]
         },
         {
@@ -1032,12 +2132,24 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération",
-          "duration": 40,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Footing récupération.",
-          "details": [
-            "40 min footing récup",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:45/km"
+          "duration": 40,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -1046,13 +2158,26 @@
           "type": "brick",
           "optional": false,
           "title": "Simulation 6 Stations + 6km Course",
-          "duration": 105,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "6 stations au format race. Chronomètrer chaque station — noter les plus chronophages.",
-          "details": [
-            "6 × 1km à 5:45–6:00/km ensemble",
-            "6 stations aux poids race (toutes sauf 2 au choix)",
-            "Chronomètrer chaque station — noter et comparer avec S10"
+          "duration": 105,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 6,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "6 stations aux poids race (toutes sauf 2 au choix)"
+            },
+            {
+              "type": "recovery",
+              "label": "Chronomètrer chaque station — noter et comparer avec S10"
+            }
           ]
         },
         {
@@ -1061,13 +2186,24 @@
           "type": "recovery",
           "optional": false,
           "title": "Récupération Active + Analyse",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération et analyse des stations les plus chronophages.",
-          "details": [
-            "30 min récupération active",
-            "Analyser : quelles sont les 2 stations les plus longues ?",
-            "Ces 2 stations seront le focus de S12"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "30 min récupération active"
+            },
+            {
+              "type": "recovery",
+              "label": "Analyser : quelles sont les 2 stations les plus longues ?"
+            },
+            {
+              "type": "recovery",
+              "label": "Ces 2 stations seront le focus de S12"
+            }
           ]
         }
       ]
@@ -1076,7 +2212,8 @@
       "weekNumber": 12,
       "phase": 3,
       "theme": "Ciblage Stations Faibles",
-      "dateRange": "3–9 Août",
+      "startDate": "2026-08-03",
+      "endDate": "2026-08-09",
       "isDeload": false,
       "weekNote": "Retravailler les 2 stations identifiées en S11 · Transitions chronométrées",
       "sessions": [
@@ -1086,10 +2223,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w12-run-a",
@@ -1097,13 +2242,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 8 × 1km",
-          "duration": 70,
-          "intensityLabel":"Z4/Z5",
+          "intensityZones": [
+            "Z4",
+            "Z5"
+          ],
           "description": "Régularité absolue — viser des splits identiques sur les 8 répétitions.",
-          "details": [
-            "Échauffement 15 min",
-            "8 × 1km (lui 4:10–4:20/km · elle 5:15–5:25/km) — récup 90s jogging",
-            "Viser la régularité : dernier km = même allure que le premier"
+          "duration": 70,
+          "intensityLabel": "Z4/Z5",
+          "intensityScore": 8,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 8,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:10–4:20/km",
+                "her": "5:15–5:25/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Viser la régularité : dernier km = même allure que le premier"
+            }
           ]
         },
         {
@@ -1112,13 +2278,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Focus Stations Faibles",
-          "duration": 75,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Cibler les 2 stations les plus faibles identifiées en S11 avec volume ×1,5.",
-          "details": [
-            "4 × (1km + 1 station) — les stations faibles de S11 répétées 2× chacune",
-            "Volume ×1,5 sur les stations ciblées",
-            "Transitions chronométrées — noter les temps de passage course→station"
+          "duration": 75,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "4 × (1km + 1 station) — les stations faibles de S11 répétées 2× chacune"
+            },
+            {
+              "type": "recovery",
+              "label": "Volume ×1,5 sur les stations ciblées"
+            },
+            {
+              "type": "recovery",
+              "label": "Transitions chronométrées — noter les temps de passage course→station"
+            }
           ]
         },
         {
@@ -1127,12 +2304,24 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération",
-          "duration": 40,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Footing récupération.",
-          "details": [
-            "40 min footing récup",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:45/km"
+          "duration": 40,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -1141,13 +2330,26 @@
           "type": "brick",
           "optional": false,
           "title": "Simulation 6 Stations — Comparer S11",
-          "duration": 105,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Même simulation que S11 pour mesurer la progression sur les stations ciblées.",
-          "details": [
-            "6 × 1km à 5:45–6:00/km + transitions chronométrées",
-            "6 stations aux poids race — mêmes 6 stations qu'en S11",
-            "Comparer chaque chrono avec S11 — les stations faibles doivent avoir progressé"
+          "duration": 105,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 6,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "6 stations aux poids race — mêmes 6 stations qu'en S11"
+            },
+            {
+              "type": "recovery",
+              "label": "Comparer chaque chrono avec S11 — les stations faibles doivent avoir progressé"
+            }
           ]
         },
         {
@@ -1156,13 +2358,24 @@
           "type": "recovery",
           "optional": false,
           "title": "Récupération Active",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération et préparation mentale pour la simulation complète de S13.",
-          "details": [
-            "30 min récupération active",
-            "Comparer chronos S11 vs S12 — noter la progression",
-            "S13 : préparer mentalement la première simulation complète 8 stations"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "30 min récupération active"
+            },
+            {
+              "type": "recovery",
+              "label": "Comparer chronos S11 vs S12 — noter la progression"
+            },
+            {
+              "type": "recovery",
+              "label": "S13 : préparer mentalement la première simulation complète 8 stations"
+            }
           ]
         }
       ]
@@ -1171,7 +2384,8 @@
       "weekNumber": 13,
       "phase": 3,
       "theme": "Première Simulation Complète",
-      "dateRange": "10–16 Août",
+      "startDate": "2026-08-10",
+      "endDate": "2026-08-16",
       "isDeload": false,
       "weekNote": "🎯 8 × 1km + 8 stations poids race · Premier chrono de référence complet · Économiser du mardi au vendredi",
       "sessions": [
@@ -1181,10 +2395,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle — recommandée pour arriver frais samedi.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w13-run-a",
@@ -1192,13 +2414,35 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles Légers 5 × 1km",
-          "duration": 55,
-          "intensityLabel":"Z3/Z4",
+          "intensityZones": [
+            "Z3",
+            "Z4"
+          ],
           "description": "Volume réduit pour économiser les jambes pour la simulation de samedi.",
-          "details": [
-            "Échauffement 15 min",
-            "5 × 1km légers (lui 4:25/km · elle 5:35/km) — économiser pour samedi",
-            "Retour au calme 10 min"
+          "duration": 55,
+          "intensityLabel": "Z3/Z4",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 5,
+              "setDistanceKm": 1,
+              "recoveryMin": 0,
+              "pace": {
+                "him": "4:25/km",
+                "her": "5:35/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -1207,13 +2451,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Activation 4 × (1km + Station)",
-          "duration": 65,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Activation détendue pour préparer les muscles sans les fatiguer.",
-          "details": [
-            "4 × (1km + 1 station) à allure détendue",
-            "Charges normales — pas d'effort maximal",
-            "Focus : technique et fluidité des transitions"
+          "duration": 65,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "4 × (1km + 1 station) à allure détendue"
+            },
+            {
+              "type": "recovery",
+              "label": "Charges normales — pas d'effort maximal"
+            },
+            {
+              "type": "recovery",
+              "label": "Focus : technique et fluidité des transitions"
+            }
           ]
         },
         {
@@ -1222,13 +2477,27 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Très Léger",
-          "duration": 35,
-          "intensityLabel":"Z1",
+          "intensityZones": [
+            "Z1"
+          ],
           "description": "Footing très léger — jambes fraîches pour samedi.",
-          "details": [
-            "35 min footing très léger",
-            "Lui : 5:20–5:40/km · Elle : 6:30–6:50/km",
-            "Si les jambes sont lourdes : réduire à 20 min ou repos complet"
+          "duration": 35,
+          "intensityLabel": "Z1",
+          "intensityScore": 1,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35
+            },
+            {
+              "type": "target_pace",
+              "him": "5:20–5:40/km",
+              "her": "6:30–6:50/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Si les jambes sont lourdes : réduire à 20 min ou repos complet"
+            }
           ]
         },
         {
@@ -1237,15 +2506,34 @@
           "type": "brick",
           "optional": false,
           "title": "🏁 SIMULATION COMPLÈTE — 8 Stations + 8km",
-          "duration": 120,
-          "intensityLabel":"Race Pace",
+          "intensityZones": [],
           "description": "La séance la plus importante de la préparation. Format exact du race day. Chronométrer absolument tout.",
-          "details": [
-            "Format exact race : 1km course → Station → (× 8)",
-            "8 × 1km à 5:45–6:00/km ensemble (strictement)",
-            "8 stations aux poids race officiels",
-            "Chronomètrer : chrono total + temps de chaque station + temps de chaque km",
-            "Simulation duo si possible : partager les stations entre Elle et Lui"
+          "duration": 120,
+          "intensityLabel": "Race Pace",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Format exact race : 1km course → Station → (× 8)"
+            },
+            {
+              "type": "intervals",
+              "sets": 8,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "8 stations aux poids race officiels"
+            },
+            {
+              "type": "recovery",
+              "label": "Chronomètrer : chrono total + temps de chaque station + temps de chaque km"
+            },
+            {
+              "type": "recovery",
+              "label": "Simulation duo si possible : partager les stations entre Elle et Lui"
+            }
           ]
         },
         {
@@ -1254,13 +2542,24 @@
           "type": "recovery",
           "optional": false,
           "title": "Récupération + Bilan Détaillé",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active et analyse complète de la simulation.",
-          "details": [
-            "30 min récupération active",
-            "Bilan détaillé : ce qui fonctionne / ce qui doit être amélioré",
-            "Chrono de référence noté — c'est votre baseline pour S14"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "30 min récupération active"
+            },
+            {
+              "type": "recovery",
+              "label": "Bilan détaillé : ce qui fonctionne / ce qui doit être amélioré"
+            },
+            {
+              "type": "recovery",
+              "label": "Chrono de référence noté — c'est votre baseline pour S14"
+            }
           ]
         }
       ]
@@ -1269,7 +2568,8 @@
       "weekNumber": 14,
       "phase": 3,
       "theme": "Optimisation & Stratégie Duo",
-      "dateRange": "17–23 Août",
+      "startDate": "2026-08-17",
+      "endDate": "2026-08-23",
       "isDeload": false,
       "weekNote": "Affiner la stratégie duo · Ajuster la répartition des stations selon S13",
       "sessions": [
@@ -1279,10 +2579,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w14-run-a",
@@ -1290,13 +2598,33 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km Réguliers",
-          "duration": 60,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "Régularité absolue — viser des splits identiques.",
-          "details": [
-            "Échauffement 15 min",
-            "6 × 1km (lui 4:10–4:20/km · elle 5:15–5:25/km) — récup 90s jogging",
-            "Régularité > vitesse maximale"
+          "duration": 60,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 6,
+              "setDistanceKm": 1,
+              "recoveryMin": 1.5,
+              "pace": {
+                "him": "4:10–4:20/km",
+                "her": "5:15–5:25/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "Régularité > vitesse maximale"
+            }
           ]
         },
         {
@@ -1305,13 +2633,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Retravail Stations Faibles S13",
-          "duration": 75,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "Cibler les stations qui ont posé problème en S13. Pratiquer les transitions duo.",
-          "details": [
-            "4 × (1km + 1 station) — focus sur les stations faibles identifiées en S13",
-            "Pratique des transitions duo : passage de relais chronométré",
-            "Tester la répartition finale des stations"
+          "duration": 75,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "4 × (1km + 1 station) — focus sur les stations faibles identifiées en S13"
+            },
+            {
+              "type": "recovery",
+              "label": "Pratique des transitions duo : passage de relais chronométré"
+            },
+            {
+              "type": "recovery",
+              "label": "Tester la répartition finale des stations"
+            }
           ]
         },
         {
@@ -1320,12 +2659,24 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération",
-          "duration": 40,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Footing récupération.",
-          "details": [
-            "40 min footing récup",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:45/km"
+          "duration": 40,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -1334,14 +2685,30 @@
           "type": "brick",
           "optional": false,
           "title": "Simulation Complète — Nouvelle Stratégie Duo",
-          "duration": 120,
-          "intensityLabel":"Race Pace",
+          "intensityZones": [],
           "description": "Deuxième simulation complète avec la stratégie duo affinée. Comparer avec S13.",
-          "details": [
-            "8 × 1km à 5:45–6:00/km ensemble",
-            "8 stations aux poids race",
-            "Tester la nouvelle répartition duo (qui commence chaque station)",
-            "Comparer chrono total et par station avec S13"
+          "duration": 120,
+          "intensityLabel": "Race Pace",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 8,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "8 stations aux poids race"
+            },
+            {
+              "type": "recovery",
+              "label": "Tester la nouvelle répartition duo (qui commence chaque station)"
+            },
+            {
+              "type": "recovery",
+              "label": "Comparer chrono total et par station avec S13"
+            }
           ]
         },
         {
@@ -1350,13 +2717,24 @@
           "type": "recovery",
           "optional": false,
           "title": "Récupération + Décision Stratégique Finale",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération et validation définitive de la stratégie du jour J.",
-          "details": [
-            "30 min récupération active",
-            "Décision finale sur la stratégie duo : qui commence chaque station, signaux de relais",
-            "Cette stratégie ne change plus avant la course"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "30 min récupération active"
+            },
+            {
+              "type": "recovery",
+              "label": "Décision finale sur la stratégie duo : qui commence chaque station, signaux de relais"
+            },
+            {
+              "type": "recovery",
+              "label": "Cette stratégie ne change plus avant la course"
+            }
           ]
         }
       ]
@@ -1365,7 +2743,8 @@
       "weekNumber": 15,
       "phase": 3,
       "theme": "Repos Actif — Dernière Simu",
-      "dateRange": "24–30 Août",
+      "startDate": "2026-08-24",
+      "endDate": "2026-08-30",
       "isDeload": true,
       "weekNote": "⚡ Semaine de décharge · Dernière simulation avant la course · Corps frais pour Phase 4",
       "sessions": [
@@ -1375,10 +2754,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w15-run-a",
@@ -1386,13 +2773,35 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles Réduits 4 × 1km",
-          "duration": 50,
-          "intensityLabel":"Z3/Z4",
+          "intensityZones": [
+            "Z3",
+            "Z4"
+          ],
           "description": "Volume réduit pour la décharge.",
-          "details": [
-            "Échauffement 15 min",
-            "4 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — récup 2 min",
-            "Retour au calme 10 min"
+          "duration": 50,
+          "intensityLabel": "Z3/Z4",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 2,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -1401,13 +2810,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Simulation Partielle Réduite",
-          "duration": 60,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "4 × (1km + station) à allure détendue. Maintien du rythme, pas d'effort.",
-          "details": [
-            "4 × (1km + 1 station) — allure détendue",
-            "Charges normales — maintien uniquement",
-            "Focus sur la fluidité des transitions"
+          "duration": 60,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "4 × (1km + 1 station) — allure détendue"
+            },
+            {
+              "type": "recovery",
+              "label": "Charges normales — maintien uniquement"
+            },
+            {
+              "type": "recovery",
+              "label": "Focus sur la fluidité des transitions"
+            }
           ]
         },
         {
@@ -1416,12 +2836,23 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Facile",
-          "duration": 35,
-          "intensityLabel":"Z2",
+          "intensityZones": [
+            "Z2"
+          ],
           "description": "Footing récupération.",
-          "details": [
-            "35 min footing facile",
-            "Lui : 5:15–5:30/km · Elle : 6:20–6:45/km"
+          "duration": 35,
+          "intensityLabel": "Z2",
+          "intensityScore": 3,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35
+            },
+            {
+              "type": "target_pace",
+              "him": "5:15–5:30/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -1430,14 +2861,30 @@
           "type": "brick",
           "optional": false,
           "title": "Dernière Simulation — 4 Stations à 70%",
-          "duration": 75,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Dernière vraie simulation avant la course. 4 stations à 70% d'effort, focus transitions.",
-          "details": [
-            "4 × 1km à 5:45–6:00/km ensemble",
-            "4 stations aux poids race (70% d'effort — pas de sprint)",
-            "Focus : transitions parfaites et communication duo",
-            "C'est la DERNIÈRE simulation — après, plus de séance intense"
+          "duration": 75,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "4 stations aux poids race (70% d'effort — pas de sprint)"
+            },
+            {
+              "type": "recovery",
+              "label": "Focus : transitions parfaites et communication duo"
+            },
+            {
+              "type": "recovery",
+              "label": "C'est la DERNIÈRE simulation — après, plus de séance intense"
+            }
           ]
         },
         {
@@ -1446,12 +2893,20 @@
           "type": "recovery",
           "optional": false,
           "title": "Récupération Active + Mobilité",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active et mobilité.",
-          "details": [
-            "30 min récupération active + mobilité",
-            "Bilan Phase 3 complet — vous êtes prêts pour Phase 4"
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "30 min récupération active + mobilité"
+            },
+            {
+              "type": "recovery",
+              "label": "Bilan Phase 3 complet — vous êtes prêts pour Phase 4"
+            }
           ]
         }
       ]
@@ -1460,7 +2915,8 @@
       "weekNumber": 16,
       "phase": 4,
       "theme": "Affûtage 1",
-      "dateRange": "31 Août – 6 Septembre",
+      "startDate": "2026-08-31",
+      "endDate": "2026-09-06",
       "isDeload": false,
       "weekNote": "Volume réduit · Intensité maintenue · Aucune augmentation de charges",
       "sessions": [
@@ -1470,10 +2926,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w16-run-a",
@@ -1481,13 +2945,34 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 6 × 1km",
-          "duration": 60,
-          "intensityLabel":"Z4",
+          "intensityZones": [
+            "Z4"
+          ],
           "description": "Volume légèrement inférieur à Phase 3. Maintenir l'intensité.",
-          "details": [
-            "Échauffement 15 min",
-            "6 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km) — volume ↓ vs Phase 3",
-            "Retour au calme 10 min"
+          "duration": 60,
+          "intensityLabel": "Z4",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "warmup",
+              "durationMin": 15,
+              "label": ""
+            },
+            {
+              "type": "intervals",
+              "sets": 6,
+              "setDistanceKm": 1,
+              "recoveryMin": 0,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "cooldown",
+              "durationMin": 10,
+              "label": ""
+            }
           ]
         },
         {
@@ -1496,13 +2981,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Simulation 6 Stations",
-          "duration": 70,
-          "intensityLabel":"Élevé",
+          "intensityZones": [],
           "description": "6 stations aux charges normales. Maintien du niveau.",
-          "details": [
-            "6 stations aux charges normales (poids race)",
-            "Format race : 1km → station → 1km → station...",
-            "Aucune augmentation de charges"
+          "duration": 70,
+          "intensityLabel": "Élevé",
+          "intensityScore": 7,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "6 stations aux charges normales (poids race)"
+            },
+            {
+              "type": "recovery",
+              "label": "Format race : 1km → station → 1km → station..."
+            },
+            {
+              "type": "recovery",
+              "label": "Aucune augmentation de charges"
+            }
           ]
         },
         {
@@ -1511,12 +3007,24 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Récupération",
-          "duration": 40,
-          "intensityLabel":"Z1/Z2",
+          "intensityZones": [
+            "Z1",
+            "Z2"
+          ],
           "description": "Footing récupération.",
-          "details": [
-            "40 min footing récup",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:45/km"
+          "duration": 40,
+          "intensityLabel": "Z1/Z2",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 40
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:45/km"
+            }
           ]
         },
         {
@@ -1525,13 +3033,26 @@
           "type": "brick",
           "optional": false,
           "title": "Simulation 4 Stations + 4km",
-          "duration": 75,
-          "intensityLabel":"Modéré/Élevé",
+          "intensityZones": [],
           "description": "Volume réduit par rapport à Phase 3.",
-          "details": [
-            "4 × 1km à 5:45–6:00/km ensemble",
-            "4 stations aux poids race",
-            "Maintien du niveau, pas d'effort maximal"
+          "duration": 75,
+          "intensityLabel": "Modéré/Élevé",
+          "intensityScore": 6,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 0
+            },
+            {
+              "type": "recovery",
+              "label": "4 stations aux poids race"
+            },
+            {
+              "type": "recovery",
+              "label": "Maintien du niveau, pas d'effort maximal"
+            }
           ]
         },
         {
@@ -1540,12 +3061,20 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox B — Force Légère + Technique",
-          "duration": 45,
-          "intensityLabel":"Modéré",
+          "intensityZones": [],
           "description": "Maintien de la force. Aucune augmentation de charges.",
-          "details": [
-            "Force légère + technique sur les mouvements",
-            "Aucune augmentation de charges — maintien uniquement"
+          "duration": 45,
+          "intensityLabel": "Modéré",
+          "intensityScore": 4,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Force légère + technique sur les mouvements"
+            },
+            {
+              "type": "recovery",
+              "label": "Aucune augmentation de charges — maintien uniquement"
+            }
           ]
         }
       ]
@@ -1554,7 +3083,8 @@
       "weekNumber": 17,
       "phase": 4,
       "theme": "Affûtage 2",
-      "dateRange": "7–13 Septembre",
+      "startDate": "2026-09-07",
+      "endDate": "2026-09-13",
       "isDeload": false,
       "weekNote": "Volume –40% · Confiance et fraîcheur physique",
       "sessions": [
@@ -1564,10 +3094,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité + rouleau de massage"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité + rouleau de massage"
+            }
+          ]
         },
         {
           "id": "w17-run-a",
@@ -1575,13 +3113,33 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Intervalles 4 × 1km + Footing",
-          "duration": 55,
-          "intensityLabel":"Z3/Z4",
+          "intensityZones": [
+            "Z3",
+            "Z4"
+          ],
           "description": "Réduction progressive du volume.",
-          "details": [
-            "4 × 1km (lui 4:15–4:25/km · elle 5:20–5:30/km)",
-            "20 min footing facile en fin",
-            "Volume –40% vs pic Phase 3"
+          "duration": 55,
+          "intensityLabel": "Z3/Z4",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 4,
+              "setDistanceKm": 1,
+              "recoveryMin": 0,
+              "pace": {
+                "him": "4:15–4:25/km",
+                "her": "5:20–5:30/km"
+              }
+            },
+            {
+              "type": "run",
+              "durationMin": 20
+            },
+            {
+              "type": "recovery",
+              "label": "Volume –40% vs pic Phase 3"
+            }
           ]
         },
         {
@@ -1590,13 +3148,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Technique + Activation",
-          "duration": 50,
-          "intensityLabel":"Léger/Modéré",
+          "intensityZones": [],
           "description": "Séance d'activation légère. Volume –40%.",
-          "details": [
-            "Activation technique sur les 8 mouvements",
-            "Volume –40% — pas de AMRAP ni de simu complète",
-            "Maintien des automatismes techniques"
+          "duration": 50,
+          "intensityLabel": "Léger/Modéré",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Activation technique sur les 8 mouvements"
+            },
+            {
+              "type": "recovery",
+              "label": "Volume –40% — pas de AMRAP ni de simu complète"
+            },
+            {
+              "type": "recovery",
+              "label": "Maintien des automatismes techniques"
+            }
           ]
         },
         {
@@ -1605,12 +3174,23 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Facile",
-          "duration": 35,
-          "intensityLabel":"Z2",
+          "intensityZones": [
+            "Z2"
+          ],
           "description": "Footing de maintien.",
-          "details": [
-            "35 min footing facile",
-            "Lui : 5:10–5:25/km · Elle : 6:20–6:40/km"
+          "duration": 35,
+          "intensityLabel": "Z2",
+          "intensityScore": 3,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 35
+            },
+            {
+              "type": "target_pace",
+              "him": "5:10–5:25/km",
+              "her": "6:20–6:40/km"
+            }
           ]
         },
         {
@@ -1619,13 +3199,28 @@
           "type": "brick",
           "optional": false,
           "title": "Course + Quelques Stations Légères",
-          "duration": 65,
-          "intensityLabel":"Léger/Modéré",
+          "intensityZones": [],
           "description": "Course légère + quelques stations pour maintenir les sensations.",
-          "details": [
-            "50 min course ensemble à 5:50–6:10/km",
-            "2–3 stations techniques aux charges normales",
-            "Pas d'effort maximal"
+          "duration": 65,
+          "intensityLabel": "Léger/Modéré",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 50,
+              "pace": {
+                "him": "5:50–6:10/km",
+                "her": "5:50–6:10/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "2–3 stations techniques aux charges normales"
+            },
+            {
+              "type": "recovery",
+              "label": "Pas d'effort maximal"
+            }
           ]
         }
       ]
@@ -1634,7 +3229,8 @@
       "weekNumber": 18,
       "phase": 4,
       "theme": "Taper",
-      "dateRange": "14–20 Septembre",
+      "startDate": "2026-09-14",
+      "endDate": "2026-09-20",
       "isDeload": false,
       "weekNote": "Volume minimal · Sensations > performance · Arriver frais",
       "sessions": [
@@ -1644,10 +3240,18 @@
           "type": "mobility",
           "optional": true,
           "title": "Mobilité & Étirements",
-          "duration": 30,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Récupération active optionnelle.",
-          "details": ["Étirements + mobilité légère"]
+          "duration": 30,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "exercise",
+              "category": "stretching",
+              "label": "Étirements + mobilité légère"
+            }
+          ]
         },
         {
           "id": "w18-run-a",
@@ -1655,13 +3259,32 @@
           "type": "running",
           "optional": false,
           "title": "Course A — Très Léger 3 × 1km",
-          "duration": 45,
-          "intensityLabel":"Z3",
+          "intensityZones": [
+            "Z3"
+          ],
           "description": "Volume très réduit. Maintenir les sensations sans se fatiguer.",
-          "details": [
-            "3 × 1km (lui 4:30/km · elle 5:40/km)",
-            "20 min footing facile",
-            "Objectif : sensations, pas la performance"
+          "duration": 45,
+          "intensityLabel": "Z3",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "intervals",
+              "sets": 3,
+              "setDistanceKm": 1,
+              "recoveryMin": 0,
+              "pace": {
+                "him": "4:30/km",
+                "her": "5:40/km"
+              }
+            },
+            {
+              "type": "run",
+              "durationMin": 20
+            },
+            {
+              "type": "recovery",
+              "label": "Objectif : sensations, pas la performance"
+            }
           ]
         },
         {
@@ -1670,12 +3293,20 @@
           "type": "hyrox",
           "optional": false,
           "title": "Hyrox A — Activation Minimale",
-          "duration": 35,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Activation minimale sur 3 stations. Maintenir les automatismes.",
-          "details": [
-            "Activation : 3 stations × 2 min, charges légères",
-            "Objectif : maintenir les automatismes techniques uniquement"
+          "duration": 35,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Activation : 3 stations × 2 min, charges légères"
+            },
+            {
+              "type": "recovery",
+              "label": "Objectif : maintenir les automatismes techniques uniquement"
+            }
           ]
         },
         {
@@ -1684,13 +3315,27 @@
           "type": "running",
           "optional": false,
           "title": "Course B — Footing Très Léger",
-          "duration": 30,
-          "intensityLabel":"Z1",
+          "intensityZones": [
+            "Z1"
+          ],
           "description": "Footing très léger. Aucune intensité.",
-          "details": [
-            "30 min footing très léger",
-            "Lui : 5:30–5:50/km · Elle : 6:30–7:00/km",
-            "Aucune intensité — se faire du bien uniquement"
+          "duration": 30,
+          "intensityLabel": "Z1",
+          "intensityScore": 1,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 30
+            },
+            {
+              "type": "target_pace",
+              "him": "5:30–5:50/km",
+              "her": "6:30–7:00/km"
+            },
+            {
+              "type": "recovery",
+              "label": "Aucune intensité — se faire du bien uniquement"
+            }
           ]
         },
         {
@@ -1699,12 +3344,26 @@
           "type": "running",
           "optional": false,
           "title": "Sortie Courte Ensemble + Étirements",
-          "duration": 45,
-          "intensityLabel":"Z1",
+          "intensityZones": [
+            "Z1"
+          ],
           "description": "Dernière sortie légère ensemble avant la race week.",
-          "details": [
-            "30 min course légère ensemble à 6:00–6:15/km",
-            "15 min étirements statiques en fin de séance"
+          "duration": 45,
+          "intensityLabel": "Z1",
+          "intensityScore": 1,
+          "structuredDetails": [
+            {
+              "type": "run",
+              "durationMin": 30,
+              "pace": {
+                "him": "6:00–6:15/km",
+                "her": "6:00–6:15/km"
+              }
+            },
+            {
+              "type": "recovery",
+              "label": "15 min étirements statiques en fin de séance"
+            }
           ]
         }
       ]
@@ -1713,7 +3372,8 @@
       "weekNumber": 19,
       "phase": 4,
       "theme": "Race Week",
-      "dateRange": "21–27 Septembre",
+      "startDate": "2026-09-21",
+      "endDate": "2026-09-27",
       "isDeload": false,
       "weekNote": "🏁 RACE WEEK · Volume quasi nul · Repos · Confiance · RACE DAY DIMANCHE",
       "sessions": [
@@ -1723,12 +3383,21 @@
           "type": "running",
           "optional": false,
           "title": "Jogging Léger + Accélérations",
-          "duration": 25,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Activation légère pour entretenir les sensations sans se fatiguer.",
-          "details": [
-            "20 min jogging léger (lui 5:30–5:50/km · elle 6:30–6:50/km)",
-            "4 accélérations de 100m à allure course — jambes réactives"
+          "duration": 25,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "target_pace",
+              "him": "5:30–5:50/km",
+              "her": "6:30–6:50/km"
+            },
+            {
+              "type": "recovery",
+              "label": "4 accélérations de 100m à allure course — jambes réactives"
+            }
           ]
         },
         {
@@ -1737,13 +3406,24 @@
           "type": "hyrox",
           "optional": false,
           "title": "Activation — 2 Tours Légers × 3 Stations",
-          "duration": 20,
-          "intensityLabel":"Léger",
+          "intensityZones": [],
           "description": "Activation musculaire minimale. 5 minutes au total de travail effectif.",
-          "details": [
-            "2 tours légers × 3 stations (SkiErg, RowErg, Wall Balls)",
-            "5 minutes de travail effectif total",
-            "Charges légères — uniquement pour activer les muscles"
+          "duration": 20,
+          "intensityLabel": "Léger",
+          "intensityScore": 2,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "2 tours légers × 3 stations (SkiErg, RowErg, Wall Balls)"
+            },
+            {
+              "type": "recovery",
+              "label": "5 minutes de travail effectif total"
+            },
+            {
+              "type": "recovery",
+              "label": "Charges légères — uniquement pour activer les muscles"
+            }
           ]
         },
         {
@@ -1752,13 +3432,24 @@
           "type": "recovery",
           "optional": false,
           "title": "Repos — Préparation Équipement",
-          "duration": 0,
-          "intensityLabel":"Repos",
+          "intensityZones": [],
           "description": "Repos complet. Préparer l'équipement, la nutrition, la logistique.",
-          "details": [
-            "Repos complet — aucun entraînement",
-            "Préparer le sac de course, les gels, la tenue",
-            "Confirmer l'heure de départ et le lieu"
+          "duration": 0,
+          "intensityLabel": "Repos",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Repos complet — aucun entraînement"
+            },
+            {
+              "type": "recovery",
+              "label": "Préparer le sac de course, les gels, la tenue"
+            },
+            {
+              "type": "recovery",
+              "label": "Confirmer l'heure de départ et le lieu"
+            }
           ]
         },
         {
@@ -1767,14 +3458,28 @@
           "type": "recovery",
           "optional": false,
           "title": "Repos Total — Hydratation",
-          "duration": 0,
-          "intensityLabel":"Repos",
+          "intensityZones": [],
           "description": "Repos total. Hydratation ++. Sommeil 8h minimum.",
-          "details": [
-            "Repos absolu — aucun entraînement",
-            "Hydratation : 35ml/kg + électrolytes",
-            "Repas : pâtes/riz le soir, bien dormir",
-            "Voyage/déplacement si nécessaire"
+          "duration": 0,
+          "intensityLabel": "Repos",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Repos absolu — aucun entraînement"
+            },
+            {
+              "type": "nutrition",
+              "label": "Hydratation : 35ml/kg + électrolytes"
+            },
+            {
+              "type": "recovery",
+              "label": "Repas : pâtes/riz le soir, bien dormir"
+            },
+            {
+              "type": "recovery",
+              "label": "Voyage/déplacement si nécessaire"
+            }
           ]
         },
         {
@@ -1783,16 +3488,36 @@
           "type": "race",
           "optional": false,
           "title": "🏁 RACE DAY — Hyrox Doubles",
-          "duration": 95,
-          "intensityLabel":"Race Pace",
+          "intensityZones": [],
           "description": "Le jour J ! 19 semaines de préparation. Tout donner ensemble.",
-          "details": [
-            "Activation : 10 min jogging léger + quelques reps SkiErg et RowErg",
-            "Allure course : 5:45–6:00/km ENSEMBLE — ne pas partir trop vite",
-            "Transitions : celui qui attend récupère et prépare la prochaine station",
-            "Communication : 'go' pour le passage de relais",
-            "Stations 7 et 8 : mantras préparés — tenir jusqu'au bout !",
-            "Profiter — regarder la foule, sourire, c'est une fête sportive !"
+          "duration": 95,
+          "intensityLabel": "Race Pace",
+          "intensityScore": 5,
+          "structuredDetails": [
+            {
+              "type": "recovery",
+              "label": "Activation : 10 min jogging léger + quelques reps SkiErg et RowErg"
+            },
+            {
+              "type": "recovery",
+              "label": "Allure course : 5:45–6:00/km ENSEMBLE — ne pas partir trop vite"
+            },
+            {
+              "type": "recovery",
+              "label": "Transitions : celui qui attend récupère et prépare la prochaine station"
+            },
+            {
+              "type": "recovery",
+              "label": "Communication : 'go' pour le passage de relais"
+            },
+            {
+              "type": "recovery",
+              "label": "Stations 7 et 8 : mantras préparés — tenir jusqu'au bout !"
+            },
+            {
+              "type": "recovery",
+              "label": "Profiter — regarder la foule, sourire, c'est une fête sportive !"
+            }
           ]
         }
       ]
