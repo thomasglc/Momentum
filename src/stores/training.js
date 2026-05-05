@@ -1,11 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-const LS_KEY = 'hyrox-completed-sessions'
+const LS_KEY      = 'hyrox-completed-sessions'
+const LS_TIME_LUI = 'hyrox-10km-lui'
+const LS_TIME_ELLE = 'hyrox-10km-elle'
 
 export const useTrainingStore = defineStore('training', () => {
   const currentWeekNumber = ref(1)
   const completedSessions = ref([])
+  const tenKmTimeLui  = ref(null) // secondes
+  const tenKmTimeElle = ref(null)
 
   // Charge les séances validées depuis localStorage
   function initFromLocalStorage() {
@@ -15,6 +19,15 @@ export const useTrainingStore = defineStore('training', () => {
     } catch {
       completedSessions.value = []
     }
+    const lui  = localStorage.getItem(LS_TIME_LUI)
+    const elle = localStorage.getItem(LS_TIME_ELLE)
+    if (lui)  tenKmTimeLui.value  = Number(lui)
+    if (elle) tenKmTimeElle.value = Number(elle)
+  }
+
+  function setTenKmTime(who, seconds) {
+    if (who === 'lui')  { tenKmTimeLui.value  = seconds; localStorage.setItem(LS_TIME_LUI,  seconds ?? '') }
+    if (who === 'elle') { tenKmTimeElle.value = seconds; localStorage.setItem(LS_TIME_ELLE, seconds ?? '') }
   }
 
   function toggleSession(id) {
@@ -40,5 +53,5 @@ export const useTrainingStore = defineStore('training', () => {
     return Math.round((done / sessions.length) * 100)
   })
 
-  return { currentWeekNumber, completedSessions, initFromLocalStorage, toggleSession, setWeek, isCompleted, weekProgress }
+  return { currentWeekNumber, completedSessions, tenKmTimeLui, tenKmTimeElle, initFromLocalStorage, toggleSession, setWeek, setTenKmTime, isCompleted, weekProgress }
 })

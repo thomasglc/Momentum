@@ -24,6 +24,9 @@
       <p class="text-xs text-orange-800">{{ currentWeek.weekNote }}</p>
     </div>
 
+    <!-- Paramètres d'allure -->
+    <PaceSettings />
+
     <!-- Liste des séances -->
     <div v-if="currentWeek" class="px-4 mt-3 flex flex-col gap-2.5">
       <SessionCard
@@ -50,6 +53,7 @@ import { getPlan, getWeek } from '@/services/trainingService'
 import WeekNav from '@/components/WeekNav.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import SessionCard from '@/components/SessionCard.vue'
+import PaceSettings from '@/components/PaceSettings.vue'
 
 const store = useTrainingStore()
 const router = useRouter()

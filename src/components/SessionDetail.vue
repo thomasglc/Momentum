@@ -55,6 +55,7 @@
       <SessionPaceChart
         v-if="session.type === 'running' && session.structuredDetails?.length"
         :structuredDetails="session.structuredDetails"
+        :resolvePace="resolvePace"
       />
 
       <!-- Programme -->
@@ -86,7 +87,9 @@
 <script setup>
 import { computed } from 'vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
-import { structuredDetailToBlock } from '@/services/sessionParser'
+import { structuredDetailToBlock, extractRunningSegmentsFromStructured } from '@/services/sessionParser'
+import { paceForZone } from '@/utils/paceCalculator'
+import { useTrainingStore } from '@/stores/training'
 import SessionPaceChart    from './session/SessionPaceChart.vue'
 import SessionProgramBlock from './session/SessionProgramBlock.vue'
 
@@ -97,6 +100,15 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle'])
 
+const store = useTrainingStore()
+
+function resolvePace(zone) {
+  return {
+    lui:  paceForZone(zone, store.tenKmTimeLui),
+    elle: paceForZone(zone, store.tenKmTimeElle),
+  }
+}
+
 const FOCUS_LABELS = {
   Technique: '🎯 Technique', Strength: '💪 Force', Endurance: '🫀 Endurance',
   Transition: '🔗 Transition', Race_Simulation: '⏱ Simulation', Race: '🏁 Race Day', Recovery: '😴 Récup',
@@ -104,5 +116,5 @@ const FOCUS_LABELS = {
 
 const cfg        = computed(() => getSessionTypeConfig(props.session?.type))
 const focusLabel = computed(() => FOCUS_LABELS[props.session?.focus] ?? '')
-const parsedBlocks = computed(() => (props.session?.structuredDetails ?? []).map(structuredDetailToBlock))
+const parsedBlocks = computed(() => (props.session?.structuredDetails ?? []).map(d => structuredDetailToBlock(d, resolvePace)))
 </script>

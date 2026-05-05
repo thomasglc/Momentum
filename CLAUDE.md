@@ -44,3 +44,56 @@ src/data/plan.json
 ### Extending the Data Source
 
 To replace the static JSON with an API, update `src/services/trainingService.js` — the store and views consume only its exported functions and do not import `plan.json` directly.
+
+---
+
+## Migration Directus — état courant
+
+L'app est en cours de migration vers une base **Directus 11** locale.
+
+- URL : `http://localhost:8056`
+- Token admin : `4pCpZ9L8D9c4F2W6YRiDKKrjMDtZRuBb`
+- Scripts dans `scripts/` (tous en `.cjs` car `"type":"module"` dans package.json)
+
+### Ce qui est fait ✓
+
+**Schéma** (`scripts/create-directus-schema.cjs`) — 16 collections créées :
+- `plans`, `weeks`, `sessions`, `session_details`, `athlete_profiles`
+- `block_warmup`, `block_cooldown`, `block_circuit`, `block_mini_race`, `block_station_activation`, `block_strength`, `block_run`, `block_intervals`, `block_target_pace`, `block_brick_run`, `block_station_block`
+
+**Données importées** (`scripts/import-to-directus.cjs`) — 19 semaines, 111 séances, 171 blocs.
+- `sessions.slug` = id lisible original (ex: `"w1-hyrox-a"`)
+- Les PKs sont des **integers auto-increment** (pas des UUIDs malgré la définition initiale)
+- `sessions.week_id` est varchar et stocke l'integer en string (ex: `"12"`) — fonctionne
+- `block_intervals.paceZone` nullable (séances simu sans zone)
+- `block_station_block.brickFormat` est string (valeurs : standard, pyramid, follow_the_leader, emom)
+
+**Liens inverses O2M** (`scripts/add-reverse-relations.cjs`) — fonctionnels :
+- `plans.weeks` → liste les semaines d'un plan
+- `plans.athletes` → liste les profils athlètes
+- `weeks.sessions` → liste les séances d'une semaine
+
+### Problème ouvert ⚠️
+
+Le lien **M2A sessions → blocs** n'est pas encore opérationnel dans l'UI Directus.
+
+Historique :
+1. Ajout du champ alias `sessions.blocks` (M2A) → erreur "relationship not configured properly"
+2. Tentative de fix → "Page Not Found" sur le détail session
+3. Suppression de `sessions.blocks` pour stabiliser → détail session OK, mais blocs pas visibles
+
+État actuel de `session_details.item` relation :
+- `junction_field: "session_id"`, `one_collection_field: "collection"`, `one_allowed_collections: [...]`
+- `one_field: "blocks"` — **cassé** (le champ sessions.blocks a été supprimé)
+- À corriger : soit remettre `one_field: null`, soit recréer le champ proprement
+
+**Approche recommandée pour la suite** : recréer le lien M2A directement via l'UI Directus :
+> Data Model > sessions > Add field > Many to Any > junction: session_details, FK: item, collection field: collection
+
+### Prochaine étape
+
+Après avoir réparé le M2A, migrer `src/services/trainingService.js` pour lire depuis Directus :
+- `GET /items/plans?fields=*,weeks.*,weeks.sessions.*`
+- `GET /items/sessions/{slug}?filter[slug][_eq]={slug}&fields=*,blocks.*.*`
+
+Le store et les vues n'ont pas besoin de changer — seul `trainingService.js` est à modifier.

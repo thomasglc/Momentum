@@ -72,10 +72,12 @@ export function parseExercise(raw) {
 
 // ─── structuredDetail → block (for SessionProgramBlock) ──────────────────────
 
-export function structuredDetailToBlock(d) {
+export function structuredDetailToBlock(d, resolvePace = null) {
   switch (d.type) {
-    case 'warmup':
-      return { type: 'warmup', header: `Échauffement ${d.durationMin} min`, content: d.label || null }
+    case 'warmup': {
+      const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
+      return { type: 'warmup', header: `Échauffement ${d.durationMin} min`, content: d.label || null, paces }
+    }
 
     case 'cooldown':
       return { type: 'cooldown', header: `Retour au calme ${d.durationMin} min`, content: d.label || null }
@@ -99,21 +101,44 @@ export function structuredDetailToBlock(d) {
     }
 
     case 'intervals': {
-      const dist = d.setDistanceKm != null ? `${d.setDistanceKm} km` : `${d.setDurationMin} min`
-      const note = d.recoveryMin > 0 ? `récup ${d.recoveryMin} min` : null
-      const paces = d.pace ? { lui: d.pace.him, elle: d.pace.her } : null
+      const dist  = d.setDistanceKm != null ? `${d.setDistanceKm} km` : `${d.setDurationMin} min`
+      const note  = d.recoveryMin > 0 ? `récup ${d.recoveryMin} min` : null
+      const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
       return { type: 'interval', header: `${d.sets} × ${dist}`, paces, note }
     }
 
     case 'run':
-      if (d.pace) return { type: 'pace', paces: { lui: d.pace.him, elle: d.pace.her } }
       return { type: 'text', content: `${d.durationMin} min` }
 
-    case 'target_pace':
-      return { type: 'pace', paces: { lui: d.him, elle: d.her } }
+    case 'target_pace': {
+      const paces = d.zone ? resolvePace?.(d.zone) ?? null : null
+      return { type: 'pace', paces }
+    }
 
-    case 'brick_run':
-      return { type: 'brick_run', durationMin: d.durationMin, pace: d.pace ?? null, note: d.note ?? null }
+    case 'brick_run': {
+      const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
+      return { type: 'brick_run', durationMin: d.durationMin, paces, note: d.note ?? null }
+    }
+
+    case 'mini_race': {
+      const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
+      return {
+        type: 'mini_race',
+        rounds: d.rounds,
+        runDistanceKm: d.runDistanceKm,
+        restBetweenRoundsMin: d.restBetweenRoundsMin,
+        stations: (d.stations ?? []).map(parseExercise),
+        paces,
+      }
+    }
+
+    case 'station_activation':
+      return {
+        type: 'station_activation',
+        note: d.note ?? null,
+        rounds: d.rounds ?? null,
+        stations: (d.stations ?? []).map(parseExercise),
+      }
 
     case 'station_block': {
       const duoRoles = d.duoRoles
@@ -152,7 +177,7 @@ export function structuredDetailToBlock(d) {
 
 // ─── Running segment extractor (structured) ───────────────────────────────────
 
-export function extractRunningSegmentsFromStructured(structuredDetails) {
+export function extractRunningSegmentsFromStructured(structuredDetails, resolvePace = null) {
   const segs = []
 
   for (const d of structuredDetails) {
@@ -165,16 +190,20 @@ export function extractRunningSegmentsFromStructured(structuredDetails) {
         segs.push({ type: 'cooldown', duration: d.durationMin, paces: null })
         break
 
-      case 'run': {
-        const paces = d.pace ? { lui: d.pace.him, elle: d.pace.her } : null
-        segs.push({ type: 'easy', duration: d.durationMin, paces })
+      case 'run':
+        segs.push({ type: 'easy', duration: d.durationMin, paces: null })
+        break
+
+      case 'target_pace': {
+        const last = segs[segs.length - 1]
+        if (last?.type === 'easy' && d.zone) last.paces = resolvePace?.(d.zone) ?? null
         break
       }
 
       case 'intervals': {
         const workMin = d.setDistanceKm != null ? Math.round(d.setDistanceKm * 5) : d.setDurationMin
         const recovMin = d.recoveryMin ?? 1.5
-        const paces = d.pace ? { lui: d.pace.him, elle: d.pace.her } : null
+        const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
         for (let i = 0; i < d.sets; i++) {
           segs.push({ type: 'tempo', duration: workMin, paces })
           if (i < d.sets - 1) segs.push({ type: 'recovery', duration: recovMin, paces: null })

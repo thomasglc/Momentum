@@ -8,6 +8,16 @@
     <div v-if="block.content" class="px-3 py-2 bg-orange-50">
       <p class="text-xs text-gray-700 leading-relaxed">{{ block.content }}</p>
     </div>
+    <div v-if="block.paces" class="flex gap-2 px-2 pb-2 bg-orange-50">
+      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+        <p class="text-xs font-bold text-orange-600">{{ block.paces.lui }}</p>
+      </div>
+      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+        <p class="text-xs font-bold text-orange-600">{{ block.paces.elle }}</p>
+      </div>
+    </div>
   </div>
 
   <!-- Cooldown -->
@@ -76,20 +86,79 @@
       <span class="text-xs font-bold text-white uppercase tracking-wide">Course</span>
       <span class="ml-auto text-white font-bold">{{ block.durationMin }} min</span>
     </div>
-    <div v-if="block.pace" class="flex gap-2 px-2 py-2 bg-emerald-50">
+    <div v-if="block.paces" class="flex gap-2 px-2 py-2 bg-emerald-50">
       <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5 uppercase tracking-wide">Allure min</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.pace.min }}</p>
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+        <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
       </div>
-      <div class="flex items-center text-emerald-300 font-bold text-lg">→</div>
       <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5 uppercase tracking-wide">Allure max</p>
-        <p class="text-sm font-bold text-emerald-500">{{ block.pace.max }}</p>
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+        <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
       </div>
     </div>
     <div v-if="block.note" class="px-3 py-2 bg-emerald-50 border-t border-emerald-100 flex items-start gap-1.5">
       <span class="text-xs">💡</span>
       <p class="text-[11px] text-emerald-800 leading-relaxed">{{ block.note }}</p>
+    </div>
+  </div>
+
+  <!-- Mini race — N × (Xkm + station) -->
+  <div v-else-if="block.type === 'mini_race'" class="rounded-xl overflow-hidden border border-violet-200">
+    <div class="flex items-center gap-2 px-3 py-2.5 bg-violet-500">
+      <span>⏱</span>
+      <span class="text-xs font-bold text-white uppercase tracking-wide">
+        {{ block.rounds }} × {{ block.runDistanceKm }} km + Station
+      </span>
+      <span v-if="block.restBetweenRoundsMin" class="ml-auto text-white/80 text-[11px]">
+        repos {{ block.restBetweenRoundsMin }} min
+      </span>
+    </div>
+    <div v-if="block.paces" class="flex gap-2 px-2 pt-2 bg-violet-50">
+      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+        <p class="text-xs font-bold text-violet-700">{{ block.paces.lui }}</p>
+      </div>
+      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+        <p class="text-xs font-bold text-violet-700">{{ block.paces.elle }}</p>
+      </div>
+    </div>
+    <div class="bg-violet-50 p-2 space-y-1.5" :class="block.paces ? 'pt-2' : ''">
+      <div
+        v-for="(ex, i) in block.stations"
+        :key="i"
+        class="flex items-center gap-3 bg-white rounded-xl px-3 py-2 border border-violet-100"
+      >
+        <span class="text-[10px] font-bold text-violet-400 w-4 flex-shrink-0">{{ i + 1 }}</span>
+        <span class="text-xl flex-shrink-0">{{ ex.emoji }}</span>
+        <p class="text-xs font-semibold text-gray-700 flex-1 leading-tight">{{ ex.name }}</p>
+        <span v-if="ex.value" class="text-xs font-bold text-violet-600 flex-shrink-0">{{ ex.value }}</span>
+        <span v-if="ex.note" class="text-[10px] text-gray-400 flex-shrink-0">{{ ex.note }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Station activation -->
+  <div v-else-if="block.type === 'station_activation'" class="rounded-xl overflow-hidden border border-sky-200">
+    <div class="flex items-center gap-2 px-3 py-2.5 bg-sky-400">
+      <span>🎯</span>
+      <span class="text-xs font-bold text-white uppercase tracking-wide">Activation technique</span>
+      <span v-if="block.rounds" class="ml-auto text-white/80 text-[11px]">{{ block.rounds }} tours</span>
+    </div>
+    <div v-if="block.note" class="px-3 py-2 bg-sky-50 border-b border-sky-100">
+      <p class="text-[11px] text-sky-900 leading-relaxed">{{ block.note }}</p>
+    </div>
+    <div class="bg-sky-50 p-2 space-y-1.5">
+      <div
+        v-for="(ex, i) in block.stations"
+        :key="i"
+        class="flex items-center gap-3 bg-white rounded-xl px-3 py-2 border border-sky-100"
+      >
+        <span class="text-xl flex-shrink-0">{{ ex.emoji }}</span>
+        <p class="text-xs font-semibold text-gray-700 flex-1 leading-tight">{{ ex.name }}</p>
+        <span v-if="ex.value" class="text-xs font-bold text-sky-600 flex-shrink-0">{{ ex.value }}</span>
+        <span v-if="ex.note" class="text-[10px] text-gray-400 flex-shrink-0">{{ ex.note }}</span>
+      </div>
     </div>
   </div>
 
