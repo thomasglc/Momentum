@@ -13,7 +13,14 @@
       "Bash(Out-Null)",
       "Bash(Write-Host \"OK\")",
       "PowerShell(New-Item *)",
-      "PowerShell(Rename-Item *)"
+      "PowerShell(Rename-Item *)",
+      "Bash(python3 *)",
+      "Bash(py -3 -c \"import sqlite3; print\\('ok'\\)\")",
+      "Bash(python -c \"import sqlite3; print\\('ok'\\)\")",
+      "Bash(where python3 *)",
+      "Bash(curl -s \"http://localhost:8056/items/plans?access_token=4pCpZ9L8D9c4F2W6YRiDKKrjMDtZRuBb\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl *)"
     ]
   }
 }

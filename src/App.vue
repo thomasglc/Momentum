@@ -1,17 +1,8 @@
 <template>
   <div class="min-h-screen bg-stone-100">
 
-    <!-- Header fixe -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-900">
-      <div class="max-w-[480px] mx-auto px-4 py-3.5">
-        <h1 class="text-center text-xs font-black tracking-[0.3em] text-white uppercase">
-          Momentum
-        </h1>
-      </div>
-    </header>
-
     <!-- Contenu -->
-    <main class="max-w-[480px] mx-auto pt-11 pb-16">
+    <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto pb-16'">
       <RouterView v-slot="{ Component }">
         <Transition name="fade" mode="out-in">
           <component :is="Component" />
@@ -20,7 +11,7 @@
     </main>
 
     <!-- Bottom Tab Nav -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200">
+    <nav v-if="!isLoginPage" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200">
       <div class="max-w-[480px] mx-auto flex">
         <RouterLink
           v-for="tab in tabs"
@@ -46,20 +37,24 @@
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
+import { useAuthStore } from '@/stores/auth'
 import { getPlan } from '@/services/trainingService'
 import { getCurrentWeekNumber } from '@/utils/dateUtils'
 
 const store = useTrainingStore()
+const auth  = useAuthStore()
 const route = useRoute()
 
 const tabs = [
   { id: 'programme', label: 'Programme', to: '/',         icon: '📅' },
   { id: 'stations',  label: 'Stations',  to: '/stations', icon: '🏋️' },
   { id: 'phases',    label: 'Phases',    to: '/phases',   icon: '📊' },
-  { id: 'guide',     label: 'Guide',     to: '/guide',    icon: '📖' },
+  { id: 'guide',     label: 'Paramètres', to: '/guide',   icon: '⚙️' },
 ]
 
 // '/session/:id' maps to the Programme tab
+const isLoginPage = computed(() => route.path === '/login' || route.path === '/onboarding')
+
 const activeTab = computed(() => {
   const path = route.path
   if (path.startsWith('/stations')) return 'stations'
@@ -70,8 +65,17 @@ const activeTab = computed(() => {
 
 onMounted(async () => {
   store.initFromLocalStorage()
-  const plan = await getPlan()
-  store.setWeek(getCurrentWeekNumber(plan.plan.startDate, plan.plan.totalWeeks))
+
+  // Le profil est déjà chargé par le guard (auth.init()) — on synchronise juste les allures
+  const { gender, ten_km_time_sec } = auth.user ?? {}
+  if (ten_km_time_sec) {
+    store.setTenKmTime(gender === 'femme' ? 'elle' : 'lui', ten_km_time_sec)
+  }
+
+  if (auth.isAuthenticated && auth.profileComplete) {
+    const plan = await getPlan()
+    store.setWeek(getCurrentWeekNumber(plan.plan.startDate, plan.plan.totalWeeks))
+  }
 })
 </script>
 

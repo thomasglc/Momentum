@@ -1,189 +1,177 @@
-<template>
-  <div class="px-4 py-4 pb-6 flex flex-col gap-5">
+<script setup>
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useTrainingStore } from '@/stores/training'
+import { useAuthStore } from '@/stores/auth'
+import { calcVDOT, calcZones } from '@/utils/paceCalculator'
+import { clearPlanCache } from '@/services/trainingService'
 
-    <!-- Format Duo -->
+const router = useRouter()
+const store  = useTrainingStore()
+const auth   = useAuthStore()
+
+// ── Allures ────────────────────────────────────────────────────────────────
+
+function parseTime(str) {
+  const parts = str.trim().split(':')
+  if (parts.length !== 2) return null
+  const m = parseInt(parts[0]), s = parseInt(parts[1])
+  if (isNaN(m) || isNaN(s) || s >= 60) return null
+  return m * 60 + s
+}
+
+function formatTime(sec) {
+  if (!sec) return ''
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`
+}
+
+function savePace(who, value) {
+  store.setTenKmTime(who, parseTime(value))
+}
+
+const vdotLui  = computed(() => store.tenKmTimeLui  ? Math.round(calcVDOT(10000, store.tenKmTimeLui)  * 10) / 10 : null)
+const vdotElle = computed(() => store.tenKmTimeElle ? Math.round(calcVDOT(10000, store.tenKmTimeElle) * 10) / 10 : null)
+
+// ── Zones ──────────────────────────────────────────────────────────────────
+
+const ZONE_STYLES = {
+  Z1: { bg: 'bg-slate-100',   text: 'text-slate-600',   bar: 'bg-slate-400'   },
+  Z2: { bg: 'bg-emerald-50',  text: 'text-emerald-700', bar: 'bg-emerald-400' },
+  Z3: { bg: 'bg-amber-50',    text: 'text-amber-700',   bar: 'bg-amber-400'   },
+  Z4: { bg: 'bg-orange-50',   text: 'text-orange-700',  bar: 'bg-orange-500'  },
+  Z5: { bg: 'bg-red-50',      text: 'text-red-700',     bar: 'bg-red-500'     },
+}
+
+const ZONE_KEYS = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5']
+
+const athletes = computed(() => {
+  const list = []
+  if (store.tenKmTimeLui)  list.push({ label: '👨 Lui',  zones: calcZones(store.tenKmTimeLui) })
+  if (store.tenKmTimeElle) list.push({ label: '👩 Elle', zones: calcZones(store.tenKmTimeElle) })
+  return list
+})
+
+// ── Compte ─────────────────────────────────────────────────────────────────
+
+function logout() {
+  auth.logout()
+  clearPlanCache()
+  router.replace('/login')
+}
+</script>
+
+<template>
+  <div class="px-4 py-5 pb-8 flex flex-col gap-6">
+
+    <!-- Section allures -->
     <section>
-      <h2 class="text-base font-bold text-gray-800 mb-2">Format Hyrox Doubles</h2>
-      <div class="bg-slate-800 rounded-xl p-4 text-white">
-        <p class="text-2xl font-black text-orange-400 leading-none">{{ guide.duoFormat.targetTime }}</p>
-        <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5 mb-3">Objectif de temps</p>
-        <div class="flex gap-2 mb-4">
-          <div
-            v-for="b in guide.duoFormat.breakdown"
-            :key="b.label"
-            class="flex-1 bg-white/10 rounded-lg p-2 text-center"
-          >
-            <p class="text-sm font-bold text-orange-400">{{ b.value }}</p>
-            <p class="text-[10px] text-gray-400 leading-tight mt-0.5">{{ b.label }}</p>
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Allures de course</h2>
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 flex flex-col gap-4">
+        <p class="text-xs text-stone-500 leading-relaxed">
+          Temps au 10km utilisés pour calculer automatiquement les allures de chaque séance (méthode VDOT).
+        </p>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- LUI -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">👨 Lui</label>
+            <input
+              type="text"
+              placeholder="ex: 48:30"
+              :value="formatTime(store.tenKmTimeLui)"
+              @change="e => savePace('lui', e.target.value)"
+              class="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 transition-colors"
+            />
+            <p v-if="vdotLui" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotLui }}</p>
+          </div>
+
+          <!-- ELLE -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">👩 Elle</label>
+            <input
+              type="text"
+              placeholder="ex: 57:00"
+              :value="formatTime(store.tenKmTimeElle)"
+              @change="e => savePace('elle', e.target.value)"
+              class="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 transition-colors"
+            />
+            <p v-if="vdotElle" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotElle }}</p>
           </div>
         </div>
-        <ul class="flex flex-col gap-1.5">
-          <li
-            v-for="rule in guide.duoFormat.rules"
-            :key="rule"
-            class="flex gap-2 text-xs text-gray-300"
-          >
-            <span class="text-orange-400 flex-shrink-0 mt-0.5">▸</span>
-            <span>{{ rule }}</span>
-          </li>
-        </ul>
       </div>
     </section>
 
-    <!-- Allures de référence -->
-    <section>
-      <h2 class="text-base font-bold text-gray-800 mb-2">Allures de Référence</h2>
+    <!-- Section zones -->
+    <section v-if="athletes.length">
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Zones de course</h2>
       <div class="flex flex-col gap-3">
         <div
-          v-for="person in [guide.paces.lui, guide.paces.elle]"
-          :key="person.name"
-          class="bg-white rounded-xl shadow-sm p-4"
+          v-for="athlete in athletes"
+          :key="athlete.label"
+          class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden"
         >
-          <div class="flex items-center gap-2 mb-1">
-            <p class="font-bold text-gray-800">{{ person.name }}</p>
-            <span class="text-xl font-black text-orange-500">{{ person.semiTime }}</span>
-            <span class="text-xs text-gray-400">semi · {{ person.semipace }}</span>
+          <!-- En-tête -->
+          <div class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-stone-100">
+            <span class="text-sm font-bold text-stone-800">{{ athlete.label }}</span>
+            <span class="text-xs font-semibold text-stone-400">VDOT {{ athlete.zones.vdot }}</span>
           </div>
-          <p class="text-xs text-gray-500 mb-3 leading-relaxed">{{ person.priority }}</p>
 
-          <!-- Table zones -->
-          <table class="w-full text-xs mb-3">
-            <thead>
-              <tr class="text-gray-400">
-                <th class="pb-1.5 font-semibold text-left w-8">Zone</th>
-                <th class="pb-1.5 font-semibold text-left">Type</th>
-                <th class="pb-1.5 font-semibold text-right">Allure /km</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="z in person.zones"
-                :key="z.zone"
-                class="border-t border-gray-100"
-              >
-                <td class="py-1.5 font-bold text-blue-500">{{ z.zone }}</td>
-                <td class="py-1.5 text-gray-600">{{ z.desc }}</td>
-                <td class="py-1.5 text-right font-semibold text-gray-800">{{ z.pace }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="bg-blue-50 rounded-lg px-3 py-2">
-            <p class="text-xs text-blue-700"><strong>Allure race :</strong> {{ person.raceTarget }}</p>
-            <p class="text-xs text-blue-600 mt-0.5">{{ person.note }}</p>
+          <!-- Zones -->
+          <div class="divide-y divide-stone-50">
+            <div
+              v-for="key in ZONE_KEYS"
+              :key="key"
+              class="flex items-center gap-3 px-4 py-2.5"
+              :class="ZONE_STYLES[key].bg"
+            >
+              <div class="w-1 self-stretch rounded-full flex-shrink-0" :class="ZONE_STYLES[key].bar" />
+              <div class="flex-1 min-w-0">
+                <p class="text-[10px] font-bold uppercase tracking-wider" :class="ZONE_STYLES[key].text">
+                  {{ key }} · {{ athlete.zones[key].label }}
+                </p>
+              </div>
+              <span class="text-xs font-semibold text-stone-700 tabular-nums flex-shrink-0">
+                {{ athlete.zones[key].display }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Règles de progression -->
-    <section>
-      <h2 class="text-base font-bold text-gray-800 mb-2">Règles de Progression</h2>
-      <div class="flex flex-col gap-2">
-        <div class="bg-emerald-50 rounded-xl p-4">
-          <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-2">✅ Quand monter en charge</p>
-          <ul class="flex flex-col gap-1.5">
-            <li
-              v-for="r in guide.progressionRules.increase"
-              :key="r"
-              class="flex gap-2 text-xs text-emerald-800"
-            >
-              <span class="flex-shrink-0">▸</span><span>{{ r }}</span>
-            </li>
-          </ul>
-        </div>
-        <div class="bg-red-50 rounded-xl p-4">
-          <p class="text-[10px] font-bold text-red-600 uppercase tracking-widest mb-2">⛔ Quand ne pas monter</p>
-          <ul class="flex flex-col gap-1.5">
-            <li
-              v-for="r in guide.progressionRules.noIncrease"
-              :key="r"
-              class="flex gap-2 text-xs text-red-800"
-            >
-              <span class="flex-shrink-0">▸</span><span>{{ r }}</span>
-            </li>
-          </ul>
-        </div>
+    <!-- Placeholder si aucun temps renseigné -->
+    <section v-else>
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Zones de course</h2>
+      <div class="bg-white rounded-2xl border border-stone-100 px-4 py-6 text-center">
+        <p class="text-sm text-stone-400">Renseigne un temps au 10km ci-dessus pour voir tes zones.</p>
       </div>
     </section>
 
-    <!-- Mobilité -->
+    <!-- Section compte -->
     <section>
-      <h2 class="text-base font-bold text-gray-800 mb-1">Séance Mobilité</h2>
-      <p class="text-xs text-gray-500 mb-2">{{ guide.mobility.duration }} · {{ guide.mobility.when }}</p>
-      <div class="flex flex-col gap-2">
-        <div
-          v-for="s in guide.mobility.sections"
-          :key="s.title"
-          class="bg-white rounded-xl shadow-sm p-4"
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Compte</h2>
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-100 divide-y divide-stone-100">
+
+        <div class="px-4 py-3.5 flex items-center justify-between">
+          <span class="text-sm text-stone-500">Connecté en tant que</span>
+          <span class="text-sm font-semibold text-stone-800">{{ [auth.user?.first_name, auth.user?.last_name].filter(Boolean).join(' ') || '—' }}</span>
+        </div>
+
+        <div class="px-4 py-3.5 flex items-center justify-between">
+          <span class="text-sm text-stone-500">Genre</span>
+          <span class="text-sm font-semibold text-stone-800 capitalize">{{ auth.user?.gender ?? '—' }}</span>
+        </div>
+
+        <button
+          @click="logout"
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
         >
-          <p class="text-sm font-bold text-gray-800 mb-0.5">{{ s.title }}</p>
-          <p class="text-[10px] text-gray-400 mb-2">{{ s.duration }}</p>
-          <ul class="flex flex-col gap-1">
-            <li
-              v-for="ex in s.exercises"
-              :key="ex"
-              class="flex gap-2 text-xs text-gray-600"
-            >
-              <span class="text-violet-400 flex-shrink-0">▸</span><span>{{ ex }}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
+          <span class="text-sm font-semibold text-red-500">Se déconnecter</span>
+          <span class="text-stone-300">›</span>
+        </button>
 
-    <!-- Race Day -->
-    <section>
-      <h2 class="text-base font-bold text-gray-800 mb-2">🏁 Semaine Race Day</h2>
-
-      <!-- Calendrier semaine J -->
-      <div class="bg-white rounded-xl shadow-sm p-4 mb-2">
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Semaine type</p>
-        <div class="flex flex-col gap-2">
-          <div
-            v-for="d in guide.raceDay.week"
-            :key="d.day"
-            class="flex gap-3 items-start"
-          >
-            <span class="text-xs font-bold text-orange-500 flex-shrink-0 w-24">{{ d.day }}</span>
-            <p class="text-xs text-gray-600">{{ d.content }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Conseils course -->
-      <div class="bg-white rounded-xl shadow-sm p-4 mb-2">
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Conseils Race Day</p>
-        <ul class="flex flex-col gap-1.5">
-          <li
-            v-for="tip in guide.raceDay.tips"
-            :key="tip"
-            class="flex gap-2 text-xs text-gray-700"
-          >
-            <span class="text-orange-400 flex-shrink-0">▸</span><span>{{ tip }}</span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Nutrition -->
-      <div class="bg-emerald-50 rounded-xl p-4">
-        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-2">Nutrition</p>
-        <ul class="flex flex-col gap-1.5">
-          <li
-            v-for="n in guide.raceDay.nutrition"
-            :key="n"
-            class="flex gap-2 text-xs text-emerald-800"
-          >
-            <span class="flex-shrink-0">▸</span><span>{{ n }}</span>
-          </li>
-        </ul>
       </div>
     </section>
 
   </div>
 </template>
-
-<script setup>
-import guideData from '@/data/guide.json'
-const guide = guideData
-</script>
