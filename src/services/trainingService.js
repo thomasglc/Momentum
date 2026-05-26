@@ -1,8 +1,29 @@
 import { useAuthStore } from '@/stores/auth'
 
 const DIRECTUS_URL = 'http://localhost:8056'
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 
+// ── Cache mémoire (ultra-rapide, dure le temps de la session) ─────────────
 let _planCache = null
+const _weekCache    = new Map()
+const _sessionCache = new Map()
+
+// ── Cache localStorage (survit au refresh) ───────────────────────────────
+function lsGet(key) {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return null
+    const { data, expires } = JSON.parse(raw)
+    if (Date.now() > expires) { localStorage.removeItem(key); return null }
+    return data
+  } catch { return null }
+}
+
+function lsSet(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ data, expires: Date.now() + CACHE_TTL_MS }))
+  } catch {} // quota dépassé → on ignore
+}
 
 async function api(path, params = {}) {
   const url = new URL(`${DIRECTUS_URL}${path}`)
@@ -19,6 +40,12 @@ async function api(path, params = {}) {
 
 export function clearPlanCache() {
   _planCache = null
+  _weekCache.clear()
+  _sessionCache.clear()
+  // Purger les entrées localStorage du plan
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('momentum-week-') || k.startsWith('momentum-session-') || k === 'momentum-plan')
+    .forEach(k => localStorage.removeItem(k))
 }
 
 function intensityLabel(score) {
@@ -39,6 +66,12 @@ function weekDates(startDate, weekNumber) {
   return { startDate: fmt(start), endDate: fmt(end) }
 }
 
+const DAY_ORDER = { Lundi: 0, Mardi: 1, Mercredi: 2, Jeudi: 3, Vendredi: 4, Samedi: 5, Dimanche: 6 }
+
+function sortByDay(sessions) {
+  return [...sessions].sort((a, b) => (DAY_ORDER[a.day] ?? 7) - (DAY_ORDER[b.day] ?? 7))
+}
+
 function mapSession(s) {
   return {
     id: s.id,
@@ -50,7 +83,6 @@ function mapSession(s) {
     duration: s.duration_min ?? 0,
     intensityLabel: intensityLabel(s.intensity_score),
     intensityScore: s.intensity_score,
-    focus: s.focus,
     coachTip: s.coach_tip,
     slug: s.slug,
   }
@@ -203,6 +235,10 @@ async function fetchBlock({ block_type, block_id }) {
 
 async function loadPlan() {
   if (_planCache) return _planCache
+
+  const cached = lsGet('momentum-plan')
+  if (cached) { _planCache = cached; return _planCache }
+
   const plans = await api('/items/plans', { limit: 1, fields: 'id,start_date' })
   const p = plans[0]
   const weeks = await api('/items/weeks', {
@@ -212,6 +248,7 @@ async function loadPlan() {
     limit: -1,
   })
   _planCache = { id: p.id, startDate: p.start_date, totalWeeks: weeks.length }
+  lsSet('momentum-plan', _planCache)
   return _planCache
 }
 
@@ -221,6 +258,11 @@ export async function getPlan() {
 }
 
 export async function getWeek(weekNumber) {
+  if (_weekCache.has(weekNumber)) return _weekCache.get(weekNumber)
+
+  const cached = lsGet(`momentum-week-${weekNumber}`)
+  if (cached) { _weekCache.set(weekNumber, cached); return cached }
+
   const p = await loadPlan()
   const weeks = await api('/items/weeks', {
     'filter[plan_id][_eq]': p.id,
@@ -237,7 +279,7 @@ export async function getWeek(weekNumber) {
   })
   const { startDate, endDate } = weekDates(p.startDate, weekNumber)
 
-  return {
+  const result = {
     id: week.id,
     weekNumber: week.week_number,
     phase: week.phase,
@@ -246,11 +288,20 @@ export async function getWeek(weekNumber) {
     weekNote: week.week_note,
     startDate,
     endDate,
-    sessions: sessions.map(mapSession),
+    sessions: sortByDay(sessions.map(mapSession)),
   }
+  _weekCache.set(weekNumber, result)
+  lsSet(`momentum-week-${weekNumber}`, result)
+  return result
 }
 
 export async function getSession(id) {
+  const key = String(id)
+  if (_sessionCache.has(key)) return _sessionCache.get(key)
+
+  const cached = lsGet(`momentum-session-${key}`)
+  if (cached) { _sessionCache.set(key, cached); return cached }
+
   const [session, blocks] = await Promise.all([
     api(`/items/sessions/${id}`),
     api('/items/session_blocks', {
@@ -260,5 +311,8 @@ export async function getSession(id) {
     }),
   ])
   const structuredDetails = await Promise.all(blocks.map(fetchBlock))
-  return { ...mapSession(session), structuredDetails }
+  const result = { ...mapSession(session), structuredDetails }
+  _sessionCache.set(key, result)
+  lsSet(`momentum-session-${key}`, result)
+  return result
 }

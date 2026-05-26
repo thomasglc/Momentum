@@ -53,6 +53,11 @@ const athletes = computed(() => {
 
 // ── Compte ─────────────────────────────────────────────────────────────────
 
+function refreshCache() {
+  clearPlanCache()
+  router.replace('/')
+}
+
 function logout() {
   auth.logout()
   clearPlanCache()
@@ -161,6 +166,14 @@ function logout() {
           <span class="text-sm text-stone-500">Genre</span>
           <span class="text-sm font-semibold text-stone-800 capitalize">{{ auth.user?.gender ?? '—' }}</span>
         </div>
+
+        <button
+          @click="refreshCache"
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
+        >
+          <span class="text-sm text-stone-600">Actualiser les données</span>
+          <span class="text-stone-300">↺</span>
+        </button>
 
         <button
           @click="logout"

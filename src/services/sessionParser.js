@@ -83,7 +83,16 @@ export function structuredDetailToBlock(d, resolvePace = null) {
       return { type: 'cooldown', header: `Retour au calme ${d.durationMin} min`, content: d.label || null }
 
     case 'circuit': {
-      const hdr = d.label ?? `Circuit × ${d.rounds} passage${d.rounds !== 1 ? 's' : ''}`
+      let hdr
+      if (d.format === 'amrap') {
+        const fmt = d.durationMin ? `AMRAP ${d.durationMin} min` : 'AMRAP'
+        hdr = d.label ? `${d.label} — ${fmt}` : fmt
+      } else if (d.format === 'time') {
+        const fmt = d.durationMin ? `Circuit ${d.durationMin} min` : 'Circuit'
+        hdr = d.label ? `${d.label} — ${fmt}` : fmt
+      } else {
+        hdr = d.label ?? `Circuit × ${d.rounds ?? '?'} passage${d.rounds !== 1 ? 's' : ''}`
+      }
       const rest = d.restBetweenMin > 0 ? ` — repos ${d.restBetweenMin} min` : ''
       return { type: 'circuit', header: hdr + rest, exercises: d.stations?.map(parseExercise) ?? null, content: null }
     }

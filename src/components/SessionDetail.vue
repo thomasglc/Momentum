@@ -9,7 +9,6 @@
           <span>{{ cfg.icon }}</span>{{ cfg.label }}
         </span>
         <span v-if="session.optional" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/70">Optionnel</span>
-        <span v-if="session.focus" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/80 border border-white/20">{{ focusLabel }}</span>
       </div>
       <h2 class="text-xl font-bold text-white leading-snug mb-2">{{ session.title }}</h2>
       <div class="flex items-center gap-2 text-sm flex-wrap" :class="cfg.heroText">
@@ -72,7 +71,6 @@
 
       <!-- Bouton valider -->
       <button
-        v-if="session.duration > 0 || session.type === 'race'"
         @click="emit('toggle')"
         class="w-full py-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98]"
         :class="completed ? cfg.completedBtn : cfg.pendingBtn"
@@ -109,12 +107,6 @@ function resolvePace(zone) {
   }
 }
 
-const FOCUS_LABELS = {
-  Technique: '🎯 Technique', Strength: '💪 Force', Endurance: '🫀 Endurance',
-  Transition: '🔗 Transition', Race_Simulation: '⏱ Simulation', Race: '🏁 Race Day', Recovery: '😴 Récup',
-}
-
-const cfg        = computed(() => getSessionTypeConfig(props.session?.type))
-const focusLabel = computed(() => FOCUS_LABELS[props.session?.focus] ?? '')
+const cfg = computed(() => getSessionTypeConfig(props.session?.type))
 const parsedBlocks = computed(() => (props.session?.structuredDetails ?? []).map(d => structuredDetailToBlock(d, resolvePace)))
 </script>

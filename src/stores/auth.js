@@ -25,13 +25,14 @@ export const useAuthStore = defineStore('auth', () => {
     const res = await fetch(`${DIRECTUS_URL}/users/me?fields=id,first_name,last_name`, {
       headers: { Authorization: `Bearer ${token.value}` },
     })
+    if (!res.ok) return null
     return (await res.json()).data ?? null
   }
 
   async function fetchProfile() {
     if (!token.value) return
     const me = await _getDirectusUser()
-    if (!me) return
+    if (!me) { logout(); return }
     const url = new URL(`${DIRECTUS_URL}/items/athlete_profiles`)
     url.searchParams.set('filter[directus_user_id][_eq]', me.id)
     url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id')
