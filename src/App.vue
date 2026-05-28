@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-stone-100" style="padding-top: env(safe-area-inset-top)">
+  <div class="bg-stone-100" style="min-height: -webkit-fill-available; min-height: 100vh; padding-top: env(safe-area-inset-top)">
 
     <!-- Contenu -->
     <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(2.5rem + env(safe-area-inset-bottom))'">
