@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-stone-100" style="padding-top: env(safe-area-inset-top)">
 
     <!-- Contenu -->
-    <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(3.5rem + env(safe-area-inset-bottom))'">
+    <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(2.5rem + env(safe-area-inset-bottom))'">
       <RouterView v-slot="{ Component }">
         <Transition name="fade" mode="out-in">
           <component :is="Component" />
@@ -17,15 +17,15 @@
           v-for="tab in tabs"
           :key="tab.id"
           :to="tab.to"
-          class="flex-1 flex flex-col items-center pt-1.5 pb-1 gap-0.5 transition-colors relative"
+          class="flex-1 flex flex-col items-center py-1 gap-0.5 transition-colors relative"
           :class="activeTab === tab.id ? 'text-orange-500' : 'text-stone-400'"
         >
           <span
             v-if="activeTab === tab.id"
             class="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-orange-500"
           />
-          <span class="text-lg leading-none">{{ tab.icon }}</span>
-          <span class="text-[10px] font-semibold">{{ tab.label }}</span>
+          <span class="text-base leading-none">{{ tab.icon }}</span>
+          <span class="text-[10px] leading-none font-semibold">{{ tab.label }}</span>
         </RouterLink>
       </div>
     </nav>
