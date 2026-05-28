@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/stores/auth'
 
-const DIRECTUS_URL = 'http://localhost:8056'
+const DIRECTUS_URL = import.meta.env.VITE_DIRECTUS_URL || 'http://localhost:8056'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 
 // ── Cache mémoire (ultra-rapide, dure le temps de la session) ─────────────

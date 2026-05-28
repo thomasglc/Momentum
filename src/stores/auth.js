@@ -2,7 +2,7 @@ import { shallowRef, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 const LS_KEY = 'momentum-auth-token'
-const DIRECTUS_URL = 'http://localhost:8056'
+const DIRECTUS_URL = import.meta.env.VITE_DIRECTUS_URL || 'http://localhost:8056'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = shallowRef(localStorage.getItem(LS_KEY) ?? null)
