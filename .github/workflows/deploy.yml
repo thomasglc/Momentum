@@ -29,6 +29,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_DIRECTUS_URL: ${{ vars.DIRECTUS_URL }}
+
+      - name: Copy index.html to 404.html
+        run: cp dist/index.html dist/404.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
