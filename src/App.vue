@@ -17,7 +17,7 @@
           v-for="tab in tabs"
           :key="tab.id"
           :to="tab.to"
-          class="flex-1 flex flex-col items-center pt-2 pb-3 gap-0.5 transition-colors relative"
+          class="flex-1 flex flex-col items-center pt-2 pb-2 gap-0.5 transition-colors relative"
           :class="activeTab === tab.id ? 'text-orange-500' : 'text-stone-400'"
         >
           <span
