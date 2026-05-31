@@ -10,7 +10,7 @@ function onSuccess() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-stone-100 flex flex-col items-center justify-center px-6">
+  <div class="min-h-dvh bg-stone-100 flex flex-col items-center justify-center px-6">
 
     <div class="w-full max-w-sm">
 
