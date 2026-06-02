@@ -28,7 +28,7 @@
     </main>
 
     <!-- Bottom Tab Nav -->
-    <nav v-if="!isLoginPage" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200" style="padding-bottom: max(calc(env(safe-area-inset-bottom) - 20px), 0px)">
+    <nav v-if="!isLoginPage" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200" style="padding-bottom: env(safe-area-inset-bottom)">
       <div class="max-w-[480px] mx-auto flex">
         <RouterLink
           v-for="tab in tabs"
