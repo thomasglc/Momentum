@@ -56,7 +56,7 @@ router.beforeEach(async (to, from) => {
 
     await training.initCurrentWeek()
     await Promise.all([
-      prefetchForWeek(training.currentWeekNumber),
+      prefetchForWeek(training.currentWeekNumber).catch(() => {}),
       new Promise(r => setTimeout(r, 1000)),
     ])
     appStore.setReady()
