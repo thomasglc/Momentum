@@ -1,37 +1,55 @@
 <template>
   <div v-if="session">
 
-    <!-- Header island (même style que WeekNav) -->
+    <!-- Header island -->
     <div class="px-4 pt-3 pb-0">
-      <div class="rounded-2xl px-5 py-4 shadow-lg" :class="cfg.heroBg">
+      <div class="rounded-2xl shadow-lg" :class="cfg.heroBg">
+        <div class="px-4 pt-4 pb-5">
 
-        <!-- Ligne type + optionnel — laisse espace à gauche pour le bouton retour -->
-        <div class="flex items-center justify-end gap-2 mb-3 flex-wrap">
-          <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-white/20 text-white flex items-center gap-1.5">
-            <span>{{ cfg.icon }}</span>{{ cfg.label }}
-          </span>
-          <span v-if="session.optional" class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/70">Optionnel</span>
+          <!-- Rangée 1 : bouton retour ← | badges → -->
+          <div class="flex items-center justify-between mb-4">
+            <button
+              @click="emit('back')"
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-white/15 text-white text-lg active:scale-95 transition-transform flex-shrink-0"
+              aria-label="Retour"
+            >‹</button>
+
+            <div class="flex items-center gap-1.5 flex-wrap justify-end">
+              <span v-if="session.optional"
+                class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/15 text-white/80">
+                Optionnel
+              </span>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/20 text-white flex items-center gap-1">
+                <span>{{ cfg.icon }}</span>{{ cfg.label }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Titre -->
+          <h2 class="text-[1.6rem] font-black text-white leading-tight tracking-tight mb-3">
+            {{ session.title }}
+          </h2>
+
+          <!-- Rangée 3 : jour · durée · intensité -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-sm font-medium text-white/70">{{ session.day }}</span>
+            <template v-if="session.duration > 0">
+              <span class="text-white/30">·</span>
+              <span class="text-sm text-white/70">{{ session.duration }} min</span>
+            </template>
+            <template v-if="session.intensityScore">
+              <span class="text-white/30">·</span>
+              <span class="flex items-center gap-0.5">
+                <span
+                  v-for="n in 5" :key="n"
+                  class="w-2 h-2 rounded-full"
+                  :class="n * 2 <= session.intensityScore ? 'bg-white' : 'bg-white/20'"
+                />
+              </span>
+            </template>
+          </div>
+
         </div>
-
-        <h2 class="text-2xl font-black text-white tracking-tight leading-none mb-2">{{ session.title }}</h2>
-
-        <div class="flex items-center gap-2 text-sm flex-wrap" :class="cfg.heroText">
-          <span>{{ session.day }}</span>
-          <template v-if="session.duration > 0">
-            <span>·</span><span>{{ session.duration }} min</span>
-          </template>
-          <template v-if="session.intensityScore">
-            <span>·</span>
-            <span class="flex items-center gap-0.5">
-              <span
-                v-for="n in 5" :key="n"
-                class="w-2 h-2 rounded-full"
-                :class="n * 2 <= session.intensityScore ? 'bg-white' : 'bg-white/25'"
-              />
-            </span>
-          </template>
-        </div>
-
       </div>
     </div>
 
@@ -111,7 +129,7 @@ const props = defineProps({
   completed: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['toggle'])
+const emit = defineEmits(['toggle', 'back'])
 
 const store = useTrainingStore()
 

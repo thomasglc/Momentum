@@ -1,11 +1,5 @@
 <template>
-  <div class="pb-8 relative">
-
-    <!-- Bouton retour flottant sur le hero -->
-    <button
-      @click="appStore.markProgrammaticBack(); router.push('/')"
-      class="absolute top-4 left-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/25 text-white text-lg active:scale-95 transition-transform"
-    >‹</button>
+  <div class="pb-8">
 
     <!-- Détail de la séance -->
     <SessionDetail
@@ -13,6 +7,7 @@
       :session="session"
       :completed="store.isCompleted(session.id)"
       @toggle="handleToggle"
+      @back="appStore.markProgrammaticBack(); router.push('/')"
     />
   </div>
 </template>
