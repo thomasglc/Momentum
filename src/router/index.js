@@ -26,7 +26,14 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to, from) => {
+  // Transition résolue en premier, synchrone, avant tout await
+  const appStore = useAppStore()
+  appStore.transitionName = appStore.resolveTransition(
+    to.meta.depth   ?? 0,
+    from.meta.depth ?? 0,
+  )
+
   const auth = useAuthStore()
   await auth.init()
 
