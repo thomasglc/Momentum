@@ -64,7 +64,18 @@ const route    = useRoute()
 const router   = useRouter()
 
 const transitionName = ref('fade')
+
+// Les gestes natifs iOS (swipe-back) déclenchent popstate — iOS anime déjà,
+// Vue ne doit pas rejouer une transition par-dessus.
+let _nativeNav = false
+window.addEventListener('popstate', () => { _nativeNav = true }, { passive: true })
+
 router.beforeEach((to, from) => {
+  if (_nativeNav) {
+    _nativeNav = false
+    transitionName.value = 'instant'
+    return
+  }
   const toDepth   = to.meta.depth   ?? 0
   const fromDepth = from.meta.depth ?? 0
   if      (toDepth > fromDepth) transitionName.value = 'slide-forward'
@@ -108,6 +119,10 @@ const activeTab = computed(() => {
   overflow: hidden;
   min-height: calc(100svh - env(safe-area-inset-top));
 }
+
+/* Instant — geste natif iOS (popstate), pas de double animation */
+.instant-enter-active { position: absolute; inset: 0; overflow-y: auto; background: #f5f5f4; }
+.instant-leave-active { position: absolute; inset: 0; overflow-y: auto; background: #f5f5f4; opacity: 0; }
 
 /* Fade (navigation entre onglets) */
 .fade-enter-active, .fade-leave-active { transition: opacity 200ms ease; }

@@ -11,7 +11,7 @@
 
     <!-- Bouton retour flottant sur le hero -->
     <button
-      @click="router.back()"
+      @click="router.push('/')"
       class="absolute top-4 left-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/25 text-white text-lg active:scale-95 transition-transform"
     >‹</button>
 
@@ -60,7 +60,7 @@ function handleToggle() {
       colors: ['#f97316', '#fb923c', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa'],
       zIndex: 9999,
     })
-    setTimeout(() => router.back(), 1800)
+    setTimeout(() => router.push('/'), 1800)
   }
 }
 </script>
