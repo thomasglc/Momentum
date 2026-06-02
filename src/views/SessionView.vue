@@ -18,11 +18,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getSession } from '@/services/trainingService'
 import { useAppStore } from '@/stores/app'
+import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import SessionDetail from '@/components/SessionDetail.vue'
 import confetti from 'canvas-confetti'
 
@@ -33,6 +34,11 @@ const router   = useRouter()
 
 // Rendu immédiat depuis les données passées par WeekView, complétion async
 const session = ref(history.state?.session ?? null)
+
+// Pousse la couleur hero dans appStore → fond d'App.vue → island seamless
+watch(session, (s) => {
+  appStore.setHeroBg(s ? getSessionTypeConfig(s.type).heroBg : '')
+}, { immediate: true })
 
 onMounted(async () => {
   const full = await getSession(route.params.id)
