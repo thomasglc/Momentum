@@ -5,9 +5,6 @@ export const useAppStore = defineStore('app', () => {
   const ready          = ref(false)
   const loading        = ref(false)
   const transitionName = ref('fade')
-  const heroBg         = ref('')
-
-  function setHeroBg(bg) { heroBg.value = bg }
 
   function startLoading() { loading.value = true }
   function setReady()     { ready.value = true; loading.value = false }
@@ -23,13 +20,11 @@ export const useAppStore = defineStore('app', () => {
   function resolveTransition(toDepth, fromDepth) {
     if (toDepth > fromDepth) return 'slide-forward'
     if (toDepth < fromDepth) {
-      heroBg.value = '' // retour → stone-100 sur l'island
       if (_programmaticBack) { _programmaticBack = false; return 'slide-back' }
       return 'instant'
     }
-    heroBg.value = ''
     return 'fade'
   }
 
-  return { ready, loading, transitionName, heroBg, setHeroBg, startLoading, setReady, reset, resolveTransition, markProgrammaticBack }
+  return { ready, loading, transitionName, startLoading, setReady, reset, resolveTransition, markProgrammaticBack }
 })
