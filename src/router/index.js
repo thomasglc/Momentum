@@ -38,6 +38,8 @@ router.beforeEach(async (to) => {
 
   const appStore = useAppStore()
   if (!appStore.ready) {
+    appStore.startLoading() // synchrone → splash visible avant le premier await
+
     const training = useTrainingStore()
     training.initFromLocalStorage()
 

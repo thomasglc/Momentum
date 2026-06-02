@@ -4,7 +4,7 @@
     <!-- Splash de démarrage -->
     <Transition name="splash">
       <div
-        v-if="!appStore.ready && !isLoginPage"
+        v-if="appStore.loading && auth.isAuthenticated"
         class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-stone-100"
         style="padding-top: env(safe-area-inset-top)"
       >
