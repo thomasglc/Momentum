@@ -298,18 +298,26 @@ export async function getWeek(weekNumber) {
 export async function prefetchForWeek(weekNumber) {
   if (!weekNumber || weekNumber < 1) return
   const plan = await loadPlan()
+  const total = plan.totalWeeks
 
-  const nums = [weekNumber]
-  if (weekNumber > 1)               nums.push(weekNumber - 1)
-  if (weekNumber < plan.totalWeeks) nums.push(weekNumber + 1)
+  // ── Prioritaire (splash attend) ──────────────────────────────────────────
+  // Semaine courante ± 1 + leurs détails complets de sessions
+  const priorityNums = [weekNumber]
+  if (weekNumber > 1)     priorityNums.push(weekNumber - 1)
+  if (weekNumber < total) priorityNums.push(weekNumber + 1)
 
-  const weeks = await Promise.all(nums.map(n => getWeek(n)))
+  const priorityWeeks    = await Promise.all(priorityNums.map(n => getWeek(n)))
+  const prioritySessions = priorityWeeks.flatMap(w => w?.sessions ?? [])
+  await Promise.all(prioritySessions.map(s => getSession(s.id)))
 
-  // Détails des sessions de la semaine courante en arrière-plan (non-bloquant)
-  const sessions = weeks[0]?.sessions ?? []
-  if (sessions.length) {
-    Promise.all(sessions.map(s => getSession(s.id))).catch(() => {})
-  }
+  // ── Arrière-plan (non-bloquant) ──────────────────────────────────────────
+  // Toutes les autres semaines + leurs sessions pour que l'app soit fluide partout
+  const allNums = Array.from({ length: total }, (_, i) => i + 1)
+  Promise.all(allNums.filter(n => !priorityNums.includes(n)).map(n => getWeek(n)))
+    .then(otherWeeks =>
+      Promise.all(otherWeeks.flatMap(w => w?.sessions ?? []).map(s => getSession(s.id)))
+    )
+    .catch(() => {})
 }
 
 export async function getSession(id) {
