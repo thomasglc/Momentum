@@ -3,6 +3,7 @@
     <!-- Navigation semaines -->
     <WeekNav
       :weekNumber="store.currentWeekNumber"
+      :todayWeekNumber="store.todayWeekNumber"
       :theme="currentWeek?.theme || ''"
       :dateRange="formatDateRange(currentWeek?.startDate, currentWeek?.endDate)"
       :phase="currentWeek?.phase || null"
@@ -11,6 +12,7 @@
       :canGoNext="store.currentWeekNumber < totalWeeks"
       @prev="store.setWeek(store.currentWeekNumber - 1)"
       @next="store.setWeek(store.currentWeekNumber + 1)"
+      @goToCurrent="store.setWeek(store.todayWeekNumber)"
     />
 
     <!-- Barre de progression (séances obligatoires uniquement) -->

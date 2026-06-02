@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { getPlan } from '@/services/trainingService'
+import { getCurrentWeekNumber } from '@/utils/dateUtils'
 
 const LS_KEY      = 'hyrox-completed-sessions'
 const LS_TIME_LUI = 'hyrox-10km-lui'
@@ -7,6 +9,7 @@ const LS_TIME_ELLE = 'hyrox-10km-elle'
 
 export const useTrainingStore = defineStore('training', () => {
   const currentWeekNumber = ref(1)
+  const todayWeekNumber   = ref(1)
   const completedSessions = ref([])
   const tenKmTimeLui  = ref(null) // secondes
   const tenKmTimeElle = ref(null)
@@ -44,6 +47,18 @@ export const useTrainingStore = defineStore('training', () => {
     currentWeekNumber.value = n
   }
 
+  let _weekInitialized = false
+  async function initCurrentWeek() {
+    if (_weekInitialized) return
+    _weekInitialized = true
+    try {
+      const plan = await getPlan()
+      const n = getCurrentWeekNumber(plan.plan.startDate, plan.plan.totalWeeks)
+      currentWeekNumber.value = n
+      todayWeekNumber.value   = n
+    } catch {}
+  }
+
   const isCompleted = computed(() => (id) => completedSessions.value.includes(id))
 
   // Retourne le % de séances validées pour une semaine donnée
@@ -53,5 +68,5 @@ export const useTrainingStore = defineStore('training', () => {
     return Math.round((done / sessions.length) * 100)
   })
 
-  return { currentWeekNumber, completedSessions, tenKmTimeLui, tenKmTimeElle, initFromLocalStorage, toggleSession, setWeek, setTenKmTime, isCompleted, weekProgress }
+  return { currentWeekNumber, todayWeekNumber, completedSessions, tenKmTimeLui, tenKmTimeElle, initFromLocalStorage, toggleSession, setWeek, initCurrentWeek, setTenKmTime, isCompleted, weekProgress }
 })

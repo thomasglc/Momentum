@@ -38,8 +38,6 @@ import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { useAuthStore } from '@/stores/auth'
-import { getPlan } from '@/services/trainingService'
-import { getCurrentWeekNumber } from '@/utils/dateUtils'
 
 const store = useTrainingStore()
 const auth  = useAuthStore()
@@ -72,10 +70,6 @@ onMounted(async () => {
     store.setTenKmTime(gender === 'femme' ? 'elle' : 'lui', ten_km_time_sec)
   }
 
-  if (auth.isAuthenticated && auth.profileComplete) {
-    const plan = await getPlan()
-    store.setWeek(getCurrentWeekNumber(plan.plan.startDate, plan.plan.totalWeeks))
-  }
 })
 </script>
 

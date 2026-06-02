@@ -2,7 +2,7 @@
   <div class="px-4 pt-3 pb-0">
     <div class="bg-slate-900 rounded-2xl px-5 py-4 shadow-lg">
 
-      <!-- Top row: phase badge + deload -->
+      <!-- Top row: phase badge + deload + retour semaine courante -->
       <div class="flex items-center justify-between mb-3">
         <span
           v-if="phase"
@@ -13,6 +13,14 @@
           class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-400"
         >Décharge</span>
         <div v-if="!phase && !isDeload" />
+
+        <Transition name="fade-btn">
+          <button
+            v-if="weekNumber !== todayWeekNumber"
+            @click="emit('goToCurrent')"
+            class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-400 active:scale-95 transition-transform"
+          >Auj. S{{ todayWeekNumber }}</button>
+        </Transition>
       </div>
 
       <!-- Navigation row -->
@@ -45,16 +53,22 @@ import { computed } from 'vue'
 import { getPhaseConfig } from '@/constants/phaseConfig'
 
 const props = defineProps({
-  weekNumber: { type: Number,  required: true },
-  theme:      { type: String,  required: true },
-  dateRange:  { type: String,  default: '' },
-  phase:      { type: Number,  default: null },
-  isDeload:   { type: Boolean, default: false },
-  canGoPrev:  { type: Boolean, default: false },
-  canGoNext:  { type: Boolean, default: false },
+  weekNumber:      { type: Number,  required: true },
+  todayWeekNumber: { type: Number,  default: 1 },
+  theme:           { type: String,  required: true },
+  dateRange:       { type: String,  default: '' },
+  phase:           { type: Number,  default: null },
+  isDeload:        { type: Boolean, default: false },
+  canGoPrev:       { type: Boolean, default: false },
+  canGoNext:       { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['prev', 'next'])
+const emit = defineEmits(['prev', 'next', 'goToCurrent'])
 
 const phaseCfg = computed(() => getPhaseConfig(props.phase))
 </script>
+
+<style scoped>
+.fade-btn-enter-active, .fade-btn-leave-active { transition: opacity 200ms, transform 200ms; }
+.fade-btn-enter-from, .fade-btn-leave-to { opacity: 0; transform: scale(0.85); }
+</style>

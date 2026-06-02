@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useTrainingStore } from '@/stores/training'
 import WeekView from '@/views/WeekView.vue'
 import SessionView from '@/views/SessionView.vue'
 import StationsView from '@/views/StationsView.vue'
@@ -31,6 +32,10 @@ router.beforeEach(async (to) => {
   if (!auth.profileComplete && !to.meta.onboarding) return '/onboarding'
   if (auth.profileComplete  && to.meta.onboarding)  return '/'
   if (to.path === '/login')  return '/'
+
+  if (auth.isAuthenticated && auth.profileComplete) {
+    await useTrainingStore().initCurrentWeek()
+  }
 })
 
 export default router
