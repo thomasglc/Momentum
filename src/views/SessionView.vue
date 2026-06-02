@@ -11,7 +11,7 @@
 
     <!-- Bouton retour flottant sur le hero -->
     <button
-      @click="router.push('/')"
+      @click="appStore.markProgrammaticBack(); router.push('/')"
       class="absolute top-4 left-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/25 text-white text-lg active:scale-95 transition-transform"
     >‹</button>
 
@@ -31,12 +31,14 @@ import { useRoute, useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getSession } from '@/services/trainingService'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
+import { useAppStore } from '@/stores/app'
 import SessionDetail from '@/components/SessionDetail.vue'
 import confetti from 'canvas-confetti'
 
-const store = useTrainingStore()
-const route = useRoute()
-const router = useRouter()
+const store    = useTrainingStore()
+const appStore = useAppStore()
+const route    = useRoute()
+const router   = useRouter()
 
 // Rendu immédiat depuis les données passées par WeekView, complétion async
 const session = ref(history.state?.session ?? null)
@@ -60,7 +62,7 @@ function handleToggle() {
       colors: ['#f97316', '#fb923c', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa'],
       zIndex: 9999,
     })
-    setTimeout(() => router.push('/'), 1800)
+    setTimeout(() => { appStore.markProgrammaticBack(); router.push('/') }, 1800)
   }
 }
 </script>
