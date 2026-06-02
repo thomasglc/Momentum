@@ -1,5 +1,7 @@
 import { shallowRef, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useAppStore } from '@/stores/app'
+import { clearPlanCache } from '@/services/trainingService'
 
 const LS_TOKEN    = 'momentum-auth-token'
 const LS_REFRESH  = 'momentum-auth-refresh'
@@ -130,6 +132,8 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem(LS_TOKEN)
     localStorage.removeItem(LS_REFRESH)
     localStorage.removeItem(LS_ACTIVITY)
+    clearPlanCache()
+    useAppStore().reset()
   }
 
   return { token, user, isAuthenticated, profileComplete, init, login, logout, fetchProfile, saveProfile }

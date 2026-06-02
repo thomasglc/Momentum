@@ -295,6 +295,23 @@ export async function getWeek(weekNumber) {
   return result
 }
 
+export async function prefetchForWeek(weekNumber) {
+  if (!weekNumber || weekNumber < 1) return
+  const plan = await loadPlan()
+
+  const nums = [weekNumber]
+  if (weekNumber > 1)               nums.push(weekNumber - 1)
+  if (weekNumber < plan.totalWeeks) nums.push(weekNumber + 1)
+
+  const weeks = await Promise.all(nums.map(n => getWeek(n)))
+
+  // Détails des sessions de la semaine courante en arrière-plan (non-bloquant)
+  const sessions = weeks[0]?.sessions ?? []
+  if (sessions.length) {
+    Promise.all(sessions.map(s => getSession(s.id))).catch(() => {})
+  }
+}
+
 export async function getSession(id) {
   const key = String(id)
   if (_sessionCache.has(key)) return _sessionCache.get(key)

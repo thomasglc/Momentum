@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useTrainingStore } from '@/stores/training'
+import { useAppStore } from '@/stores/app'
+import { prefetchForWeek } from '@/services/trainingService'
 import WeekView from '@/views/WeekView.vue'
 import SessionView from '@/views/SessionView.vue'
 import StationsView from '@/views/StationsView.vue'
@@ -27,14 +29,29 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
   await auth.init()
+
   if (to.meta.public)        return
   if (!auth.isAuthenticated) return '/login'
   if (!auth.profileComplete && !to.meta.onboarding) return '/onboarding'
   if (auth.profileComplete  && to.meta.onboarding)  return '/'
   if (to.path === '/login')  return '/'
 
-  if (auth.isAuthenticated && auth.profileComplete) {
-    await useTrainingStore().initCurrentWeek()
+  const appStore = useAppStore()
+  if (!appStore.ready) {
+    const training = useTrainingStore()
+    training.initFromLocalStorage()
+
+    const { gender, ten_km_time_sec } = auth.user ?? {}
+    if (ten_km_time_sec) {
+      training.setTenKmTime(gender === 'femme' ? 'elle' : 'lui', ten_km_time_sec)
+    }
+
+    await training.initCurrentWeek()
+    await Promise.all([
+      prefetchForWeek(training.currentWeekNumber),
+      new Promise(r => setTimeout(r, 1000)),
+    ])
+    appStore.setReady()
   }
 })
 

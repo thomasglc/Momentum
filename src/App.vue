@@ -1,6 +1,21 @@
 <template>
   <div class="bg-stone-100 min-h-full" style="padding-top: env(safe-area-inset-top)">
 
+    <!-- Splash de démarrage -->
+    <Transition name="splash">
+      <div
+        v-if="!appStore.ready && !isLoginPage"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-stone-100"
+        style="padding-top: env(safe-area-inset-top)"
+      >
+        <div class="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center text-3xl shadow-lg mb-4">⚡</div>
+        <p class="text-lg font-black text-stone-800 tracking-tight">Momentum</p>
+        <div class="flex gap-2 mt-8">
+          <span v-for="i in 3" :key="i" class="w-2 h-2 rounded-full bg-orange-400" :style="`animation: dot-bounce 0.9s ${(i-1)*0.15}s ease-in-out infinite`" />
+        </div>
+      </div>
+    </Transition>
+
     <!-- Contenu -->
     <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(3rem + env(safe-area-inset-bottom))'">
       <div class="nav-container">
@@ -36,15 +51,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { useAuthStore } from '@/stores/auth'
+import { useAppStore } from '@/stores/app'
 
-const store = useTrainingStore()
-const auth  = useAuthStore()
-const route = useRoute()
-const router = useRouter()
+const store    = useTrainingStore()
+const auth     = useAuthStore()
+const appStore = useAppStore()
+const route    = useRoute()
+const router   = useRouter()
 
 const transitionName = ref('fade')
 router.beforeEach((to, from) => {
@@ -73,19 +90,18 @@ const activeTab = computed(() => {
   return 'programme'
 })
 
-onMounted(async () => {
-  store.initFromLocalStorage()
-
-  // Le profil est déjà chargé par le guard (auth.init()) — on synchronise juste les allures
-  const { gender, ten_km_time_sec } = auth.user ?? {}
-  if (ten_km_time_sec) {
-    store.setTenKmTime(gender === 'femme' ? 'elle' : 'lui', ten_km_time_sec)
-  }
-
-})
 </script>
 
 <style>
+/* Splash */
+.splash-leave-active { transition: opacity 400ms ease; }
+.splash-leave-to     { opacity: 0; }
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0);    opacity: 0.35; }
+  40%           { transform: translateY(-7px); opacity: 1; }
+}
+
 /* Conteneur de navigation — dimensions fixes pour que position:absolute fonctionne */
 .nav-container {
   position: relative;
