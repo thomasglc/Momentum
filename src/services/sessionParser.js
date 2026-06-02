@@ -127,8 +127,10 @@ export function structuredDetailToBlock(d, resolvePace = null) {
       return { type: 'interval', header: `${d.sets} × ${dist}`, paces, note }
     }
 
-    case 'run':
-      return { type: 'text', content: `${d.durationMin} min` }
+    case 'run': {
+      const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
+      return { type: 'run_segment', durationMin: d.durationMin, label: d.label || null, paces }
+    }
 
     case 'target_pace': {
       const paces = d.zone ? resolvePace?.(d.zone) ?? null : null

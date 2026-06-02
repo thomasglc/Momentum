@@ -1,4 +1,12 @@
 <template>
+  <!-- Couvre la zone safe-area-inset-top (Dynamic Island / encoche) -->
+  <div
+    v-if="session"
+    class="fixed inset-x-0 top-0 z-40 pointer-events-none"
+    :class="heroBg"
+    style="height: env(safe-area-inset-top)"
+  />
+
   <div class="pb-8 relative">
 
     <!-- Bouton retour flottant sur le hero -->
@@ -23,10 +31,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getSession } from '@/services/trainingService'
+import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import SessionDetail from '@/components/SessionDetail.vue'
 import confetti from 'canvas-confetti'
 
@@ -35,6 +44,7 @@ const route = useRoute()
 const router = useRouter()
 
 const session = ref(null)
+const heroBg = computed(() => session.value ? getSessionTypeConfig(session.value.type).heroBg : '')
 
 onMounted(async () => {
   session.value = await getSession(route.params.id)

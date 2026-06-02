@@ -16,8 +16,6 @@
         <template v-if="session.duration > 0">
           <span>·</span><span>{{ session.duration }} min</span>
         </template>
-        <span>·</span>
-        <span class="font-medium">{{ session.intensityLabel }}</span>
         <template v-if="session.intensityScore">
           <span>·</span>
           <span class="flex items-center gap-0.5">

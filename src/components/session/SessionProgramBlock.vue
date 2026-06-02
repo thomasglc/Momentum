@@ -246,6 +246,28 @@
     </div>
   </div>
 
+  <!-- Run segment (footing, sortie longue, récup active…) -->
+  <div v-else-if="block.type === 'run_segment'" class="rounded-xl overflow-hidden border border-emerald-200">
+    <div class="flex items-center gap-2 px-3 py-2.5 bg-emerald-500">
+      <span>🏃</span>
+      <span class="text-xs font-bold text-white uppercase tracking-wide">Course</span>
+      <span class="ml-auto text-white font-bold text-sm">{{ block.durationMin }} min</span>
+    </div>
+    <div v-if="block.label" class="px-3 py-2 bg-emerald-50 border-b border-emerald-100">
+      <p class="text-[11px] text-emerald-800">{{ block.label }}</p>
+    </div>
+    <div v-if="block.paces" class="flex gap-2 px-2 py-2 bg-emerald-50">
+      <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+        <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
+      </div>
+      <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+        <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Race advice -->
   <div v-else-if="block.type === 'race_advice'" class="flex items-start gap-2.5 bg-red-50 border border-red-100 rounded-xl px-3 py-2.5">
     <span class="flex-shrink-0 text-sm mt-0.5">🏁</span>

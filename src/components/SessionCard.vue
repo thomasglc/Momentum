@@ -23,7 +23,13 @@
           >Optionnel</span>
         </div>
         <p class="font-semibold text-stone-800 text-sm leading-snug">{{ session.title }}</p>
-        <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium" :class="cfg.badgeBg">{{ session.intensityLabel }}</span>
+        <span v-if="session.intensityScore" class="flex items-center gap-0.5 mt-1.5">
+          <span
+            v-for="n in 5" :key="n"
+            class="w-2 h-2 rounded-full"
+            :class="n * 2 <= session.intensityScore ? cfg.dotBg : 'bg-stone-200'"
+          />
+        </span>
       </div>
 
       <!-- Completion -->
