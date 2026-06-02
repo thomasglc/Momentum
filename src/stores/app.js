@@ -12,8 +12,7 @@ export const useAppStore = defineStore('app', () => {
 
   // Gestes natifs iOS (swipe-back) : popstate ET hashchange pour le hash routing
   let _nativeNav = false
-  window.addEventListener('popstate',   () => { _nativeNav = true }, { passive: true })
-  window.addEventListener('hashchange', () => { _nativeNav = true }, { passive: true })
+  window.addEventListener('popstate', () => { _nativeNav = true }, { passive: true })
 
   function resolveTransition(toDepth, fromDepth) {
     if (_nativeNav) {
