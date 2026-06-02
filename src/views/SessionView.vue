@@ -1,13 +1,13 @@
 <template>
-  <!-- Couvre la zone safe-area-inset-top (Dynamic Island / encoche) -->
-  <div
-    v-if="session"
-    class="fixed inset-x-0 top-0 z-40 pointer-events-none"
-    :class="heroBg"
-    style="height: env(safe-area-inset-top)"
-  />
-
   <div class="pb-8 relative">
+
+    <!-- Couvre la zone safe-area-inset-top (Dynamic Island / encoche) -->
+    <div
+      v-if="session"
+      class="fixed inset-x-0 top-0 z-40 pointer-events-none"
+      :class="heroBg"
+      style="height: env(safe-area-inset-top)"
+    />
 
     <!-- Bouton retour flottant sur le hero -->
     <button
