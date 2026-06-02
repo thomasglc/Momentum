@@ -43,7 +43,6 @@ router.beforeEach(async (to, from) => {
   if (auth.profileComplete  && to.meta.onboarding)  return '/'
   if (to.path === '/login')  return '/'
 
-  const appStore = useAppStore()
   if (!appStore.ready) {
     appStore.startLoading() // synchrone → splash visible avant le premier await
 
