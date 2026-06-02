@@ -1,12 +1,18 @@
 <template>
   <div class="pb-8 relative">
 
-    <!-- Couvre la zone safe-area-inset-top (Dynamic Island / encoche) -->
+    <!-- Fond stone-100 fixe derrière l'overlay hero -->
     <div
       v-if="session"
-      class="fixed inset-x-0 top-0 z-40 pointer-events-none"
-      :class="heroBg"
+      class="fixed inset-x-0 top-0 z-40 pointer-events-none bg-stone-100"
       style="height: env(safe-area-inset-top)"
+    />
+    <!-- Couleur hero qui s'estompe au scroll vers le fond stone-100 -->
+    <div
+      v-if="session"
+      class="fixed inset-x-0 top-0 z-41 pointer-events-none"
+      :class="heroBg"
+      :style="`height: env(safe-area-inset-top); opacity: ${islandOpacity}`"
     />
 
     <!-- Bouton retour flottant sur le hero -->
@@ -26,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getSession } from '@/services/trainingService'
@@ -42,12 +48,19 @@ const router   = useRouter()
 
 // Rendu immédiat depuis les données passées par WeekView, complétion async
 const session = ref(history.state?.session ?? null)
-const heroBg = computed(() => session.value ? getSessionTypeConfig(session.value.type).heroBg : '')
+const heroBg  = computed(() => session.value ? getSessionTypeConfig(session.value.type).heroBg : '')
 
+// Fondu de l'overlay island : hero → stone-100 sur les ~160px du header
+const scrollY = ref(0)
+const islandOpacity = computed(() => Math.max(0, 1 - scrollY.value / 160))
+
+function onScroll() { scrollY.value = window.scrollY }
 onMounted(async () => {
+  window.addEventListener('scroll', onScroll, { passive: true })
   const full = await getSession(route.params.id)
   session.value = full
 })
+onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 function handleToggle() {
   const wasCompleted = store.isCompleted(session.value.id)
