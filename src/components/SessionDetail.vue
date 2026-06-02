@@ -55,8 +55,19 @@
         :resolvePace="resolvePace"
       />
 
+      <!-- Skeleton programme (structuredDetails pas encore chargés) -->
+      <div v-if="session.structuredDetails === undefined" class="mb-6 animate-pulse">
+        <div class="h-3 bg-stone-200 rounded w-20 mb-3" />
+        <div class="space-y-2">
+          <div class="h-11 bg-stone-200 rounded-xl" />
+          <div class="h-20 bg-stone-200 rounded-xl" />
+          <div class="h-11 bg-stone-200 rounded-xl" />
+          <div class="h-16 bg-stone-200 rounded-xl" />
+        </div>
+      </div>
+
       <!-- Programme -->
-      <div v-if="session.structuredDetails?.length" class="mb-6">
+      <div v-else-if="session.structuredDetails?.length" class="mb-6">
         <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
         <div class="space-y-2">
           <SessionProgramBlock

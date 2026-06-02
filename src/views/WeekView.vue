@@ -33,7 +33,7 @@
         :key="session.id"
         :session="session"
         :completed="store.isCompleted(session.id)"
-        @click="router.push(`/session/${session.id}`)"
+        @click="router.push({ path: `/session/${session.id}`, state: { session } })"
       />
     </div>
 

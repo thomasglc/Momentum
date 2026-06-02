@@ -22,11 +22,6 @@
       :completed="store.isCompleted(session.id)"
       @toggle="handleToggle"
     />
-
-    <!-- État de chargement -->
-    <div v-else class="flex items-center justify-center py-16">
-      <p class="text-sm text-stone-400">Chargement de la séance…</p>
-    </div>
   </div>
 </template>
 
@@ -43,11 +38,13 @@ const store = useTrainingStore()
 const route = useRoute()
 const router = useRouter()
 
-const session = ref(null)
+// Rendu immédiat depuis les données passées par WeekView, complétion async
+const session = ref(history.state?.session ?? null)
 const heroBg = computed(() => session.value ? getSessionTypeConfig(session.value.type).heroBg : '')
 
 onMounted(async () => {
-  session.value = await getSession(route.params.id)
+  const full = await getSession(route.params.id)
+  session.value = full
 })
 
 function handleToggle() {

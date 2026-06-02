@@ -13,7 +13,7 @@ const routes = [
   { path: '/login',      component: LoginView,      meta: { public: true } },
   { path: '/onboarding', component: OnboardingView, meta: { onboarding: true } },
   { path: '/', component: WeekView },
-  { path: '/session/:id', component: SessionView },
+  { path: '/session/:id', component: SessionView, meta: { depth: 1 } },
   { path: '/stations', component: StationsView },
   { path: '/phases', component: PhasesView },
   { path: '/guide', component: GuideView },
