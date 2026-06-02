@@ -1,14 +1,6 @@
 <template>
   <div class="pb-8 relative">
 
-    <!-- Couvre la zone safe-area-inset-top (Dynamic Island / encoche) -->
-    <div
-      v-if="session"
-      class="fixed inset-x-0 top-0 z-40 pointer-events-none"
-      :class="heroBg"
-      style="height: env(safe-area-inset-top)"
-    />
-
     <!-- Bouton retour flottant sur le hero -->
     <button
       @click="appStore.markProgrammaticBack(); router.push('/')"
@@ -30,7 +22,6 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getSession } from '@/services/trainingService'
-import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import { useAppStore } from '@/stores/app'
 import SessionDetail from '@/components/SessionDetail.vue'
 import confetti from 'canvas-confetti'
@@ -42,7 +33,6 @@ const router   = useRouter()
 
 // Rendu immédiat depuis les données passées par WeekView, complétion async
 const session = ref(history.state?.session ?? null)
-const heroBg = computed(() => session.value ? getSessionTypeConfig(session.value.type).heroBg : '')
 
 onMounted(async () => {
   const full = await getSession(route.params.id)
