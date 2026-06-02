@@ -83,6 +83,17 @@ export function structuredDetailToBlock(d, resolvePace = null) {
       return { type: 'cooldown', header: `Retour au calme ${d.durationMin} min`, content: d.label || null }
 
     case 'circuit': {
+      if (d.format === 'emom') {
+        return {
+          type: 'station_block',
+          brickFormat: 'emom',
+          formatNote: d.rounds ? `${d.rounds} tours` : null,
+          exercises: d.stations?.map(parseExercise) ?? null,
+          sequence: null,
+          duoRoles: null,
+          intercalatedRuns: null,
+        }
+      }
       let hdr
       if (d.format === 'amrap') {
         const fmt = d.durationMin ? `AMRAP ${d.durationMin} min` : 'AMRAP'
