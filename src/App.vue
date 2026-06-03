@@ -20,7 +20,11 @@
     <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(3rem + env(safe-area-inset-bottom))'">
       <div class="nav-container">
         <RouterView v-slot="{ Component }">
-          <Transition :name="appStore.transitionName">
+          <Transition
+            :name="appStore.transitionName"
+            @before-leave="onBeforeLeave"
+            @leave="onLeave"
+          >
             <component :is="Component" :key="$route.path" />
           </Transition>
         </RouterView>
@@ -34,7 +38,7 @@
           v-for="tab in tabs"
           :key="tab.id"
           :to="tab.to"
-          class="flex-1 flex flex-col items-center pt-2.5 pb-1 gap-1.5 transition-colors relative"
+          class="flex-1 flex flex-col items-center pt-3.5 pb-2 gap-1.5 transition-colors relative"
           :class="activeTab === tab.id ? 'text-orange-500' : 'text-stone-400'"
         >
           <span
@@ -62,6 +66,10 @@ const auth     = useAuthStore()
 const appStore = useAppStore()
 const route    = useRoute()
 const router   = useRouter()
+
+let _leaveScrollY = 0
+function onBeforeLeave()  { _leaveScrollY = window.scrollY }
+function onLeave(el)      { if (appStore.transitionName === 'slide-forward' && _leaveScrollY > 0) el.scrollTop = _leaveScrollY }
 
 
 const tabs = [

@@ -30,7 +30,6 @@ const router   = useRouter()
 const session = ref(history.state?.session ?? null)
 
 onMounted(async () => {
-  window.scrollTo(0, 0)
   const full = await getSession(route.params.id)
   session.value = full
 })
