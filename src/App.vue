@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-stone-100 min-h-full" style="padding-top: env(safe-area-inset-top)">
+  <div class="bg-stone-100" style="min-height: 100dvh; padding-top: env(safe-area-inset-top)">
 
     <!-- Splash de démarrage -->
     <Transition name="splash">
