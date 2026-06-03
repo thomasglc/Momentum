@@ -32,7 +32,7 @@
     </main>
 
     <!-- Bottom Tab Nav -->
-    <nav v-if="!isLoginPage" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200" style="padding-bottom: var(--sab, 0px); transform: translateZ(0); -webkit-transform: translateZ(0)">
+    <nav v-if="!isLoginPage" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200" style="padding-bottom: calc(var(--sab, 0px) + 6px); transform: translateZ(0); -webkit-transform: translateZ(0)">
       <div class="max-w-[480px] mx-auto flex">
         <RouterLink
           v-for="tab in tabs"
