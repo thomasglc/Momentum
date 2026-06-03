@@ -45,8 +45,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getPlan, getWeek } from '@/services/trainingService'
 import WeekNav from '@/components/WeekNav.vue'
@@ -72,10 +72,20 @@ async function loadWeek(n) {
   currentWeek.value = await getWeek(n)
 }
 
+onBeforeRouteLeave(() => {
+  sessionStorage.setItem('weekScrollY', String(window.scrollY))
+})
+
 onMounted(async () => {
   const plan = await getPlan()
   totalWeeks.value = plan.plan.totalWeeks
   await loadWeek(store.currentWeekNumber)
+  const saved = parseInt(sessionStorage.getItem('weekScrollY') || '0', 10)
+  if (saved) {
+    await nextTick()
+    window.scrollTo({ top: saved, behavior: 'instant' })
+    sessionStorage.removeItem('weekScrollY')
+  }
 })
 
 watch(() => store.currentWeekNumber, (n) => loadWeek(n))
