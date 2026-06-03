@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --sab: env(safe-area-inset-bottom);
+}
+
 html, body {
   height: 100%;
   overscroll-behavior: contain;

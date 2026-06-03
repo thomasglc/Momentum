@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useTrainingStore } from '@/stores/training'
 import { useAppStore } from '@/stores/app'
-import { prefetchForWeek } from '@/services/trainingService'
+import { prefetchAll } from '@/services/trainingService'
 import WeekView from '@/views/WeekView.vue'
 import SessionView from '@/views/SessionView.vue'
 import StationsView from '@/views/StationsView.vue'
@@ -56,7 +56,7 @@ router.beforeEach(async (to, from) => {
 
     await training.initCurrentWeek()
     await Promise.all([
-      prefetchForWeek(training.currentWeekNumber).catch(() => {}),
+      prefetchAll().catch(() => {}),
       new Promise(r => setTimeout(r, 1000)),
     ])
     appStore.setReady()

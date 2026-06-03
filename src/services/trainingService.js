@@ -295,30 +295,151 @@ export async function getWeek(weekNumber) {
   return result
 }
 
-export async function prefetchForWeek(weekNumber) {
-  if (!weekNumber || weekNumber < 1) return
-  const plan = await loadPlan()
-  const total = plan.totalWeeks
-
-  // ── Prioritaire (splash attend) ──────────────────────────────────────────
-  // Semaine courante ± 1 + leurs détails complets de sessions
-  const priorityNums = [weekNumber]
-  if (weekNumber > 1)     priorityNums.push(weekNumber - 1)
-  if (weekNumber < total) priorityNums.push(weekNumber + 1)
-
-  const priorityWeeks    = await Promise.all(priorityNums.map(n => getWeek(n)))
-  const prioritySessions = priorityWeeks.flatMap(w => w?.sessions ?? [])
-  await Promise.all(prioritySessions.map(s => getSession(s.id)))
-
-  // ── Arrière-plan (non-bloquant) ──────────────────────────────────────────
-  // Toutes les autres semaines + leurs sessions pour que l'app soit fluide partout
-  const allNums = Array.from({ length: total }, (_, i) => i + 1)
-  Promise.all(allNums.filter(n => !priorityNums.includes(n)).map(n => getWeek(n)))
-    .then(otherWeeks =>
-      Promise.all(otherWeeks.flatMap(w => w?.sessions ?? []).map(s => getSession(s.id)))
-    )
-    .catch(() => {})
+function groupBy(arr, key) {
+  const m = new Map()
+  for (const item of arr) {
+    const k = item[key]
+    if (!m.has(k)) m.set(k, [])
+    m.get(k).push(item)
+  }
+  return m
 }
+
+export async function prefetchAll() {
+  const p = await loadPlan()
+
+  // Déjà tout en mémoire → rien à faire
+  if (_sessionCache.size > 50) return
+
+  // ── 1. Structure semaines + sessions (2 requêtes) ────────────────────────
+  const [weeks, sessions] = await Promise.all([
+    api('/items/weeks', { 'filter[plan_id][_eq]': p.id, sort: 'week_number', limit: -1 }),
+    api('/items/sessions', { limit: -1 }),
+  ])
+
+  // Remplir le cache des semaines
+  for (const w of weeks) {
+    if (_weekCache.has(w.week_number)) continue
+    const ls = lsGet(`momentum-week-${w.week_number}`)
+    if (ls) { _weekCache.set(w.week_number, ls); continue }
+    const { startDate, endDate } = weekDates(p.startDate, w.week_number)
+    const weekSessions = sessions.filter(s => String(s.week_id) === String(w.id))
+    const result = {
+      id: w.id, weekNumber: w.week_number, phase: w.phase, theme: w.theme,
+      isDeload: !!w.is_deload, weekNote: w.week_note, startDate, endDate,
+      sessions: sortByDay(weekSessions.map(mapSession)),
+    }
+    _weekCache.set(w.week_number, result)
+    lsSet(`momentum-week-${w.week_number}`, result)
+  }
+
+  // Sessions déjà en localStorage → charger en mémoire et skipper l'API
+  const missing = sessions.filter(s => {
+    const key = String(s.id)
+    if (_sessionCache.has(key)) return false
+    const ls = lsGet(`momentum-session-${key}`)
+    if (ls) { _sessionCache.set(key, ls); return false }
+    return true
+  })
+  if (missing.length === 0) return
+
+  // ── 2. Tous les blocs en parallèle (13 requêtes) ─────────────────────────
+  const [
+    sessionBlocks,
+    blockCardio, blockIntervals,
+    blockStrength, blockStrengthExercises,
+    blockCircuit, blockCircuitStations,
+    blockMiniRace, blockMiniRaceStations,
+    blockStationActivation, blockStationActivationEntries,
+    blockStationBlock, blockStationBlockEntries,
+  ] = await Promise.all([
+    api('/items/session_blocks', { limit: -1, sort: 'position' }),
+    api('/items/block_cardio', { limit: -1 }),
+    api('/items/block_intervals', { limit: -1 }),
+    api('/items/block_strength', { limit: -1 }),
+    api('/items/block_strength_exercises', { limit: -1, fields: '*,exercise_id.*', sort: 'position' }),
+    api('/items/block_circuit', { limit: -1 }),
+    api('/items/block_circuit_stations', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
+    api('/items/block_mini_race', { limit: -1 }),
+    api('/items/block_mini_race_stations', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
+    api('/items/block_station_activation', { limit: -1 }),
+    api('/items/block_station_activation_entries', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
+    api('/items/block_station_block', { limit: -1 }),
+    api('/items/block_station_block_entries', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
+  ])
+
+  // ── 3. Maps de lookup ────────────────────────────────────────────────────
+  const maps = {
+    cardio:            new Map(blockCardio.map(b => [b.id, b])),
+    intervals:         new Map(blockIntervals.map(b => [b.id, b])),
+    strength:          new Map(blockStrength.map(b => [b.id, b])),
+    circuit:           new Map(blockCircuit.map(b => [b.id, b])),
+    miniRace:          new Map(blockMiniRace.map(b => [b.id, b])),
+    stationActivation: new Map(blockStationActivation.map(b => [b.id, b])),
+    stationBlock:      new Map(blockStationBlock.map(b => [b.id, b])),
+  }
+  const entries = {
+    strengthExercises:          groupBy(blockStrengthExercises, 'block_strength_id'),
+    circuitStations:            groupBy(blockCircuitStations, 'block_circuit_id'),
+    miniRaceStations:           groupBy(blockMiniRaceStations, 'block_mini_race_id'),
+    stationActivationEntries:   groupBy(blockStationActivationEntries, 'block_station_activation_id'),
+    stationBlockEntries:        groupBy(blockStationBlockEntries, 'block_station_block_id'),
+  }
+  const blocksBySession = groupBy(sessionBlocks, 'session_id')
+
+  function resolveBlock({ block_type, block_id }) {
+    switch (block_type) {
+      case 'block_cardio': {
+        const b = maps.cardio.get(block_id)
+        return b ? cardioToDetail(b) : { type: 'text', label: '[bloc manquant]' }
+      }
+      case 'block_intervals': {
+        const b = maps.intervals.get(block_id)
+        if (!b) return { type: 'text', label: '[bloc manquant]' }
+        return { type: 'intervals', sets: b.sets, setDistanceKm: b.distance_km, setDurationMin: b.duration_min, recoveryMin: b.recovery_min, paceZone: b.pace_zone, note: b.note }
+      }
+      case 'block_strength': {
+        const b = maps.strength.get(block_id)
+        if (!b) return { type: 'text', label: '[bloc manquant]' }
+        return { type: 'strength', restSec: b.rest_sec, exercises: (entries.strengthExercises.get(block_id) || []).map(formatExercise) }
+      }
+      case 'block_circuit': {
+        const b = maps.circuit.get(block_id)
+        if (!b) return { type: 'text', label: '[bloc manquant]' }
+        return { type: 'circuit', format: b.format, label: b.label, rounds: b.rounds, durationMin: b.duration_min, restBetweenMin: b.rest_between_min, stations: (entries.circuitStations.get(block_id) || []).map(formatStation) }
+      }
+      case 'block_mini_race': {
+        const b = maps.miniRace.get(block_id)
+        if (!b) return { type: 'text', label: '[bloc manquant]' }
+        return { type: 'mini_race', rounds: b.rounds, runDistanceKm: b.run_distance_km, paceZone: b.pace_zone, restBetweenRoundsMin: b.rest_between_rounds_min, stations: (entries.miniRaceStations.get(block_id) || []).map(formatStation) }
+      }
+      case 'block_station_activation': {
+        const b = maps.stationActivation.get(block_id)
+        if (!b) return { type: 'text', label: '[bloc manquant]' }
+        return { type: 'station_activation', rounds: b.rounds, note: b.note, stations: (entries.stationActivationEntries.get(block_id) || []).map(formatStation) }
+      }
+      case 'block_station_block': {
+        const b = maps.stationBlock.get(block_id)
+        if (!b) return { type: 'text', label: '[bloc manquant]' }
+        return { type: 'station_block', brickFormat: b.brick_format, formatNote: b.format_note, stations: (entries.stationBlockEntries.get(block_id) || []).map(formatStation) }
+      }
+      default: return { type: 'text', label: `[bloc inconnu: ${block_type}]` }
+    }
+  }
+
+  // ── 4. Remplir le cache des sessions ─────────────────────────────────────
+  for (const s of sessions) {
+    const key = String(s.id)
+    if (_sessionCache.has(key)) continue
+    const blocks = blocksBySession.get(s.id) || []
+    const result = { ...mapSession(s), structuredDetails: blocks.map(resolveBlock) }
+    _sessionCache.set(key, result)
+    lsSet(`momentum-session-${key}`, result)
+  }
+}
+
+// Compat — redirige vers prefetchAll
+export const prefetchForWeek = () => prefetchAll()
 
 export async function getSession(id) {
   const key = String(id)
