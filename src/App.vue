@@ -106,7 +106,7 @@ const activeTab = computed(() => {
 .nav-container {
   position: relative;
   overflow: hidden;
-  min-height: calc(100svh - env(safe-area-inset-top));
+  min-height: 90svh;
 }
 
 /* Instant — geste natif iOS, Vue re-render sans animation */
