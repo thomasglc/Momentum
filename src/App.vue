@@ -8,7 +8,7 @@
         class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-stone-100"
         style="padding-top: env(safe-area-inset-top)"
       >
-        <div class="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center text-3xl shadow-lg mb-4">⚡</div>
+        <img src="/icons/apple-touch-icon-180.png" class="w-16 h-16 rounded-2xl shadow-lg mb-4" alt="Momentum" />
         <p class="text-lg font-black text-stone-800 tracking-tight">Momentum</p>
         <div class="flex gap-2 mt-8">
           <span v-for="i in 3" :key="i" class="w-2 h-2 rounded-full bg-orange-400" :style="`animation: dot-bounce 0.9s ${(i-1)*0.15}s ease-in-out infinite`" />
