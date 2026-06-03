@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-1 pb-8">
+  <div class="pt-1">
     <!-- Navigation semaines -->
     <WeekNav
       :weekNumber="store.currentWeekNumber"
