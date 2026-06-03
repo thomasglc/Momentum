@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-stone-100 min-h-full" style="padding-top: env(safe-area-inset-top)">
+  <div class="bg-stone-100 flex flex-col" style="height: 100dvh; padding-top: env(safe-area-inset-top)">
 
     <!-- Splash de démarrage -->
     <Transition name="splash">
@@ -17,7 +17,7 @@
     </Transition>
 
     <!-- Contenu -->
-    <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(3rem + env(safe-area-inset-bottom))'">
+    <main class="flex-1 min-h-0" :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'">
       <div class="nav-container">
         <RouterView v-slot="{ Component }">
           <Transition :name="appStore.transitionName">
@@ -28,7 +28,7 @@
     </main>
 
     <!-- Bottom Tab Nav -->
-    <nav v-if="!isLoginPage" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200" style="padding-bottom: env(safe-area-inset-bottom)">
+    <nav v-if="!isLoginPage" class="flex-none bg-white border-t border-stone-200" style="padding-bottom: env(safe-area-inset-bottom)">
       <div class="max-w-[480px] mx-auto flex">
         <RouterLink
           v-for="tab in tabs"
@@ -98,7 +98,7 @@ const activeTab = computed(() => {
 .nav-container {
   position: relative;
   overflow: hidden;
-  min-height: calc(100svh - env(safe-area-inset-top));
+  height: 100%;
 }
 
 /* Instant — geste natif iOS, Vue re-render sans animation */
