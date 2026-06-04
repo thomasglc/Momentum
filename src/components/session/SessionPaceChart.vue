@@ -7,7 +7,7 @@
       <div
         v-for="(seg, i) in segments"
         :key="i"
-        class="rounded-sm flex-none"
+        class="rounded-md flex-none"
         :style="{
           flex: String(seg.duration),
           minWidth: '5px',

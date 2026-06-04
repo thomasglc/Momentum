@@ -121,7 +121,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
     }
 
     case 'intervals': {
-      const dist  = d.setDistanceKm != null ? `${d.setDistanceKm} km` : `${d.setDurationMin} min`
+      const dist  = d.setDistanceKm ? `${d.setDistanceKm} km` : `${d.setDurationMin} min`
       const note  = d.recoveryMin > 0 ? `récup ${d.recoveryMin} min` : null
       const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
       return { type: 'interval', header: `${d.sets} × ${dist}`, paces, note }
@@ -223,7 +223,7 @@ export function extractRunningSegmentsFromStructured(structuredDetails, resolveP
       }
 
       case 'intervals': {
-        const workMin = d.setDistanceKm != null ? Math.round(d.setDistanceKm * 5) : d.setDurationMin
+        const workMin = d.setDistanceKm ? Math.round(d.setDistanceKm * 5) : d.setDurationMin
         const recovMin = d.recoveryMin ?? 1.5
         const paces = d.paceZone ? resolvePace?.(d.paceZone) ?? null : null
         for (let i = 0; i < d.sets; i++) {

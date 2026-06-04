@@ -45,6 +45,10 @@
     <div class="flex items-center gap-2 px-3 py-2 bg-emerald-100">
       <span>🏃</span>
       <span class="text-xs font-bold text-emerald-800 uppercase tracking-wide">{{ block.header }}</span>
+      <div v-if="block.note" class="ml-auto flex items-center gap-1 rounded-full px-2 py-0.5" style="background-color: #fce7f3">
+        <span class="text-xs">💤</span>
+        <span class="text-xs font-semibold" style="color: #9d174d">{{ block.note }}</span>
+      </div>
     </div>
     <div v-if="block.paces" class="px-2 py-2 bg-emerald-50 flex gap-2">
       <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
@@ -55,9 +59,6 @@
         <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
         <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
       </div>
-    </div>
-    <div v-if="block.note" class="px-3 py-1.5 bg-emerald-50 border-t border-emerald-100">
-      <p class="text-[11px] text-gray-500">{{ block.note }}</p>
     </div>
   </div>
 
