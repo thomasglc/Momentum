@@ -24,7 +24,7 @@
             :name="appStore.transitionName"
             @before-leave="onBeforeLeave"
             @leave="onLeave"
-            @before-enter="onBeforeEnter"
+            @enter="onEnter"
           >
             <component :is="Component" :key="$route.path" />
           </Transition>
@@ -89,7 +89,7 @@ function onBeforeLeave() {
 function onLeave(el) {
   if (appStore.transitionName === 'slide-forward' && _leaveScrollY > 0) el.scrollTop = _leaveScrollY
 }
-function onBeforeEnter(el) {
+function onEnter(el) {
   if (appStore.transitionName === 'slide-back' && _weekScrollY > 0) el.scrollTop = _weekScrollY
 }
 
