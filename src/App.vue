@@ -24,6 +24,7 @@
             :name="appStore.transitionName"
             @before-leave="onBeforeLeave"
             @leave="onLeave"
+            @before-enter="onBeforeEnter"
           >
             <component :is="Component" :key="$route.path" />
           </Transition>
@@ -79,8 +80,18 @@ onMounted(() => {
 })
 
 let _leaveScrollY = 0
-function onBeforeLeave()  { _leaveScrollY = window.scrollY }
-function onLeave(el)      { if (appStore.transitionName === 'slide-forward' && _leaveScrollY > 0) el.scrollTop = _leaveScrollY }
+let _weekScrollY  = 0
+
+function onBeforeLeave() {
+  _leaveScrollY = window.scrollY
+  if (appStore.transitionName === 'slide-forward') _weekScrollY = window.scrollY
+}
+function onLeave(el) {
+  if (appStore.transitionName === 'slide-forward' && _leaveScrollY > 0) el.scrollTop = _leaveScrollY
+}
+function onBeforeEnter(el) {
+  if (appStore.transitionName === 'slide-back' && _weekScrollY > 0) el.scrollTop = _weekScrollY
+}
 
 
 const tabs = [
