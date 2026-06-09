@@ -34,12 +34,17 @@ onMounted(async () => {
   session.value = full
 })
 
-function handleToggle() {
+async function handleToggle() {
   const wasCompleted = store.isCompleted(session.value.id)
-  store.toggleSession(session.value.id)
+  try {
+    await store.toggleSession(session.value.id)
+  } catch (e) {
+    // Afficher une alerte simple si l'API échoue
+    alert(e?.message ?? 'Erreur réseau — impossible de valider la séance')
+    return
+  }
 
   if (!wasCompleted) {
-    // Burst de confettis depuis le bas de l'écran
     confetti({
       particleCount: 120,
       spread: 80,

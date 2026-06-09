@@ -441,6 +441,51 @@ export async function prefetchAll() {
 // Compat — redirige vers prefetchAll
 export const prefetchForWeek = () => prefetchAll()
 
+// ── Session completions ──────────────────────────────────────────────────────
+
+export async function fetchCompletedSessions(athleteProfileId) {
+  return api('/items/session_completions', {
+    'filter[athlete_profile_id][_eq]': athleteProfileId,
+    'fields': 'session_id',
+    'limit': -1,
+  })
+}
+
+export async function completeSession(athleteProfileId, sessionId) {
+  const authStore = useAuthStore()
+  const res = await fetch(`${DIRECTUS_URL}/items/session_completions`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${authStore.token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      athlete_profile_id: athleteProfileId,
+      session_id: sessionId,
+    }),
+  })
+  if (res.status === 401) { authStore.logout(); throw new Error('Session expirée') }
+  if (!res.ok) throw new Error('Impossible de valider la séance')
+  return (await res.json()).data
+}
+
+export async function uncompleteSession(athleteProfileId, sessionId) {
+  const rows = await api('/items/session_completions', {
+    'filter[athlete_profile_id][_eq]': athleteProfileId,
+    'filter[session_id][_eq]': sessionId,
+    'fields': 'id',
+    'limit': 1,
+  })
+  if (!rows.length) return
+  const authStore = useAuthStore()
+  const res = await fetch(`${DIRECTUS_URL}/items/session_completions/${rows[0].id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${authStore.token}` },
+  })
+  if (res.status === 401) { authStore.logout(); throw new Error('Session expirée') }
+  if (!res.ok && res.status !== 204) throw new Error('Impossible de dévalider la séance')
+}
+
 export async function getSession(id) {
   const key = String(id)
   if (_sessionCache.has(key)) return _sessionCache.get(key)
