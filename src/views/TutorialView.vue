@@ -58,8 +58,8 @@ async function finish() {
 
 <template>
   <div
-    class="bg-stone-100 flex flex-col"
-    style="height: 100dvh"
+    class="fixed inset-0 bg-stone-100 flex flex-col"
+    style="padding-top: env(safe-area-inset-top)"
     @touchstart="onTouchStart"
     @touchend="onTouchEnd"
   >
@@ -72,7 +72,7 @@ async function finish() {
     </div>
 
     <!-- Slides -->
-    <div class="flex-1 min-h-0 flex flex-col justify-center px-6 pb-4 overflow-y-auto">
+    <div class="flex-1 flex flex-col justify-center px-6 pb-4 overflow-hidden">
       <Transition name="slide-fade" mode="out-in">
 
         <!-- 1. Bienvenue -->
@@ -159,7 +159,7 @@ async function finish() {
     </div>
 
     <!-- Footer : dots + navigation -->
-    <div class="px-6 pb-8 flex flex-col gap-5">
+    <div class="px-6 flex flex-col gap-5" style="padding-bottom: calc(env(safe-area-inset-bottom) + 2rem)">
       <div class="flex justify-center gap-2">
         <button
           v-for="n in TOTAL" :key="n"
