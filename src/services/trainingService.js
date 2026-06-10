@@ -124,6 +124,10 @@ function formatStation(row) {
   else if (row.reps)       str += ` ${row.reps} reps`
   if (row.weight_kg_female != null && row.weight_kg_male != null)
     str += ` (${row.weight_kg_female}kg F / ${row.weight_kg_male}kg H)`
+  else if (row.weight_kg_male != null)
+    str += ` (${row.weight_kg_male}kg)`
+  else if (row.weight_kg_female != null)
+    str += ` (${row.weight_kg_female}kg)`
   if (row.note) str += ` (${row.note})`
   return str
 }
