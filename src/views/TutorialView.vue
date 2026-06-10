@@ -58,7 +58,8 @@ async function finish() {
 
 <template>
   <div
-    class="min-h-screen bg-stone-100 flex flex-col"
+    class="bg-stone-100 flex flex-col"
+    style="height: 100dvh"
     @touchstart="onTouchStart"
     @touchend="onTouchEnd"
   >
@@ -71,7 +72,7 @@ async function finish() {
     </div>
 
     <!-- Slides -->
-    <div class="flex-1 flex flex-col justify-center px-6 pb-4 overflow-hidden">
+    <div class="flex-1 min-h-0 flex flex-col justify-center px-6 pb-4 overflow-y-auto">
       <Transition name="slide-fade" mode="out-in">
 
         <!-- 1. Bienvenue -->
