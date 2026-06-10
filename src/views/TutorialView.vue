@@ -24,8 +24,8 @@ onMounted(async () => {
 // Données factices pour les mockups
 const demoSessions = [
   { id: 'demo-run',   day: 'Mardi',    type: 'running',  title: 'Intervalles 4×4 min Z4',  duration: 50, intensityScore: 8, optional: false },
-  { id: 'demo-hyrox', day: 'Samedi',   type: 'hyrox',    title: 'Circuit stations + runs', duration: 60, intensityScore: 9, optional: false },
   { id: 'demo-strength', day: 'Jeudi', type: 'strength', title: 'Renfo haut du corps',     duration: 45, intensityScore: 6, optional: false },
+  { id: 'demo-hyrox', day: 'Samedi',   type: 'hyrox',    title: 'Circuit stations + runs', duration: 60, intensityScore: 9, optional: false },
 ]
 const demoDone = { id: 'demo-done', day: 'Mardi', type: 'running', title: 'Intervalles 4×4 min Z4', duration: 50, intensityScore: 8, optional: false }
 
