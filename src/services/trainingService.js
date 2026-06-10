@@ -236,10 +236,10 @@ async function fetchBlock({ block_type, block_id }) {
 async function loadPlan() {
   if (_planCache) return _planCache
 
-  const cached = lsGet('momentum-plan')
+  const cached = lsGet('momentum-plan-v2')
   if (cached) { _planCache = cached; return _planCache }
 
-  const plans = await api('/items/plans', { limit: 1, fields: 'id,start_date' })
+  const plans = await api('/items/plans', { limit: 1, fields: 'id,start_date,plan_type' })
   const p = plans[0]
   const weeks = await api('/items/weeks', {
     'filter[plan_id][_eq]': p.id,
@@ -247,14 +247,14 @@ async function loadPlan() {
     fields: 'week_number',
     limit: -1,
   })
-  _planCache = { id: p.id, startDate: p.start_date, totalWeeks: weeks.length }
-  lsSet('momentum-plan', _planCache)
+  _planCache = { id: p.id, startDate: p.start_date, totalWeeks: weeks.length, planType: p.plan_type ?? 'open_double_mixte' }
+  lsSet('momentum-plan-v2', _planCache)
   return _planCache
 }
 
 export async function getPlan() {
   const p = await loadPlan()
-  return { plan: { startDate: p.startDate, totalWeeks: p.totalWeeks } }
+  return { plan: { startDate: p.startDate, totalWeeks: p.totalWeeks, planType: p.planType ?? 'open_double_mixte' } }
 }
 
 export async function getWeek(weekNumber) {

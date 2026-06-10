@@ -25,7 +25,9 @@
           <span class="text-xs font-semibold text-gray-700">{{ SEG_LABELS[seg.type] }}</span>
           <span v-if="seg.count > 1" class="text-xs text-gray-400 ml-1">× {{ seg.count }}</span>
           <span v-if="seg.paces" class="text-xs text-gray-500 ml-1.5">
-            — 👨 {{ seg.paces.lui }} · 👩 {{ seg.paces.elle }}
+            <template v-if="store.isDuoMixte">— 👨 {{ seg.paces.lui }} · 👩 {{ seg.paces.elle }}</template>
+            <template v-else-if="store.showElle">— {{ seg.paces.elle }}</template>
+            <template v-else>— {{ seg.paces.lui }}</template>
           </span>
         </div>
       </div>
@@ -36,6 +38,9 @@
 <script setup>
 import { computed } from 'vue'
 import { extractRunningSegmentsFromStructured, summarizeSegments } from '@/services/sessionParser'
+import { useTrainingStore } from '@/stores/training'
+
+const store = useTrainingStore()
 
 const props = defineProps({
   structuredDetails: { type: Array,    required: true },

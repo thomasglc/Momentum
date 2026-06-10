@@ -7,7 +7,7 @@
       <div class="flex items-center gap-2">
         <span class="text-sm">⚡</span>
         <span class="text-xs font-semibold text-stone-600">Allures personnalisées</span>
-        <span v-if="!store.tenKmTimeLui && !store.tenKmTimeElle" class="text-[10px] text-orange-500 font-semibold">
+        <span v-if="store.isDuoMixte ? (!store.tenKmTimeLui && !store.tenKmTimeElle) : (store.showElle ? !store.tenKmTimeElle : !store.tenKmTimeLui)" class="text-[10px] text-orange-500 font-semibold">
           — renseigner les temps 10km
         </span>
       </div>
@@ -19,8 +19,8 @@
         Entrez vos temps au 10km pour calculer automatiquement les allures de chaque séance (méthode Daniels VDOT).
       </p>
 
-      <div class="grid grid-cols-2 gap-2">
-        <!-- LUI -->
+      <!-- Duo mixte : 2 inputs -->
+      <div v-if="store.isDuoMixte" class="grid grid-cols-2 gap-2">
         <div>
           <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide block mb-1">👨 Lui — 10km</label>
           <input
@@ -31,7 +31,6 @@
             class="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-violet-400"
           />
         </div>
-        <!-- ELLE -->
         <div>
           <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide block mb-1">👩 Elle — 10km</label>
           <input
@@ -44,7 +43,20 @@
         </div>
       </div>
 
-      <div v-if="store.tenKmTimeLui || store.tenKmTimeElle" class="grid grid-cols-2 gap-2 pt-1">
+      <!-- Solo / men / women : 1 input -->
+      <div v-else>
+        <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide block mb-1">Temps 10km</label>
+        <input
+          type="text"
+          placeholder="ex: 48:30"
+          :value="formatTime(store.showElle ? store.tenKmTimeElle : store.tenKmTimeLui)"
+          @change="e => save(store.showElle ? 'elle' : 'lui', e.target.value)"
+          class="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-violet-400"
+        />
+      </div>
+
+      <!-- VDOT cards -->
+      <div v-if="store.isDuoMixte && (store.tenKmTimeLui || store.tenKmTimeElle)" class="grid grid-cols-2 gap-2 pt-1">
         <div v-if="store.tenKmTimeLui" class="bg-stone-50 rounded-lg px-2 py-1.5 text-center">
           <p class="text-[10px] text-stone-400 mb-0.5">VDOT 👨</p>
           <p class="text-xs font-bold text-stone-700">{{ vdotLui }}</p>
@@ -52,6 +64,12 @@
         <div v-if="store.tenKmTimeElle" class="bg-stone-50 rounded-lg px-2 py-1.5 text-center">
           <p class="text-[10px] text-stone-400 mb-0.5">VDOT 👩</p>
           <p class="text-xs font-bold text-stone-700">{{ vdotElle }}</p>
+        </div>
+      </div>
+      <div v-else-if="!store.isDuoMixte" class="pt-1">
+        <div v-if="store.showElle ? store.tenKmTimeElle : store.tenKmTimeLui" class="bg-stone-50 rounded-lg px-2 py-1.5 text-center">
+          <p class="text-[10px] text-stone-400 mb-0.5">VDOT</p>
+          <p class="text-xs font-bold text-stone-700">{{ store.showElle ? vdotElle : vdotLui }}</p>
         </div>
       </div>
     </div>

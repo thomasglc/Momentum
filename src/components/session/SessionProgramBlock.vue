@@ -9,14 +9,21 @@
       <p class="text-xs text-gray-700 leading-relaxed">{{ block.content }}</p>
     </div>
     <div v-if="block.paces" class="flex gap-2 px-2 pb-2 bg-orange-50">
-      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
-        <p class="text-xs font-bold text-orange-600">{{ block.paces.lui }}</p>
-      </div>
-      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
-        <p class="text-xs font-bold text-orange-600">{{ block.paces.elle }}</p>
-      </div>
+      <template v-if="trainingStore.isDuoMixte">
+        <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+          <p class="text-xs font-bold text-orange-600">{{ block.paces.lui }}</p>
+        </div>
+        <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+          <p class="text-xs font-bold text-orange-600">{{ block.paces.elle }}</p>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-orange-100">
+          <p class="text-xs font-bold text-orange-600">{{ trainingStore.showElle ? block.paces.elle : block.paces.lui }}</p>
+        </div>
+      </template>
     </div>
   </div>
 
@@ -51,27 +58,41 @@
       </div>
     </div>
     <div v-if="block.paces" class="px-2 py-2 bg-emerald-50 flex gap-2">
-      <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
-      </div>
-      <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
-      </div>
+      <template v-if="trainingStore.isDuoMixte">
+        <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+          <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
+        </div>
+        <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+          <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+          <p class="text-sm font-bold text-emerald-700">{{ trainingStore.showElle ? block.paces.elle : block.paces.lui }}</p>
+        </div>
+      </template>
     </div>
   </div>
 
   <!-- Pace line (lui/elle standalone) -->
   <div v-else-if="block.type === 'pace' && block.paces" class="flex gap-2 px-1">
-    <div class="flex-1 bg-emerald-50 rounded-lg px-2 py-2 text-center border border-emerald-100">
-      <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
-      <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
-    </div>
-    <div class="flex-1 bg-emerald-50 rounded-lg px-2 py-2 text-center border border-emerald-100">
-      <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
-      <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
-    </div>
+    <template v-if="trainingStore.isDuoMixte">
+      <div class="flex-1 bg-emerald-50 rounded-lg px-2 py-2 text-center border border-emerald-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+        <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
+      </div>
+      <div class="flex-1 bg-emerald-50 rounded-lg px-2 py-2 text-center border border-emerald-100">
+        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+        <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
+      </div>
+    </template>
+    <template v-else>
+      <div class="flex-1 bg-emerald-50 rounded-lg px-2 py-2 text-center border border-emerald-100">
+        <p class="text-sm font-bold text-emerald-700">{{ trainingStore.showElle ? block.paces.elle : block.paces.lui }}</p>
+      </div>
+    </template>
   </div>
 
   <!-- Generic section (header + text) -->
@@ -88,14 +109,21 @@
       <span class="ml-auto text-white font-bold">{{ block.durationMin }} min</span>
     </div>
     <div v-if="block.paces" class="flex gap-2 px-2 py-2 bg-emerald-50">
-      <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
-      </div>
-      <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
-      </div>
+      <template v-if="trainingStore.isDuoMixte">
+        <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+          <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
+        </div>
+        <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+          <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex-1 bg-white rounded-lg px-2 py-2.5 text-center border border-emerald-100">
+          <p class="text-sm font-bold text-emerald-700">{{ trainingStore.showElle ? block.paces.elle : block.paces.lui }}</p>
+        </div>
+      </template>
     </div>
     <div v-if="block.note" class="px-3 py-2 bg-emerald-50 border-t border-emerald-100 flex items-start gap-1.5">
       <span class="text-xs">💡</span>
@@ -115,14 +143,21 @@
       </span>
     </div>
     <div v-if="block.paces" class="flex gap-2 px-2 pt-2 bg-violet-50">
-      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
-        <p class="text-xs font-bold text-violet-700">{{ block.paces.lui }}</p>
-      </div>
-      <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
-        <p class="text-xs font-bold text-violet-700">{{ block.paces.elle }}</p>
-      </div>
+      <template v-if="trainingStore.isDuoMixte">
+        <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+          <p class="text-xs font-bold text-violet-700">{{ block.paces.lui }}</p>
+        </div>
+        <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+          <p class="text-xs font-bold text-violet-700">{{ block.paces.elle }}</p>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex-1 bg-white rounded-lg px-2 py-1.5 text-center border border-violet-100">
+          <p class="text-xs font-bold text-violet-700">{{ trainingStore.showElle ? block.paces.elle : block.paces.lui }}</p>
+        </div>
+      </template>
     </div>
     <div class="bg-violet-50 p-2 space-y-1.5" :class="block.paces ? 'pt-2' : ''">
       <div
@@ -185,8 +220,10 @@
           <span class="text-xl flex-shrink-0">{{ item.emoji }}</span>
           <p class="text-xs font-semibold text-gray-700 flex-1 leading-tight">{{ item.name }}</p>
           <span v-if="item.value" class="text-xs font-bold text-amber-600 flex-shrink-0">{{ item.value }}</span>
-          <span v-if="item.who === 'elle'" class="text-[10px] font-bold text-pink-500 flex-shrink-0">👩 Elle</span>
-          <span v-else-if="item.who === 'lui'" class="text-[10px] font-bold text-blue-500 flex-shrink-0">👨 Lui</span>
+          <template v-if="trainingStore.isDuoMixte">
+            <span v-if="item.who === 'elle'" class="text-[10px] font-bold text-pink-500 flex-shrink-0">👩 Elle</span>
+            <span v-else-if="item.who === 'lui'" class="text-[10px] font-bold text-blue-500 flex-shrink-0">👨 Lui</span>
+          </template>
         </div>
         <!-- Run separator (both together) -->
         <div v-else-if="item.kind === 'run'" class="flex items-center gap-2 bg-emerald-50 rounded-lg px-3 py-1.5 border border-emerald-100 mx-1">
@@ -197,8 +234,8 @@
       </template>
     </div>
 
-    <!-- Follow-the-leader (no sequence): two columns fallback -->
-    <div v-else-if="block.brickFormat === 'follow_the_leader' && block.duoRoles" class="bg-amber-50 p-2">
+    <!-- Follow-the-leader (no sequence): two columns fallback (mixte only) -->
+    <div v-else-if="block.brickFormat === 'follow_the_leader' && block.duoRoles && trainingStore.isDuoMixte" class="bg-amber-50 p-2">
       <div class="grid grid-cols-2 gap-2">
         <div>
           <p class="text-[10px] font-bold text-center text-amber-700 uppercase tracking-wide mb-1.5">👩 Elle commence</p>
@@ -258,14 +295,21 @@
       <p class="text-[11px] text-emerald-800">{{ block.label }}</p>
     </div>
     <div v-if="block.paces" class="flex gap-2 px-2 py-2 bg-emerald-50">
-      <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
-      </div>
-      <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
-        <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
-        <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
-      </div>
+      <template v-if="trainingStore.isDuoMixte">
+        <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👨 LUI</p>
+          <p class="text-sm font-bold text-emerald-700">{{ block.paces.lui }}</p>
+        </div>
+        <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+          <p class="text-[10px] text-gray-400 font-semibold mb-0.5">👩 ELLE</p>
+          <p class="text-sm font-bold text-emerald-700">{{ block.paces.elle }}</p>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex-1 bg-white rounded-lg px-2 py-2 text-center border border-emerald-100">
+          <p class="text-sm font-bold text-emerald-700">{{ trainingStore.showElle ? block.paces.elle : block.paces.lui }}</p>
+        </div>
+      </template>
     </div>
   </div>
 
@@ -285,10 +329,13 @@
 <script setup>
 import ExerciseGrid from './ExerciseGrid.vue'
 import { exerciseEmoji } from '@/services/sessionParser'
+import { useTrainingStore } from '@/stores/training'
 
 defineProps({
   block: { type: Object, required: true },
 })
+
+const trainingStore = useTrainingStore()
 
 const FORMAT_ICONS = {
   standard:          '⚡',

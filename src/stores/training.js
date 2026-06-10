@@ -14,6 +14,7 @@ export const useTrainingStore = defineStore('training', () => {
   const completedSessions = ref([])
   const tenKmTimeLui  = ref(null)
   const tenKmTimeElle = ref(null)
+  const planType = ref('open_double_mixte')
 
   // Charge les séances validées depuis Directus
   async function initCompletedSessions() {
@@ -72,8 +73,13 @@ export const useTrainingStore = defineStore('training', () => {
       const n = getCurrentWeekNumber(plan.plan.startDate, plan.plan.totalWeeks)
       currentWeekNumber.value = n
       todayWeekNumber.value   = n
+      planType.value = plan.plan.planType ?? 'open_double_mixte'
     } catch {}
   }
+
+  const isDuoMixte = computed(() => planType.value === 'open_double_mixte')
+  const showLui    = computed(() => planType.value !== 'open_double_women')
+  const showElle   = computed(() => planType.value === 'open_double_mixte' || planType.value === 'open_double_women')
 
   const isCompleted = computed(() => (id) => completedSessions.value.includes(id))
 
@@ -86,6 +92,7 @@ export const useTrainingStore = defineStore('training', () => {
   return {
     currentWeekNumber, todayWeekNumber, completedSessions,
     tenKmTimeLui, tenKmTimeElle,
+    planType, isDuoMixte, showLui, showElle,
     initFromLocalStorage, initCompletedSessions,
     toggleSession, setWeek, initCurrentWeek, setTenKmTime,
     isCompleted, weekProgress,

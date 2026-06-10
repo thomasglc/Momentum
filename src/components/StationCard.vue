@@ -43,23 +43,23 @@
       <div v-if="station.progression">
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Progression par phase</p>
 
-        <!-- Elle / Lui toggle -->
-        <div class="flex rounded-lg overflow-hidden border border-gray-200 mb-3 text-xs font-semibold">
+        <!-- Elle / Lui toggle — mixte uniquement -->
+        <div v-if="trainingStore.isDuoMixte" class="flex rounded-lg overflow-hidden border border-gray-200 mb-3 text-xs font-semibold">
           <button
             class="flex-1 py-1.5 transition-colors"
-            :class="showElle ? 'bg-pink-500 text-white' : 'bg-white text-gray-400'"
-            @click="showElle = true"
+            :class="activeElle ? 'bg-pink-500 text-white' : 'bg-white text-gray-400'"
+            @click="activeElle = true"
           >Elle</button>
           <button
             class="flex-1 py-1.5 transition-colors"
-            :class="!showElle ? 'bg-blue-500 text-white' : 'bg-white text-gray-400'"
-            @click="showElle = false"
+            :class="!activeElle ? 'bg-blue-500 text-white' : 'bg-white text-gray-400'"
+            @click="activeElle = false"
           >Lui</button>
         </div>
 
         <div class="flex flex-col gap-2">
           <div
-            v-for="p in (showElle ? station.progression.elle : station.progression.lui)"
+            v-for="p in progressionRows"
             :key="p.phase"
             class="flex gap-3 items-start"
           >
@@ -77,14 +77,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useTrainingStore } from '@/stores/training'
 
-defineProps({
+const props = defineProps({
   station:  { type: Object,  required: true },
   expanded: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['toggle'])
 
-const showElle = ref(true)
+const trainingStore = useTrainingStore()
+
+// Toggle local — only used when isDuoMixte
+const activeElle = ref(trainingStore.isDuoMixte ? true : trainingStore.showElle.value)
+
+const progressionRows = computed(() => {
+  if (!props.station.progression) return []
+  if (trainingStore.isDuoMixte) {
+    return activeElle.value ? props.station.progression.elle : props.station.progression.lui
+  }
+  if (trainingStore.showElle) return props.station.progression.elle ?? []
+  return props.station.progression.lui ?? []
+})
 </script>
