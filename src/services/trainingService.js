@@ -237,13 +237,26 @@ async function fetchBlock({ block_type, block_id }) {
   }
 }
 
-async function loadPlan() {
-  if (_planCache) return _planCache
+// Plan assigné à l'athlète connecté (athlete_profiles.plan_id)
+function currentPlanId() {
+  const authStore = useAuthStore()
+  return authStore.user?.plan_id ?? null
+}
 
-  const cached = lsGet('momentum-plan-v2')
+async function loadPlan() {
+  const pid = currentPlanId()
+
+  // Le cache mémoire n'est valable que s'il correspond au plan de l'utilisateur
+  if (_planCache && (!pid || _planCache.id === pid)) return _planCache
+  _planCache = null
+
+  const cacheKey = `momentum-plan-v3-${pid ?? 'first'}`
+  const cached = lsGet(cacheKey)
   if (cached) { _planCache = cached; return _planCache }
 
-  const plans = await api('/items/plans', { limit: 1, fields: 'id,start_date,plan_type' })
+  const params = { limit: 1, fields: 'id,start_date,plan_type' }
+  if (pid) params['filter[id][_eq]'] = pid
+  const plans = await api('/items/plans', params)
   const p = plans[0]
   const weeks = await api('/items/weeks', {
     'filter[plan_id][_eq]': p.id,
@@ -252,7 +265,7 @@ async function loadPlan() {
     limit: -1,
   })
   _planCache = { id: p.id, startDate: p.start_date, totalWeeks: weeks.length, planType: p.plan_type ?? 'open_double_mixte' }
-  lsSet('momentum-plan-v2', _planCache)
+  lsSet(cacheKey, _planCache)
   return _planCache
 }
 
@@ -262,12 +275,13 @@ export async function getPlan() {
 }
 
 export async function getWeek(weekNumber) {
-  if (_weekCache.has(weekNumber)) return _weekCache.get(weekNumber)
-
-  const cached = lsGet(`momentum-week-${weekNumber}`)
-  if (cached) { _weekCache.set(weekNumber, cached); return cached }
-
   const p = await loadPlan()
+  const wKey = `${p.id}-${weekNumber}`
+  if (_weekCache.has(wKey)) return _weekCache.get(wKey)
+
+  const cached = lsGet(`momentum-week-${wKey}`)
+  if (cached) { _weekCache.set(wKey, cached); return cached }
+
   const weeks = await api('/items/weeks', {
     'filter[plan_id][_eq]': p.id,
     'filter[week_number][_eq]': weekNumber,
@@ -294,8 +308,8 @@ export async function getWeek(weekNumber) {
     endDate,
     sessions: sortByDay(sessions.map(mapSession)),
   }
-  _weekCache.set(weekNumber, result)
-  lsSet(`momentum-week-${weekNumber}`, result)
+  _weekCache.set(wKey, result)
+  lsSet(`momentum-week-${wKey}`, result)
   return result
 }
 
@@ -315,17 +329,18 @@ export async function prefetchAll() {
   // Déjà tout en mémoire → rien à faire
   if (_sessionCache.size > 50) return
 
-  // ── 1. Structure semaines + sessions (2 requêtes) ────────────────────────
+  // ── 1. Structure semaines + sessions (2 requêtes, limitées au plan) ──────
   const [weeks, sessions] = await Promise.all([
     api('/items/weeks', { 'filter[plan_id][_eq]': p.id, sort: 'week_number', limit: -1 }),
-    api('/items/sessions', { limit: -1 }),
+    api('/items/sessions', { 'filter[week_id][plan_id][_eq]': p.id, limit: -1 }),
   ])
 
   // Remplir le cache des semaines
   for (const w of weeks) {
-    if (_weekCache.has(w.week_number)) continue
-    const ls = lsGet(`momentum-week-${w.week_number}`)
-    if (ls) { _weekCache.set(w.week_number, ls); continue }
+    const wKey = `${p.id}-${w.week_number}`
+    if (_weekCache.has(wKey)) continue
+    const ls = lsGet(`momentum-week-${wKey}`)
+    if (ls) { _weekCache.set(wKey, ls); continue }
     const { startDate, endDate } = weekDates(p.startDate, w.week_number)
     const weekSessions = sessions.filter(s => String(s.week_id) === String(w.id))
     const result = {
@@ -333,8 +348,8 @@ export async function prefetchAll() {
       isDeload: !!w.is_deload, weekNote: w.week_note, startDate, endDate,
       sessions: sortByDay(weekSessions.map(mapSession)),
     }
-    _weekCache.set(w.week_number, result)
-    lsSet(`momentum-week-${w.week_number}`, result)
+    _weekCache.set(wKey, result)
+    lsSet(`momentum-week-${wKey}`, result)
   }
 
   // Sessions déjà en localStorage → charger en mémoire et skipper l'API
