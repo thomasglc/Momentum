@@ -99,8 +99,10 @@ export const useAuthStore = defineStore('auth', () => {
     const planRes = await _authedFetch(`${DIRECTUS_URL}/items/plans?limit=1&fields=id`)
     const planId = (await planRes.json()).data?.[0]?.id
 
-    const body = { gender, ten_km_time_sec: tenKmTimeSec, directus_user_id: userId, plan_id: planId, name: userId }
     const existingId = user.value?.id
+    const body = existingId
+      ? { gender, ten_km_time_sec: tenKmTimeSec }
+      : { gender, ten_km_time_sec: tenKmTimeSec, directus_user_id: userId, plan_id: planId, name: userId }
 
     const res = await _authedFetch(
       existingId ? `${DIRECTUS_URL}/items/athlete_profiles/${existingId}` : `${DIRECTUS_URL}/items/athlete_profiles`,
