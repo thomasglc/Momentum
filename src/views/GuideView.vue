@@ -168,6 +168,14 @@ function logout() {
         </div>
 
         <button
+          @click="router.push('/tutorial?replay=1')"
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
+        >
+          <span class="text-sm text-stone-600">Revoir le tuto</span>
+          <span class="text-stone-300">›</span>
+        </button>
+
+        <button
           @click="refreshCache"
           class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
         >

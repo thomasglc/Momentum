@@ -10,10 +10,12 @@ import PhasesView from '@/views/PhasesView.vue'
 import GuideView from '@/views/GuideView.vue'
 import LoginView from '@/views/LoginView.vue'
 import OnboardingView from '@/views/OnboardingView.vue'
+import TutorialView from '@/views/TutorialView.vue'
 
 const routes = [
   { path: '/login',      component: LoginView,      meta: { public: true } },
   { path: '/onboarding', component: OnboardingView, meta: { onboarding: true } },
+  { path: '/tutorial',   component: TutorialView,   meta: { tutorial: true } },
   { path: '/', component: WeekView },
   { path: '/session/:id', component: SessionView, meta: { depth: 1 } },
   { path: '/stations', component: StationsView },
@@ -41,6 +43,7 @@ router.beforeEach(async (to, from) => {
   if (!auth.isAuthenticated) return '/login'
   if (!auth.profileComplete && !to.meta.onboarding) return '/onboarding'
   if (auth.profileComplete  && to.meta.onboarding)  return '/'
+  if (auth.profileComplete && !auth.user?.tutorial_seen && !to.meta.tutorial) return '/tutorial'
   if (to.path === '/login')  return '/'
 
   if (!appStore.ready) {

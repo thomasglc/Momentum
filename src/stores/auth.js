@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!me) { logout(); return }
     const url = new URL(`${DIRECTUS_URL}/items/athlete_profiles`)
     url.searchParams.set('filter[directus_user_id][_eq]', me.id)
-    url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id')
+    url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id,tutorial_seen')
     url.searchParams.set('limit', '1')
     const res = await _authedFetch(url.toString())
     if (!res.ok) return
@@ -113,6 +113,20 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = { ...user.value, ...saved, directus_user_id: userId }
   }
 
+  async function markTutorialSeen() {
+    const existingId = user.value?.id
+    // Optimiste : on débloque la navigation même si le PATCH échoue
+    user.value = { ...user.value, tutorial_seen: true }
+    if (!existingId) return
+    try {
+      await _authedFetch(`${DIRECTUS_URL}/items/athlete_profiles/${existingId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tutorial_seen: true }),
+      })
+    } catch {} // réessayé implicitement au prochain login si échec
+  }
+
   async function login(email, password) {
     const res = await fetch(`${DIRECTUS_URL}/auth/login`, {
       method: 'POST',
@@ -138,5 +152,5 @@ export const useAuthStore = defineStore('auth', () => {
     useAppStore().reset()
   }
 
-  return { token, user, isAuthenticated, profileComplete, init, login, logout, fetchProfile, saveProfile }
+  return { token, user, isAuthenticated, profileComplete, init, login, logout, fetchProfile, saveProfile, markTutorialSeen }
 })
