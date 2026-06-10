@@ -94,7 +94,7 @@ async function finish() {
             L'écran d'accueil affiche la semaine en cours. Les flèches naviguent
             entre les semaines, le badge indique la phase du plan.
           </p>
-          <div class="pointer-events-none select-none">
+          <div class="pointer-events-none select-none" aria-hidden="true">
             <WeekNav
               :weekNumber="3" :todayWeekNumber="3"
               theme="Volume + technique stations"
@@ -114,7 +114,7 @@ async function finish() {
             Course, renfo ou Hyrox — chaque type a sa couleur. Touche une carte
             pour voir le détail complet. Les séances optionnelles sont en bonus.
           </p>
-          <div class="pointer-events-none select-none flex flex-col gap-2.5">
+          <div class="pointer-events-none select-none flex flex-col gap-2.5" aria-hidden="true">
             <SessionCard v-for="s in demoSessions" :key="s.id" :session="s" />
           </div>
         </div>
@@ -126,7 +126,7 @@ async function finish() {
             Chaque course est prescrite en zone (Z1 à Z5), calculée depuis ton temps
             au 10km. Tes allures exactes sont dans l'onglet Guide.
           </p>
-          <div class="pointer-events-none select-none bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden divide-y divide-stone-50">
+          <div class="pointer-events-none select-none bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden divide-y divide-stone-50" aria-hidden="true">
             <div
               v-for="z in ZONES" :key="z.key"
               class="flex items-center gap-3 px-4 py-2.5" :class="z.bg"
@@ -165,6 +165,7 @@ async function finish() {
           @click="slide = n - 1"
           class="w-2 h-2 rounded-full transition-all"
           :class="slide === n - 1 ? 'bg-orange-500 w-5' : 'bg-stone-300'"
+          :aria-label="`Aller à l'écran ${n}`"
         />
       </div>
       <div class="flex gap-3">
@@ -172,6 +173,7 @@ async function finish() {
           v-if="slide > 0"
           @click="prev"
           class="px-5 py-3.5 rounded-xl font-bold text-sm bg-stone-200 text-stone-600 active:scale-[0.98] transition-all"
+          aria-label="Écran précédent"
         >‹</button>
         <button
           v-if="slide < TOTAL - 1"
