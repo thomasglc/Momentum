@@ -25,7 +25,7 @@ onMounted(async () => {
 const demoSessions = [
   { id: 'demo-run',   day: 'Mardi',    type: 'running',  title: 'Intervalles 4×4 min Z4',  duration: 50, intensityScore: 8, optional: false },
   { id: 'demo-hyrox', day: 'Samedi',   type: 'hyrox',    title: 'Circuit stations + runs', duration: 60, intensityScore: 9, optional: false },
-  { id: 'demo-opt',   day: 'Dimanche', type: 'running',  title: 'Footing récup Z1',        duration: 30, intensityScore: 2, optional: true },
+  { id: 'demo-strength', day: 'Jeudi', type: 'strength', title: 'Renfo haut du corps',     duration: 45, intensityScore: 6, optional: false },
 ]
 const demoDone = { id: 'demo-done', day: 'Mardi', type: 'running', title: 'Intervalles 4×4 min Z4', duration: 50, intensityScore: 8, optional: false }
 
@@ -80,7 +80,7 @@ async function finish() {
           <p class="text-xs font-black tracking-[0.35em] text-stone-400 uppercase mb-3">Momentum</p>
           <p class="text-5xl mb-4">🎉</p>
           <h1 class="text-2xl font-black text-stone-800 leading-tight mb-2">
-            Ton plan{{ totalWeeks ? ` de ${totalWeeks} semaines` : '' }} est prêt
+            Ton plan est prêt
           </h1>
           <p class="text-sm text-stone-500 leading-relaxed">
             Un programme structuré en phases qui montent en intensité jusqu'à ta course.
