@@ -22,7 +22,7 @@ function syncPaceToStore() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-stone-100 flex flex-col items-center justify-center px-6">
+  <div class="fixed inset-0 bg-stone-100 flex flex-col items-center justify-center px-6" style="padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom)">
     <div class="w-full max-w-sm">
 
       <div class="text-center mb-8">
