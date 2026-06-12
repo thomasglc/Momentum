@@ -91,11 +91,11 @@
       </div>
 
       <!-- Programme -->
-      <div v-else-if="session.structuredDetails?.length" class="mb-6">
+      <div v-else-if="visibleBlocks.length" class="mb-6">
         <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
         <div class="space-y-2">
           <SessionProgramBlock
-            v-for="(block, i) in parsedBlocks"
+            v-for="(block, i) in visibleBlocks"
             :key="i"
             :block="block"
           />
@@ -142,4 +142,11 @@ function resolvePace(zone) {
 
 const cfg = computed(() => getSessionTypeConfig(props.session?.type))
 const parsedBlocks = computed(() => (props.session?.structuredDetails ?? []).map(d => structuredDetailToBlock(d, resolvePace)))
+
+// La timeline du graphique couvre déjà ces blocs pour les séances running
+const CHART_COVERED = new Set(['warmup', 'cooldown', 'interval', 'run_segment', 'pace'])
+const hasPaceChart = computed(() => props.session?.type === 'running' && props.session?.structuredDetails?.length > 0)
+const visibleBlocks = computed(() =>
+  hasPaceChart.value ? parsedBlocks.value.filter(b => !CHART_COVERED.has(b.type)) : parsedBlocks.value
+)
 </script>
