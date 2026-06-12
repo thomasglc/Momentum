@@ -93,7 +93,7 @@ function cardioToDetail(b) {
     case 'warmup':
       return { type: 'warmup', durationMin: b.duration_min, paceZone: b.pace_zone, label: b.label }
     case 'cooldown':
-      return { type: 'cooldown', durationMin: b.duration_min, label: b.label }
+      return { type: 'cooldown', durationMin: b.duration_min, paceZone: b.pace_zone ?? null, label: b.label }
     case 'run':
       return { type: 'run', durationMin: b.duration_min, paceZone: b.pace_zone ?? null, label: b.label ?? null }
     case 'target_pace':
