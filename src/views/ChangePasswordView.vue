@@ -18,7 +18,16 @@ const success         = shallowRef(false)
 
 // ── Validation ANSSI ────────────────────────────────────────────────────────
 
-const SPECIAL_RE = /[!@#$%^&*()\-_=+\[\]{}|;:,.<>?/~`'"\\]/
+const SPECIAL_RE = /[!@#$%^&*()\-_=+\[\]{}|;:,.<>?\/~`'"\\]/
+
+const CRITERIA_LABELS = [
+  { key: 'length',  label: '8 caractères minimum' },
+  { key: 'upper',   label: 'Une majuscule' },
+  { key: 'lower',   label: 'Une minuscule' },
+  { key: 'digit',   label: 'Un chiffre' },
+  { key: 'special', label: 'Un caractère spécial (!@#…)' },
+  { key: 'match',   label: 'Les mots de passe correspondent' },
+]
 
 const criteria = computed(() => {
   const p = newPassword.value
@@ -62,15 +71,6 @@ async function submit() {
     loading.value = false
   }
 }
-
-const CRITERIA_LABELS = [
-  { key: 'length',  label: '8 caractères minimum' },
-  { key: 'upper',   label: 'Une majuscule' },
-  { key: 'lower',   label: 'Une minuscule' },
-  { key: 'digit',   label: 'Un chiffre' },
-  { key: 'special', label: 'Un caractère spécial (!@#…)' },
-  { key: 'match',   label: 'Les mots de passe correspondent' },
-]
 </script>
 
 <template>
