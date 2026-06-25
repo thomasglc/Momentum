@@ -176,6 +176,14 @@ function logout() {
         </button>
 
         <button
+          @click="router.push('/change-password?from=settings')"
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
+        >
+          <span class="text-sm text-stone-600">Changer mon mot de passe</span>
+          <span class="text-stone-300">›</span>
+        </button>
+
+        <button
           @click="refreshCache"
           class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
         >
