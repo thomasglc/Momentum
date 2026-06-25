@@ -17,6 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
   const profileComplete = computed(() =>
     !!user.value?.gender && !!user.value?.ten_km_time_sec
   )
+  const passwordChanged = computed(() => user.value?.password_changed === true)
 
   let _initPromise = null
   function init() {
@@ -69,7 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function _getDirectusUser() {
-    const res = await _authedFetch(`${DIRECTUS_URL}/users/me?fields=id,first_name,last_name`)
+    const res = await _authedFetch(`${DIRECTUS_URL}/users/me?fields=id,first_name,last_name,email`)
     if (!res.ok) return null
     return (await res.json()).data ?? null
   }
@@ -80,7 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!me) { logout(); return }
     const url = new URL(`${DIRECTUS_URL}/items/athlete_profiles`)
     url.searchParams.set('filter[directus_user_id][_eq]', me.id)
-    url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id,tutorial_seen')
+    url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id,tutorial_seen,password_changed')
     url.searchParams.set('limit', '1')
     const res = await _authedFetch(url.toString())
     if (!res.ok) return
@@ -91,6 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
       directus_user_id: me.id,
       first_name: me.first_name,
       last_name: me.last_name,
+      email: me.email,
     }
   }
 
@@ -127,6 +129,37 @@ export const useAuthStore = defineStore('auth', () => {
     } catch {} // réessayé implicitement au prochain login si échec
   }
 
+  async function changePassword(currentPassword, newPassword, isFirstLogin = false) {
+    if (!isFirstLogin) {
+      // Re-vérifier le mot de passe actuel
+      const verifyRes = await fetch(`${DIRECTUS_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.value?.email ?? '', password: currentPassword }),
+      })
+      if (!verifyRes.ok) throw new Error('Mot de passe actuel incorrect')
+    }
+
+    // Appliquer le nouveau mot de passe
+    const res = await _authedFetch(`${DIRECTUS_URL}/users/me`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: newPassword }),
+    })
+    if (!res.ok) throw new Error('Erreur lors du changement de mot de passe')
+
+    // Marquer password_changed = true
+    const existingId = user.value?.id
+    if (existingId) {
+      await _authedFetch(`${DIRECTUS_URL}/items/athlete_profiles/${existingId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password_changed: true }),
+      })
+    }
+    user.value = { ...user.value, password_changed: true }
+  }
+
   async function login(email, password) {
     const res = await fetch(`${DIRECTUS_URL}/auth/login`, {
       method: 'POST',
@@ -152,5 +185,5 @@ export const useAuthStore = defineStore('auth', () => {
     useAppStore().reset()
   }
 
-  return { token, user, isAuthenticated, profileComplete, init, login, logout, fetchProfile, saveProfile, markTutorialSeen }
+  return { token, user, isAuthenticated, profileComplete, passwordChanged, init, login, logout, fetchProfile, saveProfile, markTutorialSeen, changePassword }
 })
