@@ -1,13 +1,12 @@
 <script setup>
 import { shallowRef, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-const route  = useRoute()
 const router = useRouter()
 const auth   = useAuthStore()
 
-const isFirstLogin = computed(() => route.query.from !== 'settings')
+const isFirstLogin = computed(() => !auth.passwordChanged)
 
 const currentPassword = shallowRef('')
 const newPassword     = shallowRef('')
