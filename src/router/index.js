@@ -9,11 +9,13 @@ import StationsView from '@/views/StationsView.vue'
 import PhasesView from '@/views/PhasesView.vue'
 import GuideView from '@/views/GuideView.vue'
 import LoginView from '@/views/LoginView.vue'
+import ChangePasswordView from '@/views/ChangePasswordView.vue'
 import OnboardingView from '@/views/OnboardingView.vue'
 import TutorialView from '@/views/TutorialView.vue'
 
 const routes = [
   { path: '/login',      component: LoginView,      meta: { public: true } },
+  { path: '/change-password', component: ChangePasswordView, meta: { changePassword: true } },
   { path: '/onboarding', component: OnboardingView, meta: { onboarding: true } },
   { path: '/tutorial',   component: TutorialView,   meta: { tutorial: true } },
   { path: '/', component: WeekView },
@@ -41,6 +43,7 @@ router.beforeEach(async (to, from) => {
 
   if (to.meta.public)        return
   if (!auth.isAuthenticated) return '/login'
+  if (!auth.passwordChanged && !to.meta.changePassword) return '/change-password'
   if (!auth.profileComplete && !to.meta.onboarding) return '/onboarding'
   if (auth.profileComplete  && to.meta.onboarding)  return '/'
   if (auth.profileComplete && !auth.user?.tutorial_seen && !to.meta.tutorial) return '/tutorial'
