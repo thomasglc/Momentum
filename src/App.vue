@@ -102,7 +102,7 @@ const tabs = [
 ]
 
 // '/session/:id' maps to the Programme tab
-const isLoginPage = computed(() => ['/login', '/onboarding', '/tutorial'].includes(route.path))
+const isLoginPage = computed(() => ['/login', '/onboarding', '/tutorial', '/change-password'].includes(route.path))
 
 const activeTab = computed(() => {
   const path = route.path
