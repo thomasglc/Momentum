@@ -112,7 +112,7 @@ export const useAuthStore = defineStore('auth', () => {
     )
     if (!res.ok) throw new Error('Erreur lors de la sauvegarde')
     const saved = (await res.json()).data
-    user.value = { ...user.value, ...saved, directus_user_id: userId }
+    user.value = { ...user.value, ...saved, directus_user_id: userId, password_changed: user.value?.password_changed }
   }
 
   async function markTutorialSeen() {
