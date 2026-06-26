@@ -135,7 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
       const verifyRes = await fetch(`${DIRECTUS_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user.value?.email ?? '', password: currentPassword }),
+        body: JSON.stringify({ email: user.value?.email || (await _getDirectusUser())?.email || '', password: currentPassword }),
       })
       if (!verifyRes.ok) throw new Error('Mot de passe actuel incorrect')
     }
