@@ -167,7 +167,7 @@ export const useAuthStore = defineStore('auth', () => {
       body: JSON.stringify({ email, password }),
     })
     const json = await res.json()
-    if (!res.ok) throw new Error(json.errors?.[0]?.message ?? 'Identifiants incorrects')
+    if (!res.ok) throw new Error('Email ou mot de passe incorrect')
     token.value = json.data.access_token
     localStorage.setItem(LS_TOKEN, token.value)
     localStorage.setItem(LS_REFRESH, json.data.refresh_token)
