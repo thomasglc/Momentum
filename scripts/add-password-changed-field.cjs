@@ -1,5 +1,5 @@
 // scripts/add-password-changed-field.cjs
-const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://localhost:8056'
+const DIRECTUS_URL = process.env.DIRECTUS_URL || 'https://momentum.training'
 const TOKEN = process.env.DIRECTUS_TOKEN || process.env.DIRECTUS_ADMIN_TOKEN || ''
 
 if (!TOKEN) {
