@@ -44,6 +44,7 @@ router.beforeEach(async (to, from) => {
   if (to.meta.public)        return
   if (!auth.isAuthenticated) return '/login'
   if (!auth.passwordChanged && !to.meta.changePassword) return '/change-password'
+  if (to.meta.changePassword) return
   if (!auth.profileComplete && !to.meta.onboarding) return '/onboarding'
   if (auth.profileComplete  && to.meta.onboarding)  return '/'
   if (auth.profileComplete && !auth.user?.tutorial_seen && !to.meta.tutorial) return '/tutorial'
