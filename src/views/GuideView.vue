@@ -46,8 +46,14 @@ const ZONE_KEYS = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5']
 
 const athletes = computed(() => {
   const list = []
-  if (store.tenKmTimeLui)  list.push({ label: '👨 Lui',  zones: calcZones(store.tenKmTimeLui) })
-  if (store.tenKmTimeElle) list.push({ label: '👩 Elle', zones: calcZones(store.tenKmTimeElle) })
+  if (store.isDuoMixte) {
+    if (store.tenKmTimeLui)  list.push({ label: '👨 Lui',  zones: calcZones(store.tenKmTimeLui) })
+    if (store.tenKmTimeElle) list.push({ label: '👩 Elle', zones: calcZones(store.tenKmTimeElle) })
+  } else if (store.showLui && store.tenKmTimeLui) {
+    list.push({ label: 'Votre temps', zones: calcZones(store.tenKmTimeLui) })
+  } else if (store.showElle && store.tenKmTimeElle) {
+    list.push({ label: 'Votre temps', zones: calcZones(store.tenKmTimeElle) })
+  }
   return list
 })
 
@@ -76,8 +82,8 @@ function logout() {
           Temps au 10km utilisés pour calculer automatiquement les allures de chaque séance (méthode VDOT).
         </p>
 
-        <div class="grid grid-cols-2 gap-3">
-          <!-- LUI -->
+        <!-- Duo mixte : deux colonnes Lui / Elle -->
+        <div v-if="store.isDuoMixte" class="grid grid-cols-2 gap-3">
           <div class="flex flex-col gap-1.5">
             <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">👨 Lui</label>
             <input
@@ -89,8 +95,6 @@ function logout() {
             />
             <p v-if="vdotLui" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotLui }}</p>
           </div>
-
-          <!-- ELLE -->
           <div class="flex flex-col gap-1.5">
             <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">👩 Elle</label>
             <input
@@ -102,6 +106,29 @@ function logout() {
             />
             <p v-if="vdotElle" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotElle }}</p>
           </div>
+        </div>
+
+        <!-- Solo / double men / double women : un seul champ -->
+        <div v-else class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">Votre temps</label>
+          <input
+            v-if="store.showLui"
+            type="text"
+            placeholder="ex: 48:30"
+            :value="formatTime(store.tenKmTimeLui)"
+            @change="e => savePace('lui', e.target.value)"
+            class="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 transition-colors"
+          />
+          <input
+            v-else
+            type="text"
+            placeholder="ex: 57:00"
+            :value="formatTime(store.tenKmTimeElle)"
+            @change="e => savePace('elle', e.target.value)"
+            class="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 transition-colors"
+          />
+          <p v-if="store.showLui && vdotLui" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotLui }}</p>
+          <p v-else-if="store.showElle && vdotElle" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotElle }}</p>
         </div>
       </div>
     </section>
