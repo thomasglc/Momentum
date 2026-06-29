@@ -46,7 +46,7 @@
             v-if="activeTab === tab.id"
             class="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-orange-500"
           />
-          <span class="text-base leading-none">{{ tab.icon }}</span>
+          <Icon :icon="tab.icon" class="text-[22px] leading-none" />
           <span class="text-[10px] leading-none font-semibold">{{ tab.label }}</span>
         </RouterLink>
       </div>
@@ -58,6 +58,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Icon, addCollection } from '@iconify/vue'
+import ionIcons from '@iconify-json/ion/icons.json'
+
+addCollection(ionIcons)
 import { useTrainingStore } from '@/stores/training'
 import { useAuthStore } from '@/stores/auth'
 import { useAppStore } from '@/stores/app'
@@ -95,10 +99,10 @@ function onEnter(el) {
 
 
 const tabs = [
-  { id: 'programme', label: 'Programme', to: '/',         icon: '📅' },
-  { id: 'stations',  label: 'Stations',  to: '/stations', icon: '🏋️' },
-  { id: 'phases',    label: 'Phases',    to: '/phases',   icon: '📊' },
-  { id: 'guide',     label: 'Paramètres', to: '/guide',   icon: '⚙️' },
+  { id: 'programme', label: 'Programme',  to: '/',         icon: 'ion:calendar-outline' },
+  { id: 'stations',  label: 'Stations',   to: '/stations', icon: 'ion:barbell-outline' },
+  { id: 'phases',    label: 'Phases',     to: '/phases',   icon: 'ion:stats-chart-outline' },
+  { id: 'guide',     label: 'Paramètres', to: '/guide',    icon: 'ion:settings-outline' },
 ]
 
 // '/session/:id' maps to the Programme tab

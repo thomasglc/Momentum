@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify-json/ion": "^1.2.7",
+    "@iconify/vue": "^5.0.1",
     "canvas-confetti": "^1.9.4",
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
