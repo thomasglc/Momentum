@@ -179,6 +179,26 @@ function logout() {
       </div>
     </section>
 
+    <!-- Section lexique -->
+    <section>
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Ressources</h2>
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+        <button
+          @click="router.push('/guide/lexique')"
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
+        >
+          <div class="flex items-center gap-3">
+            <span class="text-base">📖</span>
+            <div>
+              <p class="text-sm font-semibold text-stone-800">Lexique</p>
+              <p class="text-xs text-stone-400">AMRAP, EMOM, zones, brick run…</p>
+            </div>
+          </div>
+          <span class="text-stone-300">›</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Section compte -->
     <section>
       <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Compte</h2>

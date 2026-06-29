@@ -8,6 +8,7 @@ import SessionView from '@/views/SessionView.vue'
 import StationsView from '@/views/StationsView.vue'
 import PhasesView from '@/views/PhasesView.vue'
 import GuideView from '@/views/GuideView.vue'
+import LexiqueView from '@/views/LexiqueView.vue'
 import LoginView from '@/views/LoginView.vue'
 import ChangePasswordView from '@/views/ChangePasswordView.vue'
 import OnboardingView from '@/views/OnboardingView.vue'
@@ -23,6 +24,7 @@ const routes = [
   { path: '/stations', component: StationsView },
   { path: '/phases', component: PhasesView },
   { path: '/guide', component: GuideView },
+  { path: '/guide/lexique', component: LexiqueView, meta: { depth: 1 } },
 ]
 
 const router = createRouter({
