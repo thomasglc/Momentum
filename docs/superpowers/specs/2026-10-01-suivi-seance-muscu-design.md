@@ -64,7 +64,7 @@ Le filtre porte sur `user_created`, rempli par le serveur, et non sur `athlete_p
 ### Scripts (dans `scripts/`, idempotents, URL et token lus dans l'environnement)
 
 - `add-set-logs.cjs` : collection, relations, champs `image_urls`, droits.
-- `set-exercise-images.cjs` : associe chaque entrée de catalogue à un exercice de free-exercise-db, vérifie que les images répondent, écrit `image_urls`.
+- `set-exercise-images.cjs` : associe chaque entrée de catalogue à un exercice de free-exercise-db, vérifie que les images répondent, écrit `image_urls`. La première URL sert de vignette : la position de départ, sauf pour le gainage et le farmer's carry où la seconde photo montre le mouvement.
 
 ## App athlète
 
@@ -80,7 +80,7 @@ Le filtre porte sur `user_created`, rempli par le serveur, et non sur `athlete_p
 ### Écran
 
 - `StrengthBlock.vue` : en-tête « Force », repos lisible (« 2 min 30 »), note du bloc, puis une `ExerciseLogCard` par exercice.
-- `ExerciseLogCard.vue` : vignette, nom, objectif (« 4 × 5 »), note, compteur de séries faites, tableau `Série | Précédent | kg | Reps | ✓`.
+- `ExerciseLogCard.vue` : vignette, nom, objectif (« 4 × 5 »), note, compteur de séries faites, tableau `# | Précédent | kg | Reps | ✓`. Chaque ligne du tableau est un `SetRow.vue`, qui porte la saisie en cours et remonte `save`, `remove` ou `invalid`.
   - Une ligne par série prévue, plus les séries ajoutées (« + Ajouter une série »).
   - Les champs vides proposent en filigrane la valeur précédente, sinon la valeur prévue. Cocher sans rien saisir enregistre cette valeur.
   - Toucher « Précédent » recopie la série précédente.
@@ -88,7 +88,7 @@ Le filtre porte sur `user_created`, rempli par le serveur, et non sur `athlete_p
   - Exercice en durée : la colonne Reps devient « s ».
   - En cas d'échec réseau, la ligne revient à son état et un message s'affiche dans la carte.
 - `ExerciseThumb.vue` : image carrée, emoji en repli si pas d'image ou erreur de chargement. Utilisée aussi dans `ExerciseGrid` et dans les listes de stations.
-- `ExerciseSheet.vue` : panneau bas ouvert en touchant la vignette ou le nom. Grande image alternant départ et arrivée, objectif, note, historique des dernières séances.
+- `ExerciseSheet.vue` : panneau bas ouvert en touchant la vignette ou le nom. Grande image alternant les deux photos, objectif, note, historique des dernières séances.
 
 La validation de la séance (« Valider la séance ») ne change pas.
 

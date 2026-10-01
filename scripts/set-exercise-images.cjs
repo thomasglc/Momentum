@@ -10,6 +10,8 @@ const BASE = `https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@${COMMIT}/exe
 
 // Nom dans le catalogue → identifiant free-exercise-db.
 // Absent de la table = pas d'équivalent fidèle : l'app garde l'emoji.
+// La première URL sert de vignette : par défaut la position de départ (0.jpg).
+// `thumb: 1` met la seconde photo en premier quand la première ne dit rien du mouvement (gainage, porté).
 const MAPPING = {
   exercise_catalog: {
     'Squat': 'Barbell_Squat',
@@ -22,9 +24,9 @@ const MAPPING = {
     'Tirage Horizontal': 'Seated_Cable_Rows',
     'Strict Press': 'Standing_Military_Press',
     'Pull-up': 'Pullups',
-    'Planche': 'Plank',
+    'Planche': { id: 'Plank', thumb: 1 },
     'Dead Bug': 'Dead_Bug',
-    'Gainage Latéral': 'Side_Bridge',
+    'Gainage Latéral': { id: 'Side_Bridge', thumb: 1 },
     'Bench': 'Barbell_Bench_Press_-_Medium_Grip',
     'Deadlift': 'Barbell_Deadlift',
     'Thruster': 'Kettlebell_Thruster',
@@ -45,7 +47,7 @@ const MAPPING = {
   station_catalog: {
     'RowErg': 'Rowing_Stationary',
     'Sled Push': 'Sled_Push',
-    'Farmers Carry': 'Farmers_Walk',
+    'Farmers Carry': { id: 'Farmers_Walk', thumb: 1 },
     'Sandbag Lunges': 'Barbell_Walking_Lunge',
     'KB Swing': 'One-Arm_Kettlebell_Swings',
     'Box Jump': 'Front_Box_Jump',
@@ -53,7 +55,11 @@ const MAPPING = {
   },
 }
 
-const urlsOf = id => [`${BASE}/${id}/0.jpg`, `${BASE}/${id}/1.jpg`]
+const idOf = entry => (typeof entry === 'string' ? entry : entry.id)
+const urlsOf = (entry) => {
+  const urls = [`${BASE}/${idOf(entry)}/0.jpg`, `${BASE}/${idOf(entry)}/1.jpg`]
+  return entry.thumb === 1 ? urls.reverse() : urls
+}
 
 async function main() {
   const { api, DIRECTUS_URL } = require('./_directus.cjs')
@@ -64,9 +70,10 @@ async function main() {
   for (const [collection, mapping] of Object.entries(MAPPING)) {
     const rows = await api('GET', `/items/${collection}?fields=*&limit=-1&sort=id`)
     for (const row of rows) {
-      const id = mapping[row.name]
-      if (!id) { console.log(`  ${collection} #${row.id} ${row.name} : pas d'image`); continue }
-      const urls = urlsOf(id)
+      const entry = mapping[row.name]
+      if (!entry) { console.log(`  ${collection} #${row.id} ${row.name} : pas d'image`); continue }
+      const id = idOf(entry)
+      const urls = urlsOf(entry)
       const status = await Promise.all(urls.map(u => fetch(u, { method: 'HEAD' }).then(r => r.status)))
       if (status.some(s => s !== 200)) {
         console.log(`  ✖ ${collection} #${row.id} ${row.name} → ${id} : HTTP ${status.join('/')}`)

@@ -19,20 +19,16 @@
         </div>
 
         <div class="px-4">
-          <!-- Photo : alterne position de départ et position d'arrivée -->
+          <!-- Photos : alternent pour montrer le mouvement -->
           <div v-if="line.images.length" class="relative aspect-[3/2] rounded-2xl overflow-hidden bg-stone-100">
             <img
               v-for="(src, i) in line.images"
               :key="src"
               :src="src"
-              :alt="`${line.name}, ${FRAME_LABELS[i] ?? ''}`"
+              :alt="`${line.name}, photo ${i + 1}`"
               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
               :class="i === frame ? 'opacity-100' : 'opacity-0'"
             />
-            <span
-              v-if="line.images.length > 1"
-              class="absolute bottom-2 right-2 text-[10px] font-semibold text-white bg-black/50 rounded-full px-2 py-0.5"
-            >{{ FRAME_LABELS[frame] }}</span>
           </div>
 
           <p v-if="target" class="mt-3 text-sm font-bold text-blue-600">{{ target }}</p>
@@ -52,7 +48,7 @@
           </p>
           <ul v-else class="space-y-2">
             <li v-for="entry in entries" :key="entry.key" class="bg-stone-50 border border-stone-100 rounded-xl px-3 py-2">
-              <p class="text-[11px] font-semibold text-stone-500 capitalize">{{ entry.day }}</p>
+              <p class="text-[11px] font-semibold text-stone-500 first-letter:uppercase">{{ entry.day }}</p>
               <p class="mt-0.5 text-sm font-medium text-stone-800 leading-relaxed">{{ entry.summary }}</p>
             </li>
           </ul>
@@ -67,7 +63,6 @@ import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
 import { formatSet, formatTarget } from '@/utils/setLogs'
 
-const FRAME_LABELS = ['Départ', 'Arrivée']
 const FRAME_INTERVAL_MS = 1100
 
 const props = defineProps({
@@ -109,7 +104,7 @@ let previousOverflow = ''
 
 onMounted(() => {
   if (props.line.images.length > 1) {
-    frameTimer = setInterval(() => { frame.value = frame.value === 0 ? 1 : 0 }, FRAME_INTERVAL_MS)
+    frameTimer = setInterval(() => { frame.value = (frame.value + 1) % props.line.images.length }, FRAME_INTERVAL_MS)
   }
   // La page ne défile pas derrière le panneau
   previousOverflow = document.body.style.overflow

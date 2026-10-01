@@ -30,6 +30,7 @@ Spec : `docs/superpowers/specs/2026-10-01-suivi-seance-muscu-design.md`. Plan vo
 | `src/components/session/ExerciseThumb.vue` (créé) | image carrée, emoji en repli |
 | `src/components/session/StrengthBlock.vue` (créé) | bloc de muscu |
 | `src/components/session/ExerciseLogCard.vue` (créé) | carte d'exercice et tableau des séries |
+| `src/components/session/SetRow.vue`, `setGrid.js` (créés) | une ligne du tableau (saisie, validation) ; colonnes partagées avec l'en-tête |
 | `src/components/session/ExerciseSheet.vue` (créé) | panneau image + historique |
 | `src/components/session/ExerciseGrid.vue`, `SessionProgramBlock.vue`, `src/components/SessionDetail.vue` (modifiés) | branchement |
 | `tests/*.test.js` (créés), `package.json` (script `test`) | tests unitaires |
