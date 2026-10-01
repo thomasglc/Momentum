@@ -92,6 +92,17 @@
 
       <!-- Programme -->
       <div v-else-if="visibleBlocks.length" class="mb-6">
+        <!-- Séries déjà enregistrées non chargées : la saisie reste désactivée tant que ce n'est pas réglé -->
+        <div
+          v-if="strengthRows.length && setLogStore.loadError"
+          role="alert"
+          class="mb-3 flex items-center gap-3 bg-red-50 border border-red-100 rounded-xl px-3 py-2"
+        >
+          <p class="flex-1 text-xs text-red-700">Séries enregistrées non chargées : {{ setLogStore.loadError }}.</p>
+          <button type="button" class="flex-shrink-0 text-xs font-semibold text-red-700 underline" @click="loadSetLogs">
+            Réessayer
+          </button>
+        </div>
         <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
         <div class="space-y-2">
           <SessionProgramBlock
@@ -116,8 +127,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
+import { useSetLogStore } from '@/stores/setLogs'
 import { structuredDetailToBlock, extractRunningSegmentsFromStructured } from '@/services/sessionParser'
 import { paceForZone } from '@/utils/paceCalculator'
 import { useTrainingStore } from '@/stores/training'
@@ -149,4 +161,17 @@ const hasPaceChart = computed(() => props.session?.type === 'running' && props.s
 const visibleBlocks = computed(() =>
   hasPaceChart.value ? parsedBlocks.value.filter(b => !CHART_COVERED.has(b.type)) : parsedBlocks.value
 )
+
+// Séries réalisées : chargées dès que la séance contient des lignes de muscu
+const setLogStore = useSetLogStore()
+const strengthRows = computed(() =>
+  (props.session?.structuredDetails ?? []).flatMap(d => (d.type === 'strength' ? d.rows ?? [] : []))
+)
+
+function loadSetLogs() {
+  const exerciseIds = [...new Set(strengthRows.value.map(row => row.exerciseId).filter(id => id != null))]
+  setLogStore.loadSession(props.session.id, exerciseIds)
+}
+
+watch(strengthRows, (rows) => { if (rows.length) loadSetLogs() }, { immediate: true })
 </script>

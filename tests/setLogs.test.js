@@ -215,3 +215,16 @@ test('resolveSetValues renvoie null pour une saisie invalide plutôt que de la r
   assert.equal(resolveSetValues(repsLine, { previous: prev }, { weight: 'abc', value: '5' }), null)
   assert.equal(resolveSetValues(repsLine, { previous: prev }, { weight: '60', value: '5,5' }), null)
 })
+
+// ── formatSetCompact (colonne « Précédent » du tableau) ──────────────────────
+import { formatSetCompact } from '../src/utils/setLogs.js'
+
+test('formatSetCompact omet l\'unité de charge', () => {
+  assert.equal(formatSetCompact({ weightKg: 62.5, reps: 12 }), '62,5 × 12')
+  assert.equal(formatSetCompact({ weightKg: 5, reps: null, durationSec: 45 }), '5 × 45 s')
+})
+test('formatSetCompact garde la forme longue sans charge', () => {
+  assert.equal(formatSetCompact({ weightKg: null, reps: 8 }), '8 reps')
+  assert.equal(formatSetCompact({ weightKg: null, reps: null, durationSec: 45 }), '45 s')
+  assert.equal(formatSetCompact({}), '')
+})

@@ -44,6 +44,12 @@ export function formatSet({ weightKg, reps, durationSec } = {}) {
   return reps != null ? `${reps} reps` : what
 }
 
+/** Forme courte pour la colonne « Précédent » du tableau : "62,5 × 12", "8 reps", "5 × 45 s" */
+export function formatSetCompact(set = {}) {
+  const what = amount(set.reps, set.durationSec)
+  return set.weightKg && what ? `${formatNumber(set.weightKg)} × ${what}` : formatSet(set)
+}
+
 /** Objectif d'une ligne : "4 × 5", "3 × 45 s", "4 × 5 · 60 kg" */
 export function formatTarget({ sets, reps, durationSec, weightKg }) {
   const what = amount(reps, durationSec)
