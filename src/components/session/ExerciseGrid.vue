@@ -15,7 +15,13 @@
           class="bg-white rounded-xl p-2.5 border flex flex-col items-center text-center"
           :class="theme.cardBorder"
         >
-          <span class="text-2xl leading-none mb-1.5">{{ ex.emoji }}</span>
+          <ExerciseThumb
+            :images="ex.images"
+            :emoji="ex.emoji"
+            :alt="ex.name"
+            class="mb-1.5 text-2xl leading-none"
+            :class="ex.images?.length ? 'w-full aspect-[3/2] rounded-lg' : ''"
+          />
           <p class="text-[11px] font-semibold text-gray-700 leading-tight">{{ ex.name }}</p>
           <p v-if="ex.value" class="text-sm font-bold mt-1" :class="theme.valueColor">{{ ex.value }}</p>
           <p v-if="ex.note" class="text-[10px] text-gray-400 mt-0.5 leading-tight">{{ ex.note }}</p>
@@ -32,6 +38,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import ExerciseThumb from './ExerciseThumb.vue'
 
 const props = defineProps({
   variant:   { type: String, required: true }, // 'circuit' | 'strength' | 'finisher'

@@ -38,7 +38,10 @@
     </div>
   </div>
 
-  <!-- Circuit / Strength / Finisher — exercise grid -->
+  <!-- Muscu avec lignes structurées : saisie des séries -->
+  <StrengthBlock v-else-if="block.type === 'strength' && block.rows?.length" :block="block" />
+
+  <!-- Circuit / Finisher, et muscu d'ancien format — exercise grid -->
   <ExerciseGrid
     v-else-if="block.type === 'circuit' || block.type === 'strength' || block.type === 'finisher'"
     :variant="block.type"
@@ -166,7 +169,7 @@
         class="flex items-center gap-3 bg-white rounded-xl px-3 py-2 border border-violet-100"
       >
         <span class="text-[10px] font-bold text-violet-400 w-4 flex-shrink-0">{{ i + 1 }}</span>
-        <span class="text-xl flex-shrink-0">{{ ex.emoji }}</span>
+        <ExerciseThumb :images="ex.images" :emoji="ex.emoji" :alt="ex.name" class="w-9 h-9 rounded-lg text-xl" />
         <p class="text-xs font-semibold text-gray-700 flex-1 leading-tight">{{ ex.name }}</p>
         <span v-if="ex.value" class="text-xs font-bold text-violet-600 flex-shrink-0">{{ ex.value }}</span>
         <span v-if="ex.note" class="text-[10px] text-gray-400 flex-shrink-0">{{ ex.note }}</span>
@@ -190,7 +193,7 @@
         :key="i"
         class="flex items-center gap-3 bg-white rounded-xl px-3 py-2 border border-sky-100"
       >
-        <span class="text-xl flex-shrink-0">{{ ex.emoji }}</span>
+        <ExerciseThumb :images="ex.images" :emoji="ex.emoji" :alt="ex.name" class="w-9 h-9 rounded-lg text-xl" />
         <p class="text-xs font-semibold text-gray-700 flex-1 leading-tight">{{ ex.name }}</p>
         <span v-if="ex.value" class="text-xs font-bold text-sky-600 flex-shrink-0">{{ ex.value }}</span>
         <span v-if="ex.note" class="text-[10px] text-gray-400 flex-shrink-0">{{ ex.note }}</span>
@@ -266,7 +269,7 @@
         class="flex items-center gap-3 bg-white rounded-xl px-3 py-2 border border-amber-100"
       >
         <span v-if="block.brickFormat === 'emom'" class="text-[10px] font-bold text-amber-400 w-5 flex-shrink-0">{{ i + 1 }}</span>
-        <span class="text-xl flex-shrink-0">{{ ex.emoji }}</span>
+        <ExerciseThumb :images="ex.images" :emoji="ex.emoji" :alt="ex.name" class="w-9 h-9 rounded-lg text-xl" />
         <p class="text-xs font-semibold text-gray-700 flex-1 leading-tight">{{ ex.name }}</p>
         <span v-if="ex.value" class="text-xs font-bold text-amber-600 flex-shrink-0">{{ ex.value }}</span>
         <span v-if="ex.note" class="text-[10px] text-gray-400 flex-shrink-0">{{ ex.note }}</span>
@@ -328,6 +331,8 @@
 
 <script setup>
 import ExerciseGrid from './ExerciseGrid.vue'
+import ExerciseThumb from './ExerciseThumb.vue'
+import StrengthBlock from './StrengthBlock.vue'
 import { exerciseEmoji } from '@/services/sessionParser'
 import { useTrainingStore } from '@/stores/training'
 

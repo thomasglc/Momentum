@@ -185,5 +185,5 @@ export const useAuthStore = defineStore('auth', () => {
     useAppStore().reset()
   }
 
-  return { token, user, isAuthenticated, profileComplete, passwordChanged, init, login, logout, fetchProfile, saveProfile, markTutorialSeen, changePassword }
+  return { token, user, isAuthenticated, profileComplete, passwordChanged, init, login, logout, fetchProfile, saveProfile, markTutorialSeen, changePassword, authedFetch: _authedFetch }
 })

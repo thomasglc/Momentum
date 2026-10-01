@@ -70,6 +70,11 @@ export function parseExercise(raw) {
   return { emoji: exerciseEmoji(name), name: name.trim(), value: (value ?? '').trim(), note }
 }
 
+// Chaînes d'exercices → objets affichables, avec les images du catalogue en parallèle
+function parseList(strings, images) {
+  return strings?.map((s, i) => ({ ...parseExercise(s), images: images?.[i] ?? [] })) ?? null
+}
+
 // ─── structuredDetail → block (for SessionProgramBlock) ──────────────────────
 
 export function structuredDetailToBlock(d, resolvePace = null) {
@@ -88,7 +93,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
           type: 'station_block',
           brickFormat: 'emom',
           formatNote: d.rounds ? `${d.rounds} tours` : null,
-          exercises: d.stations?.map(parseExercise) ?? null,
+          exercises: parseList(d.stations, d.stationImages),
           sequence: null,
           duoRoles: null,
           intercalatedRuns: null,
@@ -105,14 +110,23 @@ export function structuredDetailToBlock(d, resolvePace = null) {
         hdr = d.label ?? `Circuit × ${d.rounds ?? '?'} passage${d.rounds !== 1 ? 's' : ''}`
       }
       const rest = d.restBetweenMin > 0 ? ` — repos ${d.restBetweenMin} min` : ''
-      return { type: 'circuit', header: hdr + rest, exercises: d.stations?.map(parseExercise) ?? null, content: null }
+      return { type: 'circuit', header: hdr + rest, exercises: parseList(d.stations, d.stationImages), content: null }
     }
 
     case 'strength': {
       const parts = []
       if (d.sets > 0) parts.push(`${d.sets} séries`)
       if (d.restSec > 0) parts.push(`repos ${d.restSec}s`)
-      return { type: 'strength', header: parts.length ? `Force — ${parts.join(', ')}` : 'Renforcement', exercises: d.exercises?.map(parseExercise) ?? null, content: null }
+      return {
+        type: 'strength',
+        header: parts.length ? `Force — ${parts.join(', ')}` : 'Renforcement',
+        exercises: parseList(d.exercises, d.rows?.map(r => r.images)),
+        content: null,
+        // Lignes structurées pour la saisie des séries (absentes d'un cache d'ancien format)
+        restSec: d.restSec ?? null,
+        note: d.note ?? null,
+        rows: d.rows ?? null,
+      }
     }
 
     case 'finisher': {
@@ -149,7 +163,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
         rounds: d.rounds,
         runDistanceKm: d.runDistanceKm,
         restBetweenRoundsMin: d.restBetweenRoundsMin,
-        stations: (d.stations ?? []).map(parseExercise),
+        stations: parseList(d.stations, d.stationImages) ?? [],
         paces,
       }
     }
@@ -159,7 +173,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
         type: 'station_activation',
         note: d.note ?? null,
         rounds: d.rounds ?? null,
-        stations: (d.stations ?? []).map(parseExercise),
+        stations: parseList(d.stations, d.stationImages) ?? [],
       }
 
     case 'station_block': {
@@ -181,7 +195,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
       return {
         type: 'station_block',
         sequence,
-        exercises: (d.stations ?? []).map(parseExercise),
+        exercises: parseList(d.stations, d.stationImages) ?? [],
         intercalatedRuns: d.intercalatedRuns ?? null,
         brickFormat: d.brickFormat ?? null,
         formatNote: d.formatNote ?? null,
