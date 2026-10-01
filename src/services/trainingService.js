@@ -1,7 +1,10 @@
 import { useAuthStore } from '@/stores/auth'
+import { strengthDetail, stationsDetail } from './blockMappers'
 
 const DIRECTUS_URL = import.meta.env.VITE_DIRECTUS_URL || 'http://localhost:8056'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
+// v2 : les séances en cache portent les lignes d'exercice structurées et les images
+const SESSION_LS_PREFIX = 'momentum-session-v2-'
 
 // ── Cache mémoire (ultra-rapide, dure le temps de la session) ─────────────
 let _planCache = null
@@ -24,6 +27,13 @@ function lsSet(key, data) {
     localStorage.setItem(key, JSON.stringify({ data, expires: Date.now() + CACHE_TTL_MS }))
   } catch {} // quota dépassé → on ignore
 }
+
+// Les séances en cache d'un ancien format ne sont plus jamais lues : on les retire une fois
+try {
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('momentum-session-') && !k.startsWith(SESSION_LS_PREFIX))
+    .forEach(k => localStorage.removeItem(k))
+} catch {}
 
 async function api(path, params = {}) {
   const url = new URL(`${DIRECTUS_URL}${path}`)
@@ -105,33 +115,6 @@ function cardioToDetail(b) {
   }
 }
 
-function formatExercise(row) {
-  const name = row.exercise_id?.name ?? row.custom_label ?? 'Exercice'
-  let str
-  if (row.sets && row.reps)          str = `${row.sets}×${row.reps} ${name}`
-  else if (row.sets && row.duration_sec) str = `${row.sets}×${row.duration_sec}s ${name}`
-  else if (row.duration_sec)         str = `${row.duration_sec}s ${name}`
-  else if (row.reps)                 str = `${row.reps} ${name}`
-  else                               str = name
-  if (row.note) str += ` (${row.note})`
-  return str
-}
-
-function formatStation(row) {
-  const name = row.station_id?.name ?? row.custom_label ?? 'Station'
-  let str = name
-  if (row.distance_m)      str += ` ${row.distance_m}m`
-  else if (row.reps)       str += ` ${row.reps} reps`
-  if (row.weight_kg_female != null && row.weight_kg_male != null)
-    str += ` (${row.weight_kg_female}kg F / ${row.weight_kg_male}kg H)`
-  else if (row.weight_kg_male != null)
-    str += ` (${row.weight_kg_male}kg)`
-  else if (row.weight_kg_female != null)
-    str += ` (${row.weight_kg_female}kg)`
-  if (row.note) str += ` (${row.note})`
-  return str
-}
-
 async function fetchBlock({ block_type, block_id }) {
   switch (block_type) {
     case 'block_cardio': {
@@ -161,7 +144,7 @@ async function fetchBlock({ block_type, block_id }) {
           'sort': 'position',
         }),
       ])
-      return { type: 'strength', restSec: b.rest_sec, exercises: rows.map(formatExercise) }
+      return strengthDetail(b, rows)
     }
 
     case 'block_circuit': {
@@ -180,7 +163,7 @@ async function fetchBlock({ block_type, block_id }) {
         rounds: b.rounds,
         durationMin: b.duration_min,
         restBetweenMin: b.rest_between_min,
-        stations: rows.map(formatStation),
+        ...stationsDetail(rows),
       }
     }
 
@@ -199,7 +182,7 @@ async function fetchBlock({ block_type, block_id }) {
         runDistanceKm: b.run_distance_km,
         paceZone: b.pace_zone,
         restBetweenRoundsMin: b.rest_between_rounds_min,
-        stations: rows.map(formatStation),
+        ...stationsDetail(rows),
       }
     }
 
@@ -212,7 +195,7 @@ async function fetchBlock({ block_type, block_id }) {
           'sort': 'position',
         }),
       ])
-      return { type: 'station_activation', rounds: b.rounds, note: b.note, stations: rows.map(formatStation) }
+      return { type: 'station_activation', rounds: b.rounds, note: b.note, ...stationsDetail(rows) }
     }
 
     case 'block_station_block': {
@@ -228,7 +211,7 @@ async function fetchBlock({ block_type, block_id }) {
         type: 'station_block',
         brickFormat: b.brick_format,
         formatNote: b.format_note,
-        stations: rows.map(formatStation),
+        ...stationsDetail(rows),
       }
     }
 
@@ -356,7 +339,7 @@ export async function prefetchAll() {
   const missing = sessions.filter(s => {
     const key = String(s.id)
     if (_sessionCache.has(key)) return false
-    const ls = lsGet(`momentum-session-${key}`)
+    const ls = lsGet(`${SESSION_LS_PREFIX}${key}`)
     if (ls) { _sessionCache.set(key, ls); return false }
     return true
   })
@@ -420,27 +403,27 @@ export async function prefetchAll() {
       case 'block_strength': {
         const b = maps.strength.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'strength', restSec: b.rest_sec, exercises: (entries.strengthExercises.get(block_id) || []).map(formatExercise) }
+        return strengthDetail(b, entries.strengthExercises.get(block_id) || [])
       }
       case 'block_circuit': {
         const b = maps.circuit.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'circuit', format: b.format, label: b.label, rounds: b.rounds, durationMin: b.duration_min, restBetweenMin: b.rest_between_min, stations: (entries.circuitStations.get(block_id) || []).map(formatStation) }
+        return { type: 'circuit', format: b.format, label: b.label, rounds: b.rounds, durationMin: b.duration_min, restBetweenMin: b.rest_between_min, ...stationsDetail(entries.circuitStations.get(block_id) || []) }
       }
       case 'block_mini_race': {
         const b = maps.miniRace.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'mini_race', rounds: b.rounds, runDistanceKm: b.run_distance_km, paceZone: b.pace_zone, restBetweenRoundsMin: b.rest_between_rounds_min, stations: (entries.miniRaceStations.get(block_id) || []).map(formatStation) }
+        return { type: 'mini_race', rounds: b.rounds, runDistanceKm: b.run_distance_km, paceZone: b.pace_zone, restBetweenRoundsMin: b.rest_between_rounds_min, ...stationsDetail(entries.miniRaceStations.get(block_id) || []) }
       }
       case 'block_station_activation': {
         const b = maps.stationActivation.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'station_activation', rounds: b.rounds, note: b.note, stations: (entries.stationActivationEntries.get(block_id) || []).map(formatStation) }
+        return { type: 'station_activation', rounds: b.rounds, note: b.note, ...stationsDetail(entries.stationActivationEntries.get(block_id) || []) }
       }
       case 'block_station_block': {
         const b = maps.stationBlock.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'station_block', brickFormat: b.brick_format, formatNote: b.format_note, stations: (entries.stationBlockEntries.get(block_id) || []).map(formatStation) }
+        return { type: 'station_block', brickFormat: b.brick_format, formatNote: b.format_note, ...stationsDetail(entries.stationBlockEntries.get(block_id) || []) }
       }
       default: return { type: 'text', label: `[bloc inconnu: ${block_type}]` }
     }
@@ -453,7 +436,7 @@ export async function prefetchAll() {
     const blocks = blocksBySession.get(s.id) || []
     const result = { ...mapSession(s), structuredDetails: blocks.map(resolveBlock) }
     _sessionCache.set(key, result)
-    lsSet(`momentum-session-${key}`, result)
+    lsSet(`${SESSION_LS_PREFIX}${key}`, result)
   }
 }
 
@@ -509,7 +492,7 @@ export async function getSession(id) {
   const key = String(id)
   if (_sessionCache.has(key)) return _sessionCache.get(key)
 
-  const cached = lsGet(`momentum-session-${key}`)
+  const cached = lsGet(`${SESSION_LS_PREFIX}${key}`)
   if (cached) { _sessionCache.set(key, cached); return cached }
 
   const [session, blocks] = await Promise.all([
@@ -523,6 +506,6 @@ export async function getSession(id) {
   const structuredDetails = await Promise.all(blocks.map(fetchBlock))
   const result = { ...mapSession(session), structuredDetails }
   _sessionCache.set(key, result)
-  lsSet(`momentum-session-${key}`, result)
+  lsSet(`${SESSION_LS_PREFIX}${key}`, result)
   return result
 }
