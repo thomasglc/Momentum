@@ -58,6 +58,7 @@
 <script setup>
 import { computed, shallowRef } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
+import { useWorkoutStore } from '@/stores/workout'
 import { exerciseEmoji } from '@/services/sessionParser'
 import { buildSetRows, formatTarget, isTimed } from '@/utils/setLogs'
 import { SET_GRID } from './setGrid'
@@ -65,12 +66,14 @@ import ExerciseThumb from './ExerciseThumb.vue'
 import SetRow from './SetRow.vue'
 
 const props = defineProps({
-  line: { type: Object, required: true }, // { id, exerciseId, name, sets, reps, durationSec, weightKg, note, images }
+  line:    { type: Object, required: true }, // { id, exerciseId, name, sets, reps, durationSec, weightKg, note, images }
+  restSec: { type: Number, default: null },  // repos du bloc, lancé quand une série est cochée
 })
 
 const emit = defineEmits(['open'])
 
-const store = useSetLogStore()
+const store   = useSetLogStore()
+const workout = useWorkoutStore()
 
 const extra = shallowRef(0)     // séries ajoutées à la main, pas encore enregistrées
 const busy  = shallowRef(false) // un enregistrement est en cours pour cette carte
@@ -108,6 +111,20 @@ async function run(action) {
   }
 }
 
-const save   = (setNumber, values) => run(() => store.saveSet(props.line, setNumber, values))
-const remove = logged => run(() => store.removeSet(logged.id))
+function save(setNumber, values) {
+  // Cocher une nouvelle série lance le repos ; modifier une série déjà cochée ne le relance pas.
+  const isNew = !lineSets.value.some(s => s.setNumber === setNumber)
+  if (isNew) workout.unlockSound() // dans le geste de l'utilisateur, avant tout appel réseau
+  return run(async () => {
+    await store.saveSet(props.line, setNumber, values)
+    if (!isNew) return
+    workout.ensureStarted(store.sessionId)
+    workout.startRest(props.restSec, props.line.name)
+  })
+}
+
+const remove = logged => run(async () => {
+  await store.removeSet(logged.id)
+  workout.skipRest()
+})
 </script>

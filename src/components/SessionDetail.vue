@@ -53,8 +53,8 @@
       </div>
     </div>
 
-    <!-- Body -->
-    <div class="px-4 py-4">
+    <!-- Body (marge basse quand la barre de séance flotte au-dessus des onglets) -->
+    <div class="px-4 py-4" :class="{ 'pb-28': barVisible }">
 
       <!-- Note optionnelle -->
       <div v-if="session.optional" class="mb-4 bg-violet-50 border-l-4 border-violet-300 rounded-r-lg px-3 py-2">
@@ -103,6 +103,18 @@
             Réessayer
           </button>
         </div>
+        <!-- Séance de muscu : lancer le chrono (il part aussi à la première série cochée) -->
+        <button
+          v-if="canStart"
+          type="button"
+          class="w-full mb-4 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+          :class="cfg.pendingBtn"
+          @click="workout.start(session.id)"
+        >
+          <Icon icon="ion:play" class="text-base" aria-hidden="true" />
+          Démarrer la séance
+        </button>
+
         <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
         <div class="space-y-2">
           <SessionProgramBlock
@@ -119,22 +131,28 @@
         class="w-full py-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98]"
         :class="completed ? cfg.completedBtn : cfg.pendingBtn"
       >
-        {{ completed ? '✓ Séance validée — Annuler' : 'Valider la séance' }}
+        {{ validateLabel }}
       </button>
 
     </div>
+
+    <WorkoutBar v-if="strengthRows.length" :session-id="session.id" />
   </div>
 </template>
 
 <script setup>
 import { computed, watch } from 'vue'
+import { Icon } from '@iconify/vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import { useSetLogStore } from '@/stores/setLogs'
+import { useWorkoutStore } from '@/stores/workout'
+import { strengthLinesOf } from '@/utils/workout'
 import { structuredDetailToBlock, extractRunningSegmentsFromStructured } from '@/services/sessionParser'
 import { paceForZone } from '@/utils/paceCalculator'
 import { useTrainingStore } from '@/stores/training'
 import SessionPaceChart    from './session/SessionPaceChart.vue'
 import SessionProgramBlock from './session/SessionProgramBlock.vue'
+import WorkoutBar          from './session/WorkoutBar.vue'
 
 const props = defineProps({
   session:   { type: Object,  required: true },
@@ -164,9 +182,19 @@ const visibleBlocks = computed(() =>
 
 // Séries réalisées : chargées dès que la séance contient des lignes de muscu
 const setLogStore = useSetLogStore()
-const strengthRows = computed(() =>
-  (props.session?.structuredDetails ?? []).flatMap(d => (d.type === 'strength' ? d.rows ?? [] : []))
+const strengthRows = computed(() => strengthLinesOf(props.session?.structuredDetails))
+
+// Chrono de séance et de repos (séances de muscu uniquement)
+const workout = useWorkoutStore()
+const workoutRunning = computed(() => workout.isRunningFor(props.session?.id))
+const canStart = computed(() => strengthRows.value.length > 0 && !props.completed && !workoutRunning.value)
+const barVisible = computed(() =>
+  strengthRows.value.length > 0 && (workoutRunning.value || !!workout.rest || workout.restJustDone)
 )
+const validateLabel = computed(() => {
+  if (props.completed) return '✓ Séance validée — Annuler'
+  return workoutRunning.value ? 'Terminer la séance' : 'Valider la séance'
+})
 
 function loadSetLogs() {
   const exerciseIds = [...new Set(strengthRows.value.map(row => row.exerciseId).filter(id => id != null))]
