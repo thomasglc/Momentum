@@ -22,7 +22,7 @@ La clé RapidAPI fournie fonctionne, mais l'offre gratuite d'ExerciseDB (AscendA
 | | ExerciseDB gratuit | free-exercise-db |
 |---|---|---|
 | Exercices disponibles | 200, surtout poids de corps et étirements | 876 |
-| Couverture de notre catalogue | 9 exercices sur 28, aucune station Hyrox | 28 sur 28, plus 6 stations sur 11 |
+| Couverture de notre catalogue | une dizaine d'exercices sur 28, aucune station Hyrox | 28 sur 28, plus 7 stations sur 11 (pas d'équivalent pour SkiErg, Sled Pull, Burpee Broad Jump, Wall Balls) |
 | Filigrane | oui, en travers de l'image | non |
 | Stockage | interdit (« Caching Allowed » décoché, URL changées chaque lundi) | libre |
 | Quota | 2 000 requêtes par mois | aucun |
