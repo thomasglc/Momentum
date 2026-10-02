@@ -31,6 +31,18 @@ export function fetchExerciseLogs(profileId, exerciseIds, limit = 400) {
   })
 }
 
+/** Toutes les séries de l'athlète, avec le nom de l'exercice : sert au tonnage et aux charges */
+export function fetchAllLogs(profileId) {
+  return request('GET', '/items/set_logs', {
+    params: {
+      'filter[athlete_profile_id][_eq]': profileId,
+      fields: 'id,session_id,exercise_id.id,exercise_id.name,weight_kg,reps,duration_sec,date_created',
+      sort: 'date_created',
+      limit: -1,
+    },
+  })
+}
+
 export function createSetLog(payload) {
   return request('POST', '/items/set_logs', { body: payload })
 }

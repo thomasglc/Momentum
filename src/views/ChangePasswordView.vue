@@ -61,7 +61,7 @@ async function submit() {
       if (isFirstLogin.value) {
         router.replace(auth.profileComplete ? '/' : '/onboarding')
       } else {
-        router.replace('/guide')
+        router.replace('/profil')
       }
     }, 1200)
   } catch (e) {
@@ -177,7 +177,7 @@ async function submit() {
           <button
             v-if="!isFirstLogin"
             type="button"
-            @click="router.replace('/guide')"
+            @click="router.replace('/profil')"
             class="text-xs text-stone-400 text-center w-full py-1 hover:text-stone-600 transition-colors"
           >
             Annuler

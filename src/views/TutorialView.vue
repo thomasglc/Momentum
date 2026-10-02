@@ -94,8 +94,8 @@ async function finish() {
         <div v-else-if="slide === 1" key="s1">
           <h2 class="text-xl font-black text-stone-800 text-center mb-2">Ta semaine</h2>
           <p class="text-sm text-stone-500 text-center leading-relaxed mb-4">
-            L'écran d'accueil affiche la semaine en cours. Les flèches naviguent
-            entre les semaines, le badge indique la phase du plan.
+            L'accueil te donne la séance du jour. L'onglet Programme affiche chaque
+            semaine : les flèches en changent, le badge indique la phase du plan.
           </p>
           <div class="pointer-events-none select-none" aria-hidden="true">
             <WeekNav
@@ -127,7 +127,7 @@ async function finish() {
           <h2 class="text-xl font-black text-stone-800 text-center mb-2">Tes allures</h2>
           <p class="text-sm text-stone-500 text-center leading-relaxed mb-4">
             Chaque course est prescrite en zone (Z1 à Z5), calculée depuis ton temps
-            au 10km. Tes allures exactes sont dans l'onglet Paramètres.
+            au 10km. Tes allures exactes sont dans l'onglet Profil.
           </p>
           <div class="pointer-events-none select-none bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden divide-y divide-stone-50" aria-hidden="true">
             <div
@@ -146,8 +146,8 @@ async function finish() {
         <div v-else key="s4">
           <h2 class="text-xl font-black text-stone-800 text-center mb-2">Valide tes séances</h2>
           <p class="text-sm text-stone-500 text-center leading-relaxed mb-4">
-            Séance terminée ? Coche-la depuis son détail : la progression de ta
-            semaine avance, et c'est synchronisé sur tous tes appareils.
+            Séance terminée ? Coche-la depuis son détail : ta semaine avance, et
+            tes totaux se remplissent dans l'onglet Progression.
           </p>
           <div class="pointer-events-none select-none">
             <ProgressBar :progress="67" />

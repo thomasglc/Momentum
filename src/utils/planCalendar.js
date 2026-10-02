@@ -58,32 +58,3 @@ export function planStatus({ startDate, totalWeeks, raceDate }, today) {
     daysToRace: raceDate ? daysBetween(today, raceDate) : null,
   }
 }
-
-/**
- * Semaines Directus regroupées par phase, dans l'ordre, avec leurs dates pour cet athlète.
- * nameOf(id) donne le nom d'une phase.
- */
-export function groupPhases(weeks, startDate, nameOf) {
-  const byPhase = new Map()
-  for (const week of [...weeks].sort((a, b) => a.week_number - b.week_number)) {
-    const id = week.phase ?? 0
-    if (!byPhase.has(id)) byPhase.set(id, [])
-    byPhase.get(id).push({
-      number: week.week_number,
-      theme: week.theme ?? null,
-      isDeload: !!week.is_deload,
-      ...(startDate ? weekDates(startDate, week.week_number) : { startDate: null, endDate: null }),
-    })
-  }
-  return [...byPhase.entries()]
-    .sort(([a], [b]) => a - b)
-    .map(([id, list]) => ({
-      id,
-      name: nameOf(id),
-      firstWeek: list[0].number,
-      lastWeek: list.at(-1).number,
-      startDate: list[0].startDate,
-      endDate: list.at(-1).endDate,
-      weeks: list,
-    }))
-}

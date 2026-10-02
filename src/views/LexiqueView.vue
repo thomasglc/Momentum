@@ -9,7 +9,7 @@ const appStore = useAppStore()
 
 function goBack() {
   appStore.markProgrammaticBack()
-  router.push('/guide')
+  router.push('/profil')
 }
 
 const TERMS = [
