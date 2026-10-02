@@ -11,18 +11,52 @@
       "weight": null,
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "~2:30–3:00/500m", "note": "Technique avant tout" },
-          { "phase": "Phase 2", "label": "~2:15–2:30/500m", "note": "Montée progressive" },
-          { "phase": "Phase 3", "label": "~2:00–2:15/500m", "note": "Tester allure race en S13+" },
-          { "phase": "Race", "label": "~2:00–2:10/500m", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "~2:30–3:00/500m",
+            "note": "Technique avant tout"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "~2:15–2:30/500m",
+            "note": "Montée progressive"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "~2:00–2:15/500m",
+            "note": "Tester allure race en S13+"
+          },
+          {
+            "phase": "Race",
+            "label": "~2:00–2:10/500m",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "~2:30–3:00/500m", "note": "Technique avant tout" },
-          { "phase": "Phase 2", "label": "~2:15–2:30/500m", "note": "Montée progressive" },
-          { "phase": "Phase 3", "label": "~2:00–2:15/500m", "note": "Tester allure race en S13+" },
-          { "phase": "Race", "label": "~2:00–2:10/500m", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "~2:30–3:00/500m",
+            "note": "Technique avant tout"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "~2:15–2:30/500m",
+            "note": "Montée progressive"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "~2:00–2:15/500m",
+            "note": "Tester allure race en S13+"
+          },
+          {
+            "phase": "Race",
+            "label": "~2:00–2:10/500m",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "1 000 m",
+      "weightSoloMen": null
     },
     {
       "id": 2,
@@ -35,18 +69,52 @@
       "weight": "Open Mixte : 152 kg (sled inclus) — même sled pour les deux",
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "75–90 kg", "note": "Focus technique, position basse, pas de raideur dos" },
-          { "phase": "Phase 2", "label": "100–125 kg", "note": "S5-S6 : 100 kg · S7-S8 : 115–125 kg" },
-          { "phase": "Phase 3", "label": "128–152 kg", "note": "Poids race atteint en S14–S15" },
-          { "phase": "Race", "label": "152 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "75–90 kg",
+            "note": "Focus technique, position basse, pas de raideur dos"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "100–125 kg",
+            "note": "S5-S6 : 100 kg · S7-S8 : 115–125 kg"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "128–152 kg",
+            "note": "Poids race atteint en S14–S15"
+          },
+          {
+            "phase": "Race",
+            "label": "152 kg",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "80–100 kg", "note": "Même sled qu'elle, focus technique identique" },
-          { "phase": "Phase 2", "label": "110–138 kg", "note": "S5-S6 : 110 kg · S7-S8 : 128–138 kg" },
-          { "phase": "Phase 3", "label": "138–152 kg", "note": "Poids race atteint en S13" },
-          { "phase": "Race", "label": "152 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "80–100 kg",
+            "note": "Même sled qu'elle, focus technique identique"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "110–138 kg",
+            "note": "S5-S6 : 110 kg · S7-S8 : 128–138 kg"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "138–152 kg",
+            "note": "Poids race atteint en S13"
+          },
+          {
+            "phase": "Race",
+            "label": "152 kg",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "50 m",
+      "weightSoloMen": "152 kg, traîneau inclus"
     },
     {
       "id": 3,
@@ -59,18 +127,52 @@
       "weight": "Open Mixte : 103 kg (sled inclus) — même sled pour les deux",
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "50–65 kg", "note": "Position accroupie basse, tirer avec jambes + dos" },
-          { "phase": "Phase 2", "label": "72–90 kg", "note": "S5-S6 : 72 kg · S7-S8 : 85–90 kg" },
-          { "phase": "Phase 3", "label": "92–103 kg", "note": "Poids race atteint en S14–S15" },
-          { "phase": "Race", "label": "103 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "50–65 kg",
+            "note": "Position accroupie basse, tirer avec jambes + dos"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "72–90 kg",
+            "note": "S5-S6 : 72 kg · S7-S8 : 85–90 kg"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "92–103 kg",
+            "note": "Poids race atteint en S14–S15"
+          },
+          {
+            "phase": "Race",
+            "label": "103 kg",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "80–100 kg", "note": "Progression rapide possible" },
-          { "phase": "Phase 2", "label": "95–103 kg", "note": "Atteindre poids race dès S7-S8" },
-          { "phase": "Phase 3", "label": "103 kg", "note": "Maintien poids race, focus endurance" },
-          { "phase": "Race", "label": "103 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "80–100 kg",
+            "note": "Progression rapide possible"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "95–103 kg",
+            "note": "Atteindre poids race dès S7-S8"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "103 kg",
+            "note": "Maintien poids race, focus endurance"
+          },
+          {
+            "phase": "Race",
+            "label": "103 kg",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "50 m",
+      "weightSoloMen": "103 kg, traîneau inclus"
     },
     {
       "id": 4,
@@ -81,7 +183,9 @@
       "muscles": "Full body, cardio intense, explosivité",
       "alternative": "Burpees + Box jump, ou burpees seuls si pas d'espace",
       "weight": null,
-      "progression": null
+      "progression": null,
+      "volumeSolo": "80 m",
+      "weightSoloMen": null
     },
     {
       "id": 5,
@@ -94,18 +198,52 @@
       "weight": null,
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "~2:30–2:45/500m", "note": "Technique : jambes → dos → bras" },
-          { "phase": "Phase 2", "label": "~2:20–2:30/500m", "note": "Montée progressive" },
-          { "phase": "Phase 3", "label": "~2:10–2:20/500m", "note": "Tester allure race en S13+" },
-          { "phase": "Race", "label": "~2:10–2:20/500m", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "~2:30–2:45/500m",
+            "note": "Technique : jambes → dos → bras"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "~2:20–2:30/500m",
+            "note": "Montée progressive"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "~2:10–2:20/500m",
+            "note": "Tester allure race en S13+"
+          },
+          {
+            "phase": "Race",
+            "label": "~2:10–2:20/500m",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "~2:30–2:45/500m", "note": "Technique : jambes → dos → bras" },
-          { "phase": "Phase 2", "label": "~2:20–2:30/500m", "note": "Montée progressive" },
-          { "phase": "Phase 3", "label": "~2:10–2:20/500m", "note": "Tester allure race en S13+" },
-          { "phase": "Race", "label": "~2:10–2:20/500m", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "~2:30–2:45/500m",
+            "note": "Technique : jambes → dos → bras"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "~2:20–2:30/500m",
+            "note": "Montée progressive"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "~2:10–2:20/500m",
+            "note": "Tester allure race en S13+"
+          },
+          {
+            "phase": "Race",
+            "label": "~2:10–2:20/500m",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "1 000 m",
+      "weightSoloMen": null
     },
     {
       "id": 6,
@@ -118,18 +256,52 @@
       "weight": "Open Mixte : 2 × 24 kg chacun — charges séparées (pas le même équipement)",
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "2 × 12 kg", "note": "Dos droit, épaules en arrière, pas de balancement" },
-          { "phase": "Phase 2", "label": "2 × 14–20 kg", "note": "S5-S6 : 14 kg · S7-S8 : 18–20 kg" },
-          { "phase": "Phase 3", "label": "2 × 20–24 kg", "note": "Poids race atteint en S13" },
-          { "phase": "Race", "label": "2 × 24 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "2 × 12 kg",
+            "note": "Dos droit, épaules en arrière, pas de balancement"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "2 × 14–20 kg",
+            "note": "S5-S6 : 14 kg · S7-S8 : 18–20 kg"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "2 × 20–24 kg",
+            "note": "Poids race atteint en S13"
+          },
+          {
+            "phase": "Race",
+            "label": "2 × 24 kg",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "2 × 14–16 kg", "note": "Bases musculaires à construire" },
-          { "phase": "Phase 2", "label": "2 × 18–22 kg", "note": "S7-S8 : 20–22 kg" },
-          { "phase": "Phase 3", "label": "2 × 22–24 kg", "note": "Poids race atteint en S13" },
-          { "phase": "Race", "label": "2 × 24 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "2 × 14–16 kg",
+            "note": "Bases musculaires à construire"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "2 × 18–22 kg",
+            "note": "S7-S8 : 20–22 kg"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "2 × 22–24 kg",
+            "note": "Poids race atteint en S13"
+          },
+          {
+            "phase": "Race",
+            "label": "2 × 24 kg",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "200 m",
+      "weightSoloMen": "2 × 24 kg"
     },
     {
       "id": 7,
@@ -142,18 +314,52 @@
       "weight": "Open Mixte : 20 kg — même sac pour les deux",
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "8 kg", "note": "Sac sur les épaules (trapèzes), genou avant à 90°" },
-          { "phase": "Phase 2", "label": "10–16 kg", "note": "S5-S6 : 10 kg · S7-S8 : 14–16 kg" },
-          { "phase": "Phase 3", "label": "16–20 kg", "note": "Poids race atteint en S12" },
-          { "phase": "Race", "label": "20 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "8 kg",
+            "note": "Sac sur les épaules (trapèzes), genou avant à 90°"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "10–16 kg",
+            "note": "S5-S6 : 10 kg · S7-S8 : 14–16 kg"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "16–20 kg",
+            "note": "Poids race atteint en S12"
+          },
+          {
+            "phase": "Race",
+            "label": "20 kg",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "14 kg", "note": "Technique cruciale dès le départ" },
-          { "phase": "Phase 2", "label": "18–20 kg", "note": "Tester 20 kg en S8" },
-          { "phase": "Phase 3", "label": "20 kg + séries 22–25 kg", "note": "Poids race + surcharge" },
-          { "phase": "Race", "label": "20 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "14 kg",
+            "note": "Technique cruciale dès le départ"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "18–20 kg",
+            "note": "Tester 20 kg en S8"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "20 kg + séries 22–25 kg",
+            "note": "Poids race + surcharge"
+          },
+          {
+            "phase": "Race",
+            "label": "20 kg",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "100 m",
+      "weightSoloMen": "20 kg"
     },
     {
       "id": 8,
@@ -166,18 +372,52 @@
       "weight": "Open Mixte : 6 kg · cible à 3m — même medball pour les deux",
       "progression": {
         "elle": [
-          { "phase": "Phase 1", "label": "4–6 kg / cible 3m", "note": "Monter à 6 kg dès S2-S3, squat profond" },
-          { "phase": "Phase 2", "label": "6 kg / cible 3m", "note": "Focus endurance : séries de 20–30 reps" },
-          { "phase": "Phase 3", "label": "6 kg race weight", "note": "Objectif : 50 reps non-stop en fin de phase" },
-          { "phase": "Race", "label": "6 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "4–6 kg / cible 3m",
+            "note": "Monter à 6 kg dès S2-S3, squat profond"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "6 kg / cible 3m",
+            "note": "Focus endurance : séries de 20–30 reps"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "6 kg race weight",
+            "note": "Objectif : 50 reps non-stop en fin de phase"
+          },
+          {
+            "phase": "Race",
+            "label": "6 kg",
+            "note": ""
+          }
         ],
         "lui": [
-          { "phase": "Phase 1", "label": "6 kg / cible 3m", "note": "Poids race dès le début" },
-          { "phase": "Phase 2", "label": "6 kg + séries à 8 kg", "note": "Quelques séries à 8 kg pour l'adaptation" },
-          { "phase": "Phase 3", "label": "6 kg + séries à 8 kg", "note": "Focus endurance et régularité" },
-          { "phase": "Race", "label": "6 kg", "note": "" }
+          {
+            "phase": "Phase 1",
+            "label": "6 kg / cible 3m",
+            "note": "Poids race dès le début"
+          },
+          {
+            "phase": "Phase 2",
+            "label": "6 kg + séries à 8 kg",
+            "note": "Quelques séries à 8 kg pour l'adaptation"
+          },
+          {
+            "phase": "Phase 3",
+            "label": "6 kg + séries à 8 kg",
+            "note": "Focus endurance et régularité"
+          },
+          {
+            "phase": "Race",
+            "label": "6 kg",
+            "note": ""
+          }
         ]
-      }
+      },
+      "volumeSolo": "100 répétitions",
+      "weightSoloMen": "6 kg, cible à 3 m"
     }
   ]
 }

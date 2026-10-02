@@ -1,10 +1,11 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { useAuthStore } from '@/stores/auth'
 import { calcVDOT, calcZones } from '@/utils/paceCalculator'
 import { clearPlanCache } from '@/services/trainingService'
+import { parseClock } from '@/utils/workout'
 
 const router = useRouter()
 const store  = useTrainingStore()
@@ -12,21 +13,31 @@ const auth   = useAuthStore()
 
 // ── Allures ────────────────────────────────────────────────────────────────
 
-function parseTime(str) {
-  const parts = str.trim().split(':')
-  if (parts.length !== 2) return null
-  const m = parseInt(parts[0]), s = parseInt(parts[1])
-  if (isNaN(m) || isNaN(s) || s >= 60) return null
-  return m * 60 + s
-}
-
 function formatTime(sec) {
   if (!sec) return ''
   return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`
 }
 
-function savePace(who, value) {
-  store.setTenKmTime(who, parseTime(value))
+// Le temps de l'athlète connecté est enregistré dans son profil ;
+// celui de son partenaire (double mixte) reste sur l'appareil.
+const ownKey = computed(() => (auth.user?.gender === 'femme' ? 'elle' : 'lui'))
+const paceMessage = shallowRef(null) // { ok, text }
+
+async function savePace(who, value) {
+  paceMessage.value = null
+  const seconds = parseClock(value)
+  if (value.trim() && seconds == null) {
+    paceMessage.value = { ok: false, text: 'Format attendu : 48:30' }
+    return
+  }
+  store.setTenKmTime(who, seconds)
+  if (who !== ownKey.value || seconds == null) return
+  try {
+    await auth.saveProfile(auth.user.gender, seconds)
+    paceMessage.value = { ok: true, text: 'Enregistré' }
+  } catch {
+    paceMessage.value = { ok: false, text: 'Non enregistré, réessaie plus tard' }
+  }
 }
 
 const vdotLui  = computed(() => store.tenKmTimeLui  ? Math.round(calcVDOT(10000, store.tenKmTimeLui)  * 10) / 10 : null)
@@ -50,9 +61,9 @@ const athletes = computed(() => {
     if (store.tenKmTimeLui)  list.push({ label: '👨 Lui',  zones: calcZones(store.tenKmTimeLui) })
     if (store.tenKmTimeElle) list.push({ label: '👩 Elle', zones: calcZones(store.tenKmTimeElle) })
   } else if (store.showLui && store.tenKmTimeLui) {
-    list.push({ label: 'Votre temps', zones: calcZones(store.tenKmTimeLui) })
+    list.push({ label: 'Tes zones', zones: calcZones(store.tenKmTimeLui) })
   } else if (store.showElle && store.tenKmTimeElle) {
-    list.push({ label: 'Votre temps', zones: calcZones(store.tenKmTimeElle) })
+    list.push({ label: 'Tes zones', zones: calcZones(store.tenKmTimeElle) })
   }
   return list
 })
@@ -79,7 +90,7 @@ function logout() {
       <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Allures de course</h2>
       <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 flex flex-col gap-4">
         <p class="text-xs text-stone-500 leading-relaxed">
-          Temps au 10km utilisés pour calculer automatiquement les allures de chaque séance (méthode VDOT).
+          Ton temps au 10 km sert à calculer tes allures pour chaque séance.
         </p>
 
         <!-- Duo mixte : deux colonnes Lui / Elle -->
@@ -110,7 +121,7 @@ function logout() {
 
         <!-- Solo / double men / double women : un seul champ -->
         <div v-else class="flex flex-col gap-1.5">
-          <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">Votre temps</label>
+          <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wide">Ton temps au 10 km</label>
           <input
             v-if="store.showLui"
             type="text"
@@ -130,6 +141,13 @@ function logout() {
           <p v-if="store.showLui && vdotLui" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotLui }}</p>
           <p v-else-if="store.showElle && vdotElle" class="text-[10px] text-stone-400 text-center">VDOT {{ vdotElle }}</p>
         </div>
+
+        <p
+          v-if="paceMessage"
+          role="status"
+          class="text-xs font-medium text-center"
+          :class="paceMessage.ok ? 'text-emerald-600' : 'text-red-500'"
+        >{{ paceMessage.text }}</p>
       </div>
     </section>
 

@@ -72,3 +72,9 @@ export function summarizeWorkout(lines, sets) {
 export function formatKg(n) {
   return `${Math.round(n).toLocaleString('fr-FR')} kg`
 }
+
+/** "48:30" → 2910 secondes ; null si la saisie n'est pas un temps en minutes:secondes */
+export function parseClock(input) {
+  const match = String(input ?? '').trim().match(/^(\d{1,3}):([0-5]\d)$/)
+  return match ? Number(match[1]) * 60 + Number(match[2]) : null
+}

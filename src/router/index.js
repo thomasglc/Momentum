@@ -64,10 +64,8 @@ router.beforeEach(async (to, from) => {
     }
 
     await training.initCurrentWeek()
-    await Promise.all([
-      prefetchAll().catch(() => {}),
-      new Promise(r => setTimeout(r, 1000)),
-    ])
+    // Les séances se préchargent en tâche de fond : l'accueil n'en dépend pas
+    prefetchAll().catch(() => {})
     appStore.setReady()
   }
 })

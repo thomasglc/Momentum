@@ -8,7 +8,7 @@
       <div class="flex-1 min-w-0">
         <span class="text-[10px] font-bold text-orange-500 uppercase tracking-widest">Station {{ station.id }}</span>
         <p class="font-bold text-gray-800 text-sm leading-tight">{{ station.name }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">{{ station.volume }}</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ facts.volume }}</p>
       </div>
       <svg
         class="w-4 h-4 text-gray-300 flex-shrink-0 transition-transform duration-200"
@@ -29,9 +29,9 @@
         <p class="text-xs text-gray-600">{{ station.muscles }}</p>
       </div>
 
-      <div v-if="station.weight" class="bg-amber-50 rounded-lg px-3 py-2">
+      <div v-if="facts.weight" class="bg-amber-50 rounded-lg px-3 py-2">
         <p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-0.5">Poids course</p>
-        <p class="text-xs text-amber-800 font-medium">{{ station.weight }}</p>
+        <p class="text-xs text-amber-800 font-medium">{{ facts.weight }}</p>
       </div>
 
       <div class="bg-violet-50 rounded-lg px-3 py-2">
@@ -40,7 +40,8 @@
       </div>
 
       <!-- Progression par phase -->
-      <div v-if="station.progression">
+      <!-- Rédigée pour les plans doubles : masquée en solo plutôt que d'afficher des repères faux -->
+      <div v-if="station.progression && !trainingStore.isSolo">
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Progression par phase</p>
 
         <!-- Elle / Lui toggle — mixte uniquement -->
@@ -79,6 +80,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useTrainingStore } from '@/stores/training'
+import { useAuthStore } from '@/stores/auth'
+import { stationFacts } from '@/utils/stations'
 
 const props = defineProps({
   station:  { type: Object,  required: true },
@@ -88,9 +91,13 @@ const props = defineProps({
 const emit = defineEmits(['toggle'])
 
 const trainingStore = useTrainingStore()
+const auth = useAuthStore()
+
+// Volume et charge selon le format : moitié du volume en double, tout en solo
+const facts = computed(() => stationFacts(props.station, { isSolo: trainingStore.isSolo, gender: auth.user?.gender ?? null }))
 
 // Toggle local — only used when isDuoMixte
-const activeElle = ref(trainingStore.isDuoMixte ? true : trainingStore.showElle.value)
+const activeElle = ref(trainingStore.isDuoMixte ? true : trainingStore.showElle)
 
 const progressionRows = computed(() => {
   if (!props.station.progression) return []

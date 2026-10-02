@@ -1,7 +1,7 @@
 {
   "name": "Momentum",
   "short_name": "Momentum",
-  "description": "Plan d'entraînement Hyrox 12 semaines",
+  "description": "Ton plan d'entraînement Hyrox, séance après séance",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F172A",

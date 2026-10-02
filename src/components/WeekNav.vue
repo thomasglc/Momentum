@@ -7,7 +7,7 @@
         <span
           v-if="phase"
           class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-white/10 text-white/70"
-        >Ph.{{ phase }} — {{ phaseCfg.name }}</span>
+        >Phase {{ phase }} · {{ phaseName || phaseCfg.name }}</span>
         <span
           v-if="isDeload"
           class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-400"
@@ -16,10 +16,10 @@
 
         <Transition name="fade-btn">
           <button
-            v-if="weekNumber !== todayWeekNumber"
+            v-if="showToday && weekNumber !== todayWeekNumber"
             @click="emit('goToCurrent')"
             class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-400 active:scale-95 transition-transform"
-          >Auj. S{{ todayWeekNumber }}</button>
+          >Retour à S{{ todayWeekNumber }}</button>
         </Transition>
       </div>
 
@@ -58,6 +58,8 @@ const props = defineProps({
   theme:           { type: String,  required: true },
   dateRange:       { type: String,  default: '' },
   phase:           { type: Number,  default: null },
+  phaseName:       { type: String,  default: '' },   // nom défini par le plan ; sinon le nom par défaut
+  showToday:       { type: Boolean, default: true }, // faux tant que le plan n'a pas commencé ou est terminé
   isDeload:        { type: Boolean, default: false },
   canGoPrev:       { type: Boolean, default: false },
   canGoNext:       { type: Boolean, default: false },

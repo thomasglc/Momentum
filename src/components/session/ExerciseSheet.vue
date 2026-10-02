@@ -14,6 +14,7 @@
 
     <p v-if="target" class="mt-3 text-sm font-bold text-blue-600">{{ target }}</p>
     <p v-if="line.note" class="mt-0.5 text-xs text-stone-500 leading-relaxed">{{ line.note }}</p>
+    <p v-if="line.tip" class="mt-2 text-xs text-stone-600 leading-relaxed bg-stone-50 border border-stone-100 rounded-xl px-3 py-2">{{ line.tip }}</p>
 
     <h4 class="mt-5 mb-2 text-xs uppercase tracking-widest font-semibold text-stone-400">Historique</h4>
 

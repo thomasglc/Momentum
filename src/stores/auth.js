@@ -81,7 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!me) { logout(); return }
     const url = new URL(`${DIRECTUS_URL}/items/athlete_profiles`)
     url.searchParams.set('filter[directus_user_id][_eq]', me.id)
-    url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id,tutorial_seen,password_changed')
+    url.searchParams.set('fields', 'id,name,gender,ten_km_time_sec,plan_id,race_date,tutorial_seen,password_changed')
     url.searchParams.set('limit', '1')
     const res = await _authedFetch(url.toString())
     if (!res.ok) return

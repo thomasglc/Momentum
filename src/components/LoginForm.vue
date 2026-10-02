@@ -37,7 +37,7 @@ async function submit() {
         v-model="email"
         type="email"
         autocomplete="email"
-        placeholder="votre@email.com"
+        placeholder="ton@email.com"
         required
         class="w-full px-4 py-3 rounded-xl bg-stone-100 border border-transparent text-sm text-stone-800 placeholder-stone-400 outline-none focus:border-orange-400 focus:bg-white transition-colors"
       />

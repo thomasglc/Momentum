@@ -48,6 +48,8 @@ export function toExerciseRow(row) {
     durationSec: row.duration_sec || null,
     weightKg: row.weight_kg || null,
     note: row.note || null,
+    // Note du catalogue (alternative, matériel) : affichée dans la fiche, pas sur la carte
+    tip: (expanded ? catalog.notes : null) || null,
     images: imagesOf(catalog),
   }
 }

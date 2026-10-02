@@ -12,7 +12,13 @@
       <span class="flex-1 min-w-0">
         <span class="block text-sm font-bold text-stone-800 leading-tight">{{ line.name }}</span>
         <span v-if="target" class="block text-xs font-semibold text-blue-600 mt-0.5">{{ target }}</span>
-        <span v-if="line.note" class="block text-[11px] text-stone-500 leading-snug mt-0.5">{{ line.note }}</span>
+        <span v-if="chips.length" class="flex flex-wrap gap-1 mt-1">
+          <span
+            v-for="chip in chips"
+            :key="chip"
+            class="text-[11px] font-medium text-stone-600 bg-stone-100 rounded-full px-2 py-0.5"
+          >{{ chip }}</span>
+        </span>
       </span>
       <span
         class="flex-shrink-0 self-start text-[11px] font-bold px-2 py-0.5 rounded-full tabular-nums"
@@ -61,6 +67,7 @@ import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
 import { exerciseEmoji } from '@/services/sessionParser'
 import { buildSetRows, formatTarget, isTimed } from '@/utils/setLogs'
+import { noteChips } from '@/utils/text'
 import { SET_GRID } from './setGrid'
 import ExerciseThumb from './ExerciseThumb.vue'
 import SetRow from './SetRow.vue'
@@ -82,6 +89,7 @@ const error = shallowRef('')
 const timed  = computed(() => isTimed(props.line))
 const emoji  = computed(() => exerciseEmoji(props.line.name))
 const target = computed(() => formatTarget(props.line))
+const chips  = computed(() => noteChips(props.line.note))
 
 const lineSets = computed(() => store.setsForLine(props.line.id))
 const rows = computed(() =>
