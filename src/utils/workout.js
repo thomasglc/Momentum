@@ -39,8 +39,8 @@ export function strengthLinesOf(structuredDetails) {
   return (structuredDetails ?? []).flatMap(detail => (detail.type === 'strength' ? detail.rows ?? [] : []))
 }
 
-// Charge × reps telles que saisies. Sans charge ou en durée, la série ne pèse rien.
-const volumeOf = set => (set.weightKg && set.reps ? set.weightKg * set.reps : 0)
+/** Charge × reps telles que saisies. Sans charge ou en durée, la série ne pèse rien. */
+export const setVolumeKg = set => (set.weightKg && set.reps ? set.weightKg * set.reps : 0)
 
 /** Récap d'une séance : lignes prévues (dans l'ordre) et séries enregistrées */
 export function summarizeWorkout(lines, sets) {
@@ -56,7 +56,7 @@ export function summarizeWorkout(lines, sets) {
       lineId: line.id,
       name: line.name,
       summary: lineSets.map(formatSet).join(' · '),
-      volumeKg: round1(lineSets.reduce((sum, s) => sum + volumeOf(s), 0)),
+      volumeKg: round1(lineSets.reduce((sum, s) => sum + setVolumeKg(s), 0)),
     })
   }
   return {
