@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, shallowRef, computed } from 'vue'
 import { getPlan } from '@/services/trainingService'
-import { fetchCompletedSessions, completeSession, uncompleteSession } from '@/services/trainingService'
+import { fetchCompletions, completeSession, uncompleteSession, updateCompletion } from '@/services/trainingService'
 import { planStatus, todayIso } from '@/utils/planCalendar'
+import { toCompletion } from '@/utils/progress'
 import { audienceFor } from '@/utils/audience'
 import { getPhaseConfig } from '@/constants/phaseConfig'
 import { useAuthStore } from '@/stores/auth'
@@ -12,7 +13,11 @@ const LS_TIME_ELLE = 'hyrox-10km-elle'
 
 export const useTrainingStore = defineStore('training', () => {
   const currentWeekNumber = ref(1) // semaine affichée dans l'onglet Programme
-  const completedSessions = ref([])
+  // Validations de l'athlète : { id, sessionId, completedAt, durationSec, distanceKm }
+  const completions = ref([])
+  // Directus sait enregistrer la durée et la distance d'une validation (scripts/add-completion-details.cjs)
+  const completionDetails = shallowRef(false)
+  const completedSessions = computed(() => completions.value.map(c => c.sessionId))
   const tenKmTimeLui  = ref(null)
   const tenKmTimeElle = ref(null)
   const planType = ref('open_double_mixte')
@@ -35,12 +40,13 @@ export const useTrainingStore = defineStore('training', () => {
   async function initCompletedSessions() {
     const auth = useAuthStore()
     const profileId = auth.user?.id
-    if (!profileId) { completedSessions.value = []; return }
+    if (!profileId) { completions.value = []; return }
     try {
-      const rows = await fetchCompletedSessions(profileId)
-      completedSessions.value = rows.map(r => r.session_id)
+      const { rows, details } = await fetchCompletions(profileId)
+      completions.value = rows.map(toCompletion)
+      completionDetails.value = details
     } catch {
-      completedSessions.value = []
+      completions.value = []
     }
   }
 
@@ -58,8 +64,9 @@ export const useTrainingStore = defineStore('training', () => {
     if (who === 'elle') { tenKmTimeElle.value = seconds; localStorage.setItem(LS_TIME_ELLE, seconds ?? '') }
   }
 
-  // Mode strict : attend la réponse de Directus avant de mettre à jour l'état
-  async function toggleSession(id) {
+  // Mode strict : attend la réponse de Directus avant de mettre à jour l'état.
+  // durationSec : durée du chrono de séance, envoyée avec la validation quand Directus sait l'enregistrer.
+  async function toggleSession(id, { durationSec = null } = {}) {
     const auth = useAuthStore()
     const profileId = auth.user?.id
     if (!profileId) throw new Error('Non authentifié')
@@ -67,12 +74,26 @@ export const useTrainingStore = defineStore('training', () => {
     const alreadyDone = completedSessions.value.includes(id)
 
     if (!alreadyDone) {
-      await completeSession(profileId, id)
-      completedSessions.value.push(id)
+      const details = completionDetails.value && durationSec != null ? { duration_sec: durationSec } : {}
+      const created = await completeSession(profileId, id, details)
+      completions.value = [...completions.value, toCompletion({ session_id: id, ...details, ...created })]
     } else {
       await uncompleteSession(profileId, id)
-      completedSessions.value = completedSessions.value.filter(s => s !== id)
+      completions.value = completions.value.filter(c => c.sessionId !== id)
     }
+  }
+
+  const completionOf = id => completions.value.find(c => c.sessionId === id) ?? null
+
+  /** Durée et distance notées dans le récap, après la validation. Ne fait rien si rien n'est saisi. */
+  async function saveCompletionDetails(sessionId, { durationSec, distanceKm }) {
+    const completion = completionOf(sessionId)
+    const patch = {}
+    if (durationSec != null) patch.duration_sec = durationSec
+    if (distanceKm != null) patch.distance_km = distanceKm
+    if (!completion?.id || !Object.keys(patch).length) return
+    const saved = await updateCompletion(completion.id, patch)
+    completions.value = completions.value.map(c => (c.id === completion.id ? toCompletion({ session_id: sessionId, ...saved }) : c))
   }
 
   function setWeek(n) {
@@ -111,6 +132,7 @@ export const useTrainingStore = defineStore('training', () => {
   return {
     currentWeekNumber, todayWeekNumber, completedSessions,
     tenKmTimeLui, tenKmTimeElle,
+    completions, completionDetails, completionOf, saveCompletionDetails,
     plan, today, planState, phaseName,
     planType, isSolo, isDuoMixte, showLui, showElle,
     initFromLocalStorage, initCompletedSessions, refreshToday,

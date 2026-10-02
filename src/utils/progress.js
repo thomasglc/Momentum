@@ -92,22 +92,33 @@ export function completeWeekStreak(weeks, isDone, { upTo, inProgress = null }) {
   return streak
 }
 
+// Temps et distance d'une séance validée : la durée réelle quand elle est notée, la durée prévue sinon
+function effortOf(session, detail) {
+  return {
+    minutes: detail?.durationSec != null ? detail.durationSec / 60 : session.duration || 0,
+    km: detail?.distanceKm ?? 0,
+  }
+}
+
 /**
  * Totaux depuis le début du plan. Une séance obligatoire est échue quand son jour est passé,
  * ou dès qu'elle est validée ; l'assiduité est la part des échues qui sont validées.
- * minutes : durées prévues des séances validées.
+ * detailOf(id) donne la validation d'une séance ({ durationSec, distanceKm }) quand elle porte des détails.
  */
-export function planTotals(weeks, isDone, today) {
+export function planTotals(weeks, isDone, today, detailOf = () => null) {
   let sessionsDone = 0
   let due = 0
   let dueDone = 0
   let minutes = 0
+  let km = 0
   for (const week of weeks) {
     for (const session of week.sessions) {
       const done = isDone(session.id)
       if (done) {
+        const effort = effortOf(session, detailOf(session.id))
         sessionsDone++
-        minutes += session.duration || 0
+        minutes += effort.minutes
+        km += effort.km
       }
       if (session.optional) continue
       const date = sessionDate(week.startDate, session.day)
@@ -115,7 +126,65 @@ export function planTotals(weeks, isDone, today) {
       if (done) dueDone++
     }
   }
-  return { sessionsDone, due, dueDone, adherence: today && due ? Math.round((dueDone / due) * 100) : null, minutes }
+  return {
+    sessionsDone,
+    due,
+    dueDone,
+    adherence: today && due ? Math.round((dueDone / due) * 100) : null,
+    minutes: Math.round(minutes),
+    km: round1(km),
+  }
+}
+
+/**
+ * Bilan d'une semaine : séances, temps, distance, tonnage, et charges qui montent
+ * par rapport à la séance précédente de chaque exercice.
+ * → { weekNumber, done, total, complete, sessionsDone, minutes, km, volumeKg, gains: [{ exerciseId, name, unit, from, to }] }
+ */
+export function weekSummary(week, isDone, detailOf, sets) {
+  const ids = new Set(week.sessions.map(s => s.id))
+  let sessionsDone = 0
+  let minutes = 0
+  let km = 0
+  for (const session of week.sessions) {
+    if (!isDone(session.id)) continue
+    const effort = effortOf(session, detailOf(session.id))
+    sessionsDone++
+    minutes += effort.minutes
+    km += effort.km
+  }
+
+  const gains = []
+  for (const exercise of exerciseSessions(sets)) {
+    const inWeek = exercise.sessions.filter(s => ids.has(s.sessionId))
+    if (!inWeek.length) continue
+    const before = exercise.sessions.filter(s => !ids.has(s.sessionId) && byDate(s, inWeek[0]) < 0)
+    if (!before.length) continue
+    const from = before.at(-1).value
+    const to = Math.max(...inWeek.map(s => s.value))
+    if (to > from) gains.push({ exerciseId: exercise.exerciseId, name: exercise.name, unit: exercise.unit, from, to })
+  }
+
+  return {
+    weekNumber: week.weekNumber,
+    ...weekCompletion(week, isDone),
+    sessionsDone,
+    minutes: Math.round(minutes),
+    km: round1(km),
+    volumeKg: totalVolumeKg(sets.filter(set => ids.has(set.sessionId))),
+    gains: gains.sort((a, b) => a.name.localeCompare(b.name)),
+  }
+}
+
+/** Ce qui suit la semaine n : la semaine suivante si elle est écrite, un changement de phase, la fin du plan */
+export function weekOutlook(weeks, weekNumber, totalWeeks) {
+  const current = weeks.find(w => w.weekNumber === weekNumber) ?? null
+  const next = weeks.find(w => w.weekNumber === weekNumber + 1) ?? null
+  return {
+    next,
+    phaseChange: next?.phase != null && current?.phase != null && next.phase !== current.phase,
+    last: !next && weekNumber >= totalWeeks,
+  }
 }
 
 /**
@@ -180,11 +249,11 @@ export function toProgressSet(log) {
 }
 
 /**
- * Progression par exercice, le plus récemment travaillé d'abord.
+ * Séries regroupées par exercice, puis par séance, de la plus ancienne à la plus récente.
  * La valeur d'une séance est sa plus lourde série ; sans charge, le plus de reps ; en gainage, la plus longue tenue.
- * → [{ exerciseId, name, unit: 'kg' | 'reps' | 's', first, last, best, sessions, lastDate }]
+ * → [{ exerciseId, name, unit: 'kg' | 'reps' | 's', sessions: [{ sessionId, date, value }] }]
  */
-export function exerciseProgress(sets) {
+function exerciseSessions(sets) {
   const byExercise = new Map()
   for (const set of sets) {
     if (set.exerciseId == null) continue
@@ -192,8 +261,7 @@ export function exerciseProgress(sets) {
     byExercise.get(set.exerciseId).push(set)
   }
 
-  const list = []
-  for (const [exerciseId, own] of byExercise) {
+  return [...byExercise].map(([exerciseId, own]) => {
     const unit = own.some(s => s.weightKg > 0) ? 'kg' : own.some(s => s.reps > 0) ? 'reps' : 's'
     const valueOf = s => (unit === 'kg' ? s.weightKg : unit === 'reps' ? s.reps : s.durationSec) ?? 0
 
@@ -201,25 +269,70 @@ export function exerciseProgress(sets) {
     const bySession = new Map()
     for (const s of own) {
       const key = s.sessionId != null ? `s${s.sessionId}` : `d${String(s.date ?? '').slice(0, 10)}`
-      const entry = bySession.get(key) ?? { date: s.date, value: 0 }
+      const entry = bySession.get(key) ?? { sessionId: s.sessionId ?? null, date: s.date, value: 0 }
       entry.value = Math.max(entry.value, valueOf(s))
       if (byDate(s, entry) < 0) entry.date = s.date
       bySession.set(key, entry)
     }
-    const sessions = [...bySession.values()].sort(byDate)
-
-    list.push({
+    return {
       exerciseId,
       name: own.find(s => s.name)?.name ?? 'Exercice',
+      unit,
+      sessions: [...bySession.values()].sort(byDate),
+    }
+  })
+}
+
+/**
+ * Progression par exercice, le plus récemment travaillé d'abord.
+ * → [{ exerciseId, name, unit: 'kg' | 'reps' | 's', first, last, best, sessions, lastDate }]
+ */
+export function exerciseProgress(sets) {
+  return exerciseSessions(sets)
+    .map(({ exerciseId, name, unit, sessions }) => ({
+      exerciseId,
+      name,
       unit,
       first: sessions[0].value,
       last: sessions.at(-1).value,
       best: Math.max(...sessions.map(s => s.value)),
       sessions: sessions.length,
       lastDate: sessions.at(-1).date ?? null,
-    })
+    }))
+    .sort((a, b) => byDate({ date: b.lastDate }, { date: a.lastDate }) || a.name.localeCompare(b.name))
+}
+
+/** Ligne Directus session_completions → validation, avec la durée et la distance quand elles sont notées */
+export function toCompletion(row) {
+  return {
+    id: row.id,
+    sessionId: row.session_id,
+    completedAt: row.completed_at ?? null,
+    durationSec: row.duration_sec ?? null,
+    distanceKm: row.distance_km == null ? null : Number(row.distance_km),
   }
-  return list.sort((a, b) => byDate({ date: b.lastDate }, { date: a.lastDate }) || a.name.localeCompare(b.name))
+}
+
+const DETAIL_LIMITS = { minutes: [1, 600], km: [0.1, 200] }
+
+/**
+ * Saisie du récap → { ok: true, durationSec, distanceKm } ; un champ vide vaut null.
+ * Saisie invalide → { ok: false, field: 'minutes' | 'km', error }.
+ */
+export function parseCompletionDetails({ minutes, km }) {
+  const read = (input, [min, max]) => {
+    const text = String(input ?? '').trim().replace(',', '.')
+    if (text === '') return null
+    const value = /^\d+(\.\d+)?$/.test(text) ? Number(text) : NaN
+    return value >= min && value <= max ? value : NaN
+  }
+  const duration = read(minutes, DETAIL_LIMITS.minutes)
+  if (Number.isNaN(duration) || (duration != null && !Number.isInteger(duration))) {
+    return { ok: false, field: 'minutes', error: 'Durée en minutes entières, par exemple 50' }
+  }
+  const distance = read(km, DETAIL_LIMITS.km)
+  if (Number.isNaN(distance)) return { ok: false, field: 'km', error: 'Distance en km, par exemple 8,5' }
+  return { ok: true, durationSec: duration == null ? null : duration * 60, distanceKm: distance }
 }
 
 /** Volume levé : somme de charge × reps des séries */
