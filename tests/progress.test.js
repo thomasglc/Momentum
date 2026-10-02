@@ -4,6 +4,7 @@ import { addDays } from '../src/utils/planCalendar.js'
 import {
   DAYS, sessionDate, weekCompletion, weekDays, focusSession, completeWeekStreak, planTotals,
   planTimeline, groupByPhase, toProgressSet, exerciseProgress, totalVolumeKg, formatHours, formatTonnage,
+  toCompletion, weekSummary, weekOutlook, parseCompletionDetails,
 } from '../src/utils/progress.js'
 
 // ── Plan d'essai : trois semaines à partir du lundi 5 octobre 2026 ───────────
@@ -147,7 +148,14 @@ test('planTotals compte les séances, les minutes prévues et l\'assiduité', ()
     dueDone: 4,
     adherence: 67,
     minutes: 200,      // 60 + 0 + 60 + 20 + 60
+    km: 0,
   })
+})
+test('planTotals prend la durée réelle quand elle est notée, et additionne les kilomètres', () => {
+  const details = { 11: { durationSec: 4500 }, 12: { durationSec: 3000, distanceKm: 9.5 }, 13: { distanceKm: null }, 21: { durationSec: null, distanceKm: 4.25 } }
+  const totals = planTotals(WEEKS, done(11, 12, 13, 14, 21), WEDNESDAY_W2, id => details[id] ?? null)
+  assert.equal(totals.minutes, 265) // 75 réelles + 50 réelles + 60 prévues + 20 prévues + 60 prévues
+  assert.equal(totals.km, 13.8)     // 9,5 + 4,25, arrondi au dixième
 })
 test('planTotals : une séance validée en avance est échue', () => {
   const totals = planTotals(WEEKS, done(11, 12, 13, 14, 21, 25), WEDNESDAY_W2)
@@ -156,7 +164,7 @@ test('planTotals : une séance validée en avance est échue', () => {
   assert.equal(totals.adherence, 71)
 })
 test('planTotals : la séance du jour ne pèse pas tant qu\'elle n\'est pas validée', () => {
-  assert.deepEqual(planTotals(WEEKS, done(), START), { sessionsDone: 0, due: 0, dueDone: 0, adherence: null, minutes: 0 })
+  assert.deepEqual(planTotals(WEEKS, done(), START), { sessionsDone: 0, due: 0, dueDone: 0, adherence: null, minutes: 0, km: 0 })
 })
 test('planTotals sans calendrier ne calcule pas d\'assiduité', () => {
   const noCalendar = WEEKS.map(w => ({ ...w, startDate: null, endDate: null }))
@@ -282,4 +290,69 @@ test('formatTonnage passe en tonnes à partir de 1 000 kg', () => {
   assert.equal(formatTonnage(1250), '1,3 t')
   assert.equal(formatTonnage(14200), '14,2 t')
   assert.equal(formatTonnage(12000), '12 t')
+})
+
+// ── validations détaillées ───────────────────────────────────────────────────
+test('toCompletion lit une ligne session_completions, avec ou sans détails', () => {
+  assert.deepEqual(
+    toCompletion({ id: 7, session_id: 31, completed_at: '2026-10-05T18:00:00Z', duration_sec: 3120, distance_km: '8.5' }),
+    { id: 7, sessionId: 31, completedAt: '2026-10-05T18:00:00Z', durationSec: 3120, distanceKm: 8.5 },
+  )
+  assert.deepEqual(
+    toCompletion({ id: 8, session_id: 32 }),
+    { id: 8, sessionId: 32, completedAt: null, durationSec: null, distanceKm: null },
+  )
+})
+test('parseCompletionDetails convertit la saisie du récap', () => {
+  assert.deepEqual(parseCompletionDetails({ minutes: '50', km: '8,5' }), { ok: true, durationSec: 3000, distanceKm: 8.5 })
+  assert.deepEqual(parseCompletionDetails({ minutes: ' ', km: '' }), { ok: true, durationSec: null, distanceKm: null })
+  assert.deepEqual(parseCompletionDetails({ minutes: '45', km: undefined }), { ok: true, durationSec: 2700, distanceKm: null })
+})
+test('parseCompletionDetails refuse une saisie hors bornes ou mal écrite', () => {
+  assert.equal(parseCompletionDetails({ minutes: '0', km: '' }).ok, false)
+  assert.equal(parseCompletionDetails({ minutes: '47,5', km: '' }).ok, false)
+  assert.equal(parseCompletionDetails({ minutes: '601', km: '' }).ok, false)
+  assert.equal(parseCompletionDetails({ minutes: '1h', km: '' }).field, 'minutes')
+  assert.equal(parseCompletionDetails({ minutes: '', km: '0' }).field, 'km')
+  assert.equal(parseCompletionDetails({ minutes: '', km: '250' }).ok, false)
+  assert.match(parseCompletionDetails({ minutes: '', km: 'dix' }).error, /km/)
+})
+
+// ── bilan de semaine ─────────────────────────────────────────────────────────
+const SQUAT = (sessionId, date, weightKg) => log(18, 'Front Squat', sessionId, date, { weightKg, reps: 5 })
+const BENCH = (sessionId, date, weightKg) => log(19, 'Développé Couché Haltères', sessionId, date, { weightKg, reps: 8 })
+const WEEK_SETS = [
+  SQUAT(11, '2026-10-05T18:00:00Z', 60), SQUAT(11, '2026-10-05T18:05:00Z', 62.5),
+  BENCH(11, '2026-10-05T18:20:00Z', 24),
+  SQUAT(21, '2026-10-12T18:00:00Z', 65), SQUAT(21, '2026-10-12T18:05:00Z', 65),
+  BENCH(21, '2026-10-12T18:20:00Z', 24),
+  log(10, 'Pull-up', 25, '2026-10-16T18:00:00Z', { reps: 9 }),
+]
+test('weekSummary résume une semaine complète : séances, temps, distance, tonnage', () => {
+  const details = { 22: { durationSec: 3000, distanceKm: 9 } }
+  const summary = weekSummary(WEEKS[1], done(...full(1), ...full(2), 24), id => details[id] ?? null, WEEK_SETS)
+  assert.equal(summary.weekNumber, 2)
+  assert.deepEqual([summary.done, summary.total, summary.complete], [4, 4, true])
+  assert.equal(summary.sessionsDone, 5)      // l'optionnelle validée compte
+  assert.equal(summary.minutes, 250)         // 60 + 50 réelles + 60 + 20 + 60
+  assert.equal(summary.km, 9)
+  assert.equal(summary.volumeKg, 842)        // 65 × 5 × 2 + 24 × 8
+})
+test('weekSummary liste les charges qui montent par rapport à la séance précédente de l\'exercice', () => {
+  const summary = weekSummary(WEEKS[1], done(...full(2)), () => null, WEEK_SETS)
+  // Front Squat : 62,5 → 65 ; développé couché : 24 → 24, pas de hausse ; Pull-up : première séance, rien à comparer
+  assert.deepEqual(summary.gains, [{ exerciseId: 18, name: 'Front Squat', unit: 'kg', from: 62.5, to: 65 }])
+})
+test('weekSummary : semaine entamée, sans série enregistrée', () => {
+  const summary = weekSummary(WEEKS[2], done(31), () => null, WEEK_SETS)
+  assert.deepEqual([summary.done, summary.total, summary.complete], [1, 4, false])
+  assert.equal(summary.volumeKg, 0)
+  assert.deepEqual(summary.gains, [])
+})
+test('weekOutlook annonce la semaine suivante, un changement de phase, la fin du plan', () => {
+  const weeks = [typical(1), week(2, [], { phase: 1 }), week(3, [], { phase: 2, theme: 'Volume', isDeload: true })]
+  assert.deepEqual(weekOutlook(weeks, 1, 5), { next: weeks[1], phaseChange: false, last: false })
+  assert.deepEqual(weekOutlook(weeks, 2, 5), { next: weeks[2], phaseChange: true, last: false })
+  assert.deepEqual(weekOutlook(weeks, 3, 5), { next: null, phaseChange: false, last: false })
+  assert.deepEqual(weekOutlook(weeks, 3, 3), { next: null, phaseChange: false, last: true })
 })

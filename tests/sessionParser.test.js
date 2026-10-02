@@ -34,7 +34,7 @@ test('un circuit attache les images à ses stations', () => {
     type: 'circuit', format: 'rounds', label: null, rounds: 4, durationMin: null, restBetweenMin: 1.5,
     stations: ['Farmers Carry 30m (30-40 m · lourd)'], stationImages: [['f0', 'f1']],
   })
-  assert.equal(block.header, 'Circuit × 4 passages — repos 1.5 min')
+  assert.equal(block.header, 'Circuit × 4 passages — repos 1 min 30')
   const [station] = block.exercises
   assert.deepEqual([station.name, station.value, station.note, station.images], ['Farmers Carry', '30m', '(30-40 m · lourd)', ['f0', 'f1']])
 })

@@ -142,3 +142,34 @@ export function resolveSetValues(line, row, draft) {
     ? { weightKg, reps: null, durationSec: main }
     : { weightKg, reps: main, durationSec: null }
 }
+
+/** Résumé compact des séries d'un exercice : "62,5 kg × 5, 5, 5, 4", "10, 9 reps", "45, 40 s" */
+export function summarizeSets(sets) {
+  // Les séries consécutives de même charge sont regroupées
+  const groups = []
+  for (const s of [...sets].sort((a, b) => a.setNumber - b.setNumber)) {
+    const weight = s.weightKg || null
+    const last = groups.at(-1)
+    if (last && last.weight === weight) last.sets.push(s)
+    else groups.push({ weight, sets: [s] })
+  }
+  return groups.map(({ weight, sets: own }) => {
+    const timed = own.every(s => s.reps == null && s.durationSec != null)
+    const values = own.map(s => (timed ? s.durationSec : s.reps) ?? '—').join(', ')
+    const unit = timed ? ' s' : weight ? '' : ' reps'
+    return weight ? `${formatNumber(weight)} kg × ${values}${unit}` : `${values}${unit}`
+  }).join(' · ')
+}
+
+/**
+ * Tendance d'un exercice : meilleure valeur de ses dernières séances, de la plus ancienne à la plus récente.
+ * history : séances issues de groupHistory (la plus récente d'abord). → { unit: 'kg' | 'reps' | 's', points: [{ key, value }] }
+ */
+export function historyTrend(history, limit = 8) {
+  const all = history.flatMap(session => session.sets)
+  const unit = all.some(s => s.weightKg > 0) || !all.length ? 'kg' : all.some(s => s.reps > 0) ? 'reps' : 's'
+  const valueOf = s => (unit === 'kg' ? s.weightKg : unit === 'reps' ? s.reps : s.durationSec) ?? 0
+  const points = history.slice(0, limit).reverse()
+    .map(session => ({ key: session.key, value: Math.max(...session.sets.map(valueOf)) }))
+  return { unit, points }
+}

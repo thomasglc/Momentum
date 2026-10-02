@@ -490,22 +490,37 @@ export const prefetchForWeek = () => prefetchAll()
 
 // ── Session completions ──────────────────────────────────────────────────────
 
-export async function fetchCompletedSessions(athleteProfileId) {
-  return api('/items/session_completions', {
-    'filter[athlete_profile_id][_eq]': athleteProfileId,
-    'fields': 'session_id',
-    'limit': -1,
-  })
+/**
+ * Validations de l'athlète. `details` dit si Directus sait enregistrer la durée et la distance
+ * (champs ajoutés par scripts/add-completion-details.cjs) : sans eux, on lit le strict nécessaire.
+ */
+export async function fetchCompletions(athleteProfileId) {
+  const query = { 'filter[athlete_profile_id][_eq]': athleteProfileId, limit: -1 }
+  try {
+    const rows = await api('/items/session_completions', { ...query, fields: 'id,session_id,completed_at,duration_sec,distance_km' })
+    return { rows, details: true }
+  } catch (e) {
+    // Directus refuse un champ qui n'existe pas : on s'en passe
+    if (e.status !== 403 && e.status !== 400) throw e
+    const rows = await api('/items/session_completions', { ...query, fields: 'id,session_id,completed_at' })
+    return { rows, details: false }
+  }
 }
 
-export async function completeSession(athleteProfileId, sessionId) {
+/** Valide une séance ; `details` ({ duration_sec }) part avec la validation quand Directus sait l'enregistrer */
+export async function completeSession(athleteProfileId, sessionId, details = {}) {
   try {
     return await request('POST', '/items/session_completions', {
-      body: { athlete_profile_id: athleteProfileId, session_id: sessionId },
+      body: { athlete_profile_id: athleteProfileId, session_id: sessionId, ...details },
     })
   } catch (e) {
     throw new Error(e.status === 401 ? 'Session expirée' : 'Impossible de valider la séance')
   }
+}
+
+/** Durée et distance notées après coup sur une validation */
+export function updateCompletion(id, patch) {
+  return request('PATCH', `/items/session_completions/${id}`, { body: patch })
 }
 
 export async function uncompleteSession(athleteProfileId, sessionId) {

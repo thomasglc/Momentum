@@ -48,6 +48,7 @@
     :header="block.header"
     :exercises="block.exercises"
     :content="block.content"
+    :flat="flat"
   />
 
   <!-- Interval (running) — pace cards -->
@@ -337,7 +338,8 @@ import { exerciseEmoji } from '@/services/sessionParser'
 import { useTrainingStore } from '@/stores/training'
 
 defineProps({
-  block: { type: Object, required: true },
+  block: { type: Object,  required: true },
+  flat:  { type: Boolean, default: false }, // séance de muscu : cartes plates, sans cadre de bloc
 })
 
 const trainingStore = useTrainingStore()
