@@ -3,6 +3,7 @@ import { computed, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { useAuthStore } from '@/stores/auth'
+import { useProgressStore } from '@/stores/progress'
 import { calcVDOT, calcZones } from '@/utils/paceCalculator'
 import { clearPlanCache } from '@/services/trainingService'
 import { parseClock } from '@/utils/workout'
@@ -10,6 +11,7 @@ import { parseClock } from '@/utils/workout'
 const router = useRouter()
 const store  = useTrainingStore()
 const auth   = useAuthStore()
+const progress = useProgressStore()
 
 // ── Allures ────────────────────────────────────────────────────────────────
 
@@ -70,14 +72,24 @@ const athletes = computed(() => {
 
 // ── Compte ─────────────────────────────────────────────────────────────────
 
-function refreshCache() {
+const raceDate = computed(() => {
+  const iso = auth.user?.race_date
+  if (!iso) return ''
+  return new Date(`${String(iso).slice(0, 10)}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+})
+
+// Tout relire dans Directus : le plan, puis les semaines et les séries à l'arrivée sur l'accueil
+async function refreshCache() {
   clearPlanCache()
+  progress.reset()
+  await store.initCurrentWeek()
   router.replace('/')
 }
 
 function logout() {
   auth.logout()
   clearPlanCache()
+  progress.reset()
   router.replace('/login')
 }
 </script>
@@ -197,12 +209,25 @@ function logout() {
       </div>
     </section>
 
-    <!-- Section lexique -->
+    <!-- Section ressources -->
     <section>
       <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Ressources</h2>
-      <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-100 divide-y divide-stone-100 overflow-hidden">
         <button
-          @click="router.push('/guide/lexique')"
+          @click="router.push('/profil/stations')"
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
+        >
+          <div class="flex items-center gap-3">
+            <span class="text-base">🏋️</span>
+            <div>
+              <p class="text-sm font-semibold text-stone-800">Les 8 stations</p>
+              <p class="text-xs text-stone-400">Volumes et poids du format {{ store.isSolo ? 'solo' : 'doubles' }}</p>
+            </div>
+          </div>
+          <span class="text-stone-300">›</span>
+        </button>
+        <button
+          @click="router.push('/profil/lexique')"
           class="w-full px-4 py-3.5 flex items-center justify-between text-left active:bg-stone-50 transition-colors"
         >
           <div class="flex items-center gap-3">
@@ -230,6 +255,11 @@ function logout() {
         <div class="px-4 py-3.5 flex items-center justify-between">
           <span class="text-sm text-stone-500">Genre</span>
           <span class="text-sm font-semibold text-stone-800 capitalize">{{ auth.user?.gender ?? '—' }}</span>
+        </div>
+
+        <div v-if="raceDate" class="px-4 py-3.5 flex items-center justify-between">
+          <span class="text-sm text-stone-500">Course</span>
+          <span class="text-sm font-semibold text-stone-800">{{ raceDate }}</span>
         </div>
 
         <button

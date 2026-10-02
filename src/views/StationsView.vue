@@ -1,9 +1,20 @@
 <template>
-  <div class="px-4 py-4 pb-6">
-    <h2 class="text-base font-bold text-gray-800 mb-0.5">Les 8 Stations Hyrox</h2>
-    <p class="text-xs text-gray-500 mb-4">{{ subtitle }}</p>
+  <div class="pb-6">
+    <!-- En-tête : sous-page de l'onglet Profil -->
+    <div class="sticky top-0 z-10 bg-stone-100 border-b border-stone-200 px-4 py-3 flex items-center gap-3">
+      <button
+        @click="goBack"
+        class="w-8 h-8 flex items-center justify-center rounded-full text-stone-500 active:bg-stone-200 transition-colors -ml-1"
+        aria-label="Retour"
+      >
+        <Icon icon="ion:chevron-back" class="text-xl" />
+      </button>
+      <h1 class="text-base font-black text-stone-800 tracking-tight">Les 8 stations Hyrox</h1>
+    </div>
 
-    <div class="flex flex-col gap-2">
+    <p class="px-4 pt-4 pb-3 text-xs text-stone-500">{{ subtitle }}</p>
+
+    <div class="px-4 flex flex-col gap-2">
       <StationCard
         v-for="station in stations"
         :key="station.id"
@@ -17,10 +28,15 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { Icon } from '@iconify/vue'
 import { useTrainingStore } from '@/stores/training'
+import { useAppStore } from '@/stores/app'
 import StationCard from '@/components/StationCard.vue'
 import stationsData from '@/data/stations.json'
 
+const router     = useRouter()
+const appStore   = useAppStore()
 const store      = useTrainingStore()
 const stations   = stationsData.stations
 const subtitle   = computed(() => (store.isSolo
@@ -30,5 +46,10 @@ const expandedId = ref(null)
 
 function toggle(id) {
   expandedId.value = expandedId.value === id ? null : id
+}
+
+function goBack() {
+  appStore.markProgrammaticBack()
+  router.push('/profil')
 }
 </script>

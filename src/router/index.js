@@ -3,28 +3,37 @@ import { useAuthStore } from '@/stores/auth'
 import { useTrainingStore } from '@/stores/training'
 import { useAppStore } from '@/stores/app'
 import { prefetchAll } from '@/services/trainingService'
+import TodayView from '@/views/TodayView.vue'
 import WeekView from '@/views/WeekView.vue'
+import ProgressView from '@/views/ProgressView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 import SessionView from '@/views/SessionView.vue'
 import StationsView from '@/views/StationsView.vue'
-import PhasesView from '@/views/PhasesView.vue'
-import GuideView from '@/views/GuideView.vue'
 import LexiqueView from '@/views/LexiqueView.vue'
 import LoginView from '@/views/LoginView.vue'
 import ChangePasswordView from '@/views/ChangePasswordView.vue'
 import OnboardingView from '@/views/OnboardingView.vue'
 import TutorialView from '@/views/TutorialView.vue'
 
+// meta.tab : onglet allumé ; meta.depth : 1 pour une page ouverte par-dessus un onglet
 const routes = [
   { path: '/login',      component: LoginView,      meta: { public: true } },
   { path: '/change-password', component: ChangePasswordView, meta: { changePassword: true } },
   { path: '/onboarding', component: OnboardingView, meta: { onboarding: true } },
   { path: '/tutorial',   component: TutorialView,   meta: { tutorial: true } },
-  { path: '/', component: WeekView },
+  { path: '/',            component: TodayView,    meta: { tab: 'today' } },
+  { path: '/programme',   component: WeekView,     meta: { tab: 'programme' } },
+  { path: '/progression', component: ProgressView, meta: { tab: 'progress' } },
+  { path: '/profil',      component: ProfileView,  meta: { tab: 'profile' } },
+  { path: '/profil/lexique',  component: LexiqueView,  meta: { tab: 'profile', depth: 1 } },
+  { path: '/profil/stations', component: StationsView, meta: { tab: 'profile', depth: 1 } },
   { path: '/session/:id', component: SessionView, meta: { depth: 1 } },
-  { path: '/stations', component: StationsView },
-  { path: '/phases', component: PhasesView },
-  { path: '/guide', component: GuideView },
-  { path: '/guide/lexique', component: LexiqueView, meta: { depth: 1 } },
+  // Adresses des anciens onglets
+  { path: '/phases',        redirect: '/progression' },
+  { path: '/guide',         redirect: '/profil' },
+  { path: '/guide/lexique', redirect: '/profil/lexique' },
+  { path: '/stations',      redirect: '/profil/stations' },
+  { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
 const router = createRouter({
@@ -68,6 +77,10 @@ router.beforeEach(async (to, from) => {
     prefetchAll().catch(() => {})
     appStore.setReady()
   }
+})
+
+router.afterEach((to) => {
+  if (to.meta.tab && !to.meta.depth) useAppStore().visitTab(to.meta.tab, to.path)
 })
 
 export default router

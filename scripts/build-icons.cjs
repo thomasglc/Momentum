@@ -7,8 +7,8 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const USED = [
-  'calendar-outline', 'barbell-outline', 'stats-chart-outline', 'settings-outline', // onglets
-  'chevron-back', 'chevron-down', // lexique
+  'home-outline', 'calendar-outline', 'stats-chart-outline', 'person-outline', // onglets
+  'chevron-back', 'chevron-down', // retour des sous-pages, lexique
   'play', // démarrer la séance
 ]
 

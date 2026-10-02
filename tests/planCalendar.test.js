@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { todayIso, addDays, mondayOf, planStartFor, weekDates, planStatus, groupPhases } from '../src/utils/planCalendar.js'
+import { todayIso, addDays, mondayOf, planStartFor, weekDates, planStatus } from '../src/utils/planCalendar.js'
 
 // ── dates ────────────────────────────────────────────────────────────────────
 test('todayIso donne la date locale, pas la date UTC', () => {
@@ -63,32 +63,4 @@ test('planStatus passe à terminé le lendemain, en restant sur la dernière sem
 })
 test('planStatus ne donne pas de compte à rebours sans date de course', () => {
   assert.equal(planStatus({ startDate: '2026-10-05', totalWeeks: 19, raceDate: null }, '2026-10-19').daysToRace, null)
-})
-
-// ── phases ───────────────────────────────────────────────────────────────────
-test('groupPhases regroupe les semaines par phase, dans l\'ordre, avec leurs dates', () => {
-  const weeks = [
-    { week_number: 2, phase: 1, theme: 'Force', is_deload: false },
-    { week_number: 9, phase: 2, theme: 'Volume', is_deload: false },
-    { week_number: 1, phase: 1, theme: 'Force', is_deload: false },
-    { week_number: 4, phase: 1, theme: 'Force — semaine allégée', is_deload: true },
-  ]
-  const nameOf = id => ({ 1: 'Force' })[id] ?? `Phase ${id}`
-  assert.deepEqual(groupPhases(weeks, '2026-10-05', nameOf), [
-    {
-      id: 1, name: 'Force', firstWeek: 1, lastWeek: 4, startDate: '2026-10-05', endDate: '2026-11-01',
-      weeks: [
-        { number: 1, theme: 'Force', isDeload: false, startDate: '2026-10-05', endDate: '2026-10-11' },
-        { number: 2, theme: 'Force', isDeload: false, startDate: '2026-10-12', endDate: '2026-10-18' },
-        { number: 4, theme: 'Force — semaine allégée', isDeload: true, startDate: '2026-10-26', endDate: '2026-11-01' },
-      ],
-    },
-    {
-      id: 2, name: 'Phase 2', firstWeek: 9, lastWeek: 9, startDate: '2026-11-30', endDate: '2026-12-06',
-      weeks: [{ number: 9, theme: 'Volume', isDeload: false, startDate: '2026-11-30', endDate: '2026-12-06' }],
-    },
-  ])
-})
-test('groupPhases renvoie une liste vide sans semaine', () => {
-  assert.deepEqual(groupPhases([], '2026-10-05', id => `Phase ${id}`), [])
 })

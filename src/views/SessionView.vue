@@ -41,7 +41,7 @@ const appStore    = useAppStore()
 const route       = useRoute()
 const router      = useRouter()
 
-// Rendu immédiat depuis les données passées par WeekView, complétion async
+// Rendu immédiat depuis les données passées par l'écran précédent, complétion async
 const session = ref(history.state?.session ?? null)
 
 // { durationSec, summary } une fois une séance de muscu validée
@@ -52,9 +52,10 @@ onMounted(async () => {
   session.value = full
 })
 
+// Retour à l'onglet d'où l'on vient : l'accueil ou le programme
 function goBack() {
   appStore.markProgrammaticBack()
-  router.push('/')
+  router.push(appStore.lastTab.path)
 }
 
 async function handleToggle() {

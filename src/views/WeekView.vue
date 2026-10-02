@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, shallowRef, computed, watch, onMounted, nextTick } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
 import { getWeek } from '@/services/trainingService'
@@ -83,7 +83,9 @@ function formatDateRange(startDate, endDate) {
   return s.getMonth() === e.getMonth() ? `${sd}–${ed} ${sm}` : `${sd} ${sm} – ${ed} ${em}`
 }
 
-const currentWeek = ref(null)
+// Remplacée d'un bloc, jamais modifiée : ses séances restent des objets simples,
+// que le routeur peut transmettre à la page de séance
+const currentWeek = shallowRef(null)
 const loaded = ref(false)
 
 // On navigue jusqu'à la dernière semaine écrite, pas jusqu'à la fin théorique du plan

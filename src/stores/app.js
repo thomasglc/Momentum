@@ -1,10 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
   const ready          = ref(false)
   const loading        = ref(false)
   const transitionName = ref('fade')
+
+  // Dernier onglet visité : il reste allumé pendant une séance, et le retour y ramène
+  const lastTab = shallowRef({ id: 'today', path: '/' })
+  function visitTab(id, path) { lastTab.value = { id, path } }
 
   function startLoading() { loading.value = true }
   function setReady()     { ready.value = true; loading.value = false }
@@ -26,5 +30,5 @@ export const useAppStore = defineStore('app', () => {
     return 'fade'
   }
 
-  return { ready, loading, transitionName, startLoading, setReady, reset, resolveTransition, markProgrammaticBack }
+  return { ready, loading, transitionName, lastTab, visitTab, startLoading, setReady, reset, resolveTransition, markProgrammaticBack }
 })

@@ -47,7 +47,7 @@
             class="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-orange-500"
           />
           <Icon :icon="tab.icon" class="text-[22px] leading-none" />
-          <span class="text-[10px] leading-none font-semibold">{{ tab.label }}</span>
+          <span class="text-xs leading-none font-semibold whitespace-nowrap">{{ tab.label }}</span>
         </RouterLink>
       </div>
     </nav>
@@ -56,8 +56,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { Icon, addCollection } from '@iconify/vue'
 import ionIcons from '@/icons/ion.json' // sous-ensemble généré par scripts/build-icons.cjs
 
@@ -70,10 +70,15 @@ const store    = useTrainingStore()
 const auth     = useAuthStore()
 const appStore = useAppStore()
 const route    = useRoute()
-const router   = useRouter()
+
+// L'app restée ouverte passé minuit doit changer de jour quand on y revient
+function onVisibilityChange() {
+  if (document.visibilityState === 'visible') store.refreshToday()
+}
 
 // Corrige env(safe-area-inset-bottom) qui retourne 0 au premier rendu iOS PWA
 onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
   requestAnimationFrame(() => {
     const probe = document.createElement('div')
     probe.style.cssText = 'position:fixed;bottom:0;left:0;padding-bottom:env(safe-area-inset-bottom);opacity:0;pointer-events:none'
@@ -82,6 +87,7 @@ onMounted(() => {
     probe.remove()
   })
 })
+onUnmounted(() => document.removeEventListener('visibilitychange', onVisibilityChange))
 
 let _leaveScrollY = 0
 let _weekScrollY  = 0
@@ -99,22 +105,16 @@ function onEnter(el) {
 
 
 const tabs = [
-  { id: 'programme', label: 'Programme',  to: '/',         icon: 'ion:calendar-outline' },
-  { id: 'stations',  label: 'Stations',   to: '/stations', icon: 'ion:barbell-outline' },
-  { id: 'phases',    label: 'Phases',     to: '/phases',   icon: 'ion:stats-chart-outline' },
-  { id: 'guide',     label: 'Paramètres', to: '/guide',    icon: 'ion:settings-outline' },
+  { id: 'today',     label: "Aujourd'hui", to: '/',            icon: 'ion:home-outline' },
+  { id: 'programme', label: 'Programme',   to: '/programme',   icon: 'ion:calendar-outline' },
+  { id: 'progress',  label: 'Progression', to: '/progression', icon: 'ion:stats-chart-outline' },
+  { id: 'profile',   label: 'Profil',      to: '/profil',      icon: 'ion:person-outline' },
 ]
 
-// '/session/:id' maps to the Programme tab
 const isLoginPage = computed(() => ['/login', '/onboarding', '/tutorial', '/change-password'].includes(route.path))
 
-const activeTab = computed(() => {
-  const path = route.path
-  if (path.startsWith('/stations')) return 'stations'
-  if (path.startsWith('/phases'))   return 'phases'
-  if (path.startsWith('/guide'))    return 'guide'
-  return 'programme'
-})
+// Une séance n'a pas d'onglet à elle : celui d'où l'on vient reste allumé
+const activeTab = computed(() => route.meta.tab ?? appStore.lastTab.id)
 
 </script>
 

@@ -11,8 +11,7 @@ const LS_TIME_LUI  = 'hyrox-10km-lui'
 const LS_TIME_ELLE = 'hyrox-10km-elle'
 
 export const useTrainingStore = defineStore('training', () => {
-  const currentWeekNumber = ref(1)
-  const todayWeekNumber   = ref(1)
+  const currentWeekNumber = ref(1) // semaine affichée dans l'onglet Programme
   const completedSessions = ref([])
   const tenKmTimeLui  = ref(null)
   const tenKmTimeElle = ref(null)
@@ -20,8 +19,17 @@ export const useTrainingStore = defineStore('training', () => {
 
   // Plan de l'athlète : { startDate, raceDate, totalWeeks, lastWeek, phaseNames }
   const plan = shallowRef(null)
-  // Où il en est aujourd'hui : { status: 'before'|'running'|'done', weekNumber, daysToStart, daysToRace }
-  const planState = shallowRef(null)
+
+  // Date du jour vue de l'athlète ; rafraîchie quand l'app revient au premier plan (voir App.vue)
+  const today = shallowRef(todayIso())
+  function refreshToday() {
+    today.value = todayIso()
+  }
+
+  // Où il en est aujourd'hui : { status: 'before'|'running'|'done', weekNumber, daysToStart, daysToRace }.
+  // null tant que le plan n'est pas chargé, ou s'il n'a pas de calendrier (voir utils/planCalendar).
+  const planState = computed(() => (plan.value?.startDate ? planStatus(plan.value, today.value) : null))
+  const todayWeekNumber = computed(() => planState.value?.weekNumber ?? 1)
 
   // Charge les séances validées depuis Directus
   async function initCompletedSessions() {
@@ -71,19 +79,14 @@ export const useTrainingStore = defineStore('training', () => {
     currentWeekNumber.value = n
   }
 
-  let _weekInitialized = false
+  // Appelé par le routeur à chaque ouverture de session : le plan vient du cache s'il est déjà chargé
   async function initCurrentWeek() {
-    if (_weekInitialized) return
-    _weekInitialized = true
     try {
       const { plan: loaded } = await getPlan()
       plan.value = loaded
       planType.value = loaded.planType ?? 'open_double_mixte'
-      if (!loaded.startDate) return
-      // La semaine du jour se calcule sur le calendrier de l'athlète (voir utils/planCalendar)
-      planState.value = planStatus(loaded, todayIso())
-      currentWeekNumber.value = planState.value.weekNumber
-      todayWeekNumber.value   = planState.value.weekNumber
+      refreshToday()
+      currentWeekNumber.value = todayWeekNumber.value
     } catch {}
   }
 
@@ -108,9 +111,9 @@ export const useTrainingStore = defineStore('training', () => {
   return {
     currentWeekNumber, todayWeekNumber, completedSessions,
     tenKmTimeLui, tenKmTimeElle,
-    plan, planState, phaseName,
+    plan, today, planState, phaseName,
     planType, isSolo, isDuoMixte, showLui, showElle,
-    initFromLocalStorage, initCompletedSessions,
+    initFromLocalStorage, initCompletedSessions, refreshToday,
     toggleSession, setWeek, initCurrentWeek, setTenKmTime,
     isCompleted, weekProgress,
   }

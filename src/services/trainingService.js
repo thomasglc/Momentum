@@ -1,6 +1,5 @@
 import { useAuthStore } from '@/stores/auth'
-import { getPhaseConfig } from '@/constants/phaseConfig'
-import { planStartFor, weekDates, groupPhases } from '@/utils/planCalendar'
+import { planStartFor, weekDates } from '@/utils/planCalendar'
 import { request } from './directus'
 import { strengthDetail, stationsDetail } from './blockMappers'
 
@@ -10,6 +9,7 @@ const SESSION_LS_PREFIX = 'momentum-session-v2-'
 
 // ── Cache mémoire (ultra-rapide, dure le temps de la session) ─────────────
 let _planCache = null
+let _structure = null // promesse partagée : semaines et séances du plan (voir loadStructure)
 const _weekCache    = new Map()
 const _sessionCache = new Map()
 
@@ -44,6 +44,7 @@ function api(path, params = {}) {
 
 export function clearPlanCache() {
   _planCache = null
+  _structure = null
   _weekCache.clear()
   _sessionCache.clear()
   // Purger les entrées localStorage du plan
@@ -268,26 +269,60 @@ export async function getPlan() {
   }
 }
 
-/** Phases du plan de l'athlète, avec leurs semaines datées */
-export async function getPlanOverview() {
-  const p = await loadPlan()
-  const nameOf = id => p.phaseNames?.[id] ?? (getPhaseConfig(id).name || `Phase ${id}`)
+// Semaine Directus et ses séances → semaine affichable
+function toWeek(p, w, sessions) {
   return {
-    startDate: p.startDate,
-    raceDate: p.raceDate,
-    totalWeeks: p.totalWeeks,
-    lastWeek: p.lastWeek,
-    phases: groupPhases(p.weeks, p.startDate, nameOf),
+    id: w.id,
+    weekNumber: w.week_number,
+    phase: w.phase,
+    theme: w.theme,
+    isDeload: !!w.is_deload,
+    weekNote: w.week_note,
+    ...datesOf(p, w.week_number),
+    sessions: sortByDay(sessions.map(mapSession)),
   }
+}
+
+// Semaine en cache (mémoire, puis navigateur). Ses dates sont recalculées à la lecture :
+// elles dépendent de la date de course de l'athlète, qui peut changer sans que le cache expire.
+function cachedWeek(p, weekNumber) {
+  const wKey = `${p.id}-${weekNumber}`
+  let week = _weekCache.get(wKey)
+  if (!week) {
+    week = lsGet(`momentum-week-${wKey}`)
+    if (week) _weekCache.set(wKey, week)
+  }
+  return week ? { ...week, ...datesOf(p, weekNumber) } : null
+}
+
+function cacheWeek(p, week) {
+  const wKey = `${p.id}-${week.weekNumber}`
+  _weekCache.set(wKey, week)
+  lsSet(`momentum-week-${wKey}`, week)
+}
+
+// Semaines et séances du plan en deux requêtes, partagées entre l'accueil et le préchargement
+function loadStructure(p) {
+  _structure ??= Promise.all([
+    api('/items/weeks', { 'filter[plan_id][_eq]': p.id, sort: 'week_number', limit: -1 }),
+    api('/items/sessions', { 'filter[week_id][plan_id][_eq]': p.id, sort: 'sort_order,id', limit: -1 }),
+  ]).then(([weeks, sessions]) => {
+    for (const w of weeks) {
+      if (cachedWeek(p, w.week_number)) continue
+      cacheWeek(p, toWeek(p, w, sessions.filter(s => String(s.week_id) === String(w.id))))
+    }
+    return { weeks, sessions }
+  }).catch((error) => {
+    _structure = null // un échec ne doit pas rester en mémoire : le prochain appel réessaie
+    throw error
+  })
+  return _structure
 }
 
 export async function getWeek(weekNumber) {
   const p = await loadPlan()
-  const wKey = `${p.id}-${weekNumber}`
-  if (_weekCache.has(wKey)) return _weekCache.get(wKey)
-
-  const cached = lsGet(`momentum-week-${wKey}`)
-  if (cached) { _weekCache.set(wKey, cached); return cached }
+  const cached = cachedWeek(p, weekNumber)
+  if (cached) return cached
 
   const weeks = await api('/items/weeks', {
     'filter[plan_id][_eq]': p.id,
@@ -295,29 +330,27 @@ export async function getWeek(weekNumber) {
     limit: 1,
   })
   if (!weeks.length) return null
-  const week = weeks[0]
 
   const sessions = await api('/items/sessions', {
-    'filter[week_id][_eq]': week.id,
+    'filter[week_id][_eq]': weeks[0].id,
     sort: 'sort_order,id',
     limit: -1,
   })
-  const { startDate, endDate } = datesOf(p, weekNumber)
-
-  const result = {
-    id: week.id,
-    weekNumber: week.week_number,
-    phase: week.phase,
-    theme: week.theme,
-    isDeload: !!week.is_deload,
-    weekNote: week.week_note,
-    startDate,
-    endDate,
-    sessions: sortByDay(sessions.map(mapSession)),
-  }
-  _weekCache.set(wKey, result)
-  lsSet(`momentum-week-${wKey}`, result)
+  const result = toWeek(p, weeks[0], sessions)
+  cacheWeek(p, result)
   return result
+}
+
+/** Toutes les semaines écrites du plan, avec leurs séances : depuis le cache, sinon en deux requêtes */
+export async function getAllWeeks() {
+  const p = await loadPlan()
+  const numbers = p.weeks.map(w => w.week_number)
+  let weeks = numbers.map(n => cachedWeek(p, n))
+  if (weeks.some(week => !week)) {
+    await loadStructure(p)
+    weeks = numbers.map(n => cachedWeek(p, n))
+  }
+  return weeks.filter(Boolean)
 }
 
 function groupBy(arr, key) {
@@ -337,27 +370,7 @@ export async function prefetchAll() {
   if (_sessionCache.size > 50) return
 
   // ── 1. Structure semaines + sessions (2 requêtes, limitées au plan) ──────
-  const [weeks, sessions] = await Promise.all([
-    api('/items/weeks', { 'filter[plan_id][_eq]': p.id, sort: 'week_number', limit: -1 }),
-    api('/items/sessions', { 'filter[week_id][plan_id][_eq]': p.id, limit: -1 }),
-  ])
-
-  // Remplir le cache des semaines
-  for (const w of weeks) {
-    const wKey = `${p.id}-${w.week_number}`
-    if (_weekCache.has(wKey)) continue
-    const ls = lsGet(`momentum-week-${wKey}`)
-    if (ls) { _weekCache.set(wKey, ls); continue }
-    const { startDate, endDate } = datesOf(p, w.week_number)
-    const weekSessions = sessions.filter(s => String(s.week_id) === String(w.id))
-    const result = {
-      id: w.id, weekNumber: w.week_number, phase: w.phase, theme: w.theme,
-      isDeload: !!w.is_deload, weekNote: w.week_note, startDate, endDate,
-      sessions: sortByDay(weekSessions.map(mapSession)),
-    }
-    _weekCache.set(wKey, result)
-    lsSet(`momentum-week-${wKey}`, result)
-  }
+  const { sessions } = await loadStructure(p)
 
   // Sessions déjà en localStorage → charger en mémoire et skipper l'API
   const missing = sessions.filter(s => {
