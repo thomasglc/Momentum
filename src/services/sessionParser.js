@@ -1,3 +1,4 @@
+import { formatRest } from '../utils/setLogs.js'
 // ─── Exercise emoji ──────────────────────────────────────────────────────────
 
 export function exerciseEmoji(name) {
@@ -109,7 +110,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
       } else {
         hdr = d.label ?? `Circuit × ${d.rounds ?? '?'} passage${d.rounds !== 1 ? 's' : ''}`
       }
-      const rest = d.restBetweenMin > 0 ? ` — repos ${d.restBetweenMin} min` : ''
+      const rest = d.restBetweenMin > 0 ? ` — repos ${formatRest(Math.round(d.restBetweenMin * 60))}` : ''
       return { type: 'circuit', header: hdr + rest, exercises: parseList(d.stations, d.stationImages), content: null }
     }
 
@@ -130,7 +131,7 @@ export function structuredDetailToBlock(d, resolvePace = null) {
     }
 
     case 'finisher': {
-      const rest = d.restBetweenMin > 0 ? ` — repos ${d.restBetweenMin} min` : ''
+      const rest = d.restBetweenMin > 0 ? ` — repos ${formatRest(Math.round(d.restBetweenMin * 60))}` : ''
       return { type: 'finisher', header: `Finisher × ${d.rounds}${rest}`, exercises: d.exercises?.map(parseExercise) ?? null, content: null }
     }
 

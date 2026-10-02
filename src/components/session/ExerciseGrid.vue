@@ -1,5 +1,26 @@
 <template>
-  <div class="rounded-xl overflow-hidden" :class="`border ${theme.border}`">
+  <!-- Séance de muscu : même présentation que les exercices, un intitulé puis une carte plate -->
+  <section v-if="flat">
+    <header class="flex items-baseline justify-between gap-3 px-1 mb-2">
+      <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500 truncate">{{ title }}</h4>
+      <span v-if="rest" class="flex-shrink-0 text-xs font-semibold text-stone-400">{{ rest }}</span>
+    </header>
+    <ul v-if="exercises?.length" class="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100 overflow-hidden">
+      <li v-for="(ex, i) in rows" :key="i" class="flex items-center gap-3 p-3">
+        <ExerciseThumb :images="ex.images" :emoji="ex.emoji" :alt="ex.name" class="w-12 h-12 rounded-xl text-2xl" />
+        <div class="flex-1 min-w-0">
+          <p class="text-[15px] font-bold text-stone-900 leading-tight truncate">{{ ex.name }}</p>
+          <div v-if="ex.chips.length" class="flex flex-wrap gap-1.5 mt-1">
+            <span v-for="chip in ex.chips" :key="chip" class="text-xs font-semibold text-stone-600 bg-stone-100 rounded-full px-2 py-0.5">{{ chip }}</span>
+          </div>
+        </div>
+        <span v-if="ex.amount" class="flex-shrink-0 text-base font-black text-stone-900 tabular-nums">{{ ex.amount }}</span>
+      </li>
+    </ul>
+    <p v-else-if="content" class="bg-white rounded-2xl border border-stone-100 shadow-sm px-3 py-2.5 text-sm text-stone-700 leading-relaxed">{{ content }}</p>
+  </section>
+
+  <div v-else class="rounded-xl overflow-hidden" :class="`border ${theme.border}`">
     <!-- Header -->
     <div class="flex items-center gap-2 px-3 py-2.5" :class="theme.headerBg">
       <span>{{ icon }}</span>
@@ -38,13 +59,15 @@
 
 <script setup>
 import { computed } from 'vue'
+import { noteChips } from '@/utils/text'
 import ExerciseThumb from './ExerciseThumb.vue'
 
 const props = defineProps({
-  variant:   { type: String, required: true }, // 'circuit' | 'strength' | 'finisher'
-  header:    { type: String, required: true },
-  exercises: { type: Array,  default: null },
-  content:   { type: String, default: null },
+  variant:   { type: String,  required: true }, // 'circuit' | 'strength' | 'finisher'
+  header:    { type: String,  required: true },
+  exercises: { type: Array,   default: null },
+  content:   { type: String,  default: null },
+  flat:      { type: Boolean, default: false }, // présentation des séances de muscu
 })
 
 const THEMES = {
@@ -55,4 +78,18 @@ const THEMES = {
 
 const theme = computed(() => THEMES[props.variant] ?? THEMES.circuit)
 const icon  = computed(() => theme.value.icon)
+
+// ── Présentation plate ───────────────────────────────────────────────────────
+// L'en-tête arrive en une chaîne : « Circuit × 4 passages — repos 1 min 30 »
+const title = computed(() => props.header.split(' — ')[0])
+const rest  = computed(() => props.header.split(' — ')[1] ?? '')
+
+// « 30m » devient « 30 m » ; la note « (30-40 m · lourd) » devient des pastilles,
+// et une fourchette en tête de note remplace la valeur (« 30-40 m »).
+const RANGE = /^\d+\s*-\s*\d+\s*[a-zA-Z]+$/
+const rows = computed(() => (props.exercises ?? []).map((ex) => {
+  const chips = noteChips((ex.note ?? '').replace(/^\(|\)$/g, ''))
+  const range = RANGE.test(chips[0] ?? '') ? chips.shift() : null
+  return { ...ex, amount: range ?? (ex.value ?? '').replace(/(\d)([a-zA-Z])/, '$1 $2'), chips }
+}))
 </script>

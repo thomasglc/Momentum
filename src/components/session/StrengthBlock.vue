@@ -1,18 +1,12 @@
 <template>
-  <section class="rounded-xl overflow-hidden border border-blue-200">
-    <header class="flex items-center gap-2 px-3 py-2.5 bg-blue-500">
-      <span aria-hidden="true">💪</span>
-      <h4 class="text-xs font-bold text-white uppercase tracking-wide">Force</h4>
-      <span v-if="rest" class="ml-auto text-[11px] font-semibold text-white bg-white/20 rounded-full px-2 py-0.5">
-        repos {{ rest }}
-      </span>
+  <section>
+    <!-- Le bloc n'est plus un cadre : un intitulé, puis une carte par exercice -->
+    <header class="flex items-baseline justify-between gap-3 px-1 mb-2">
+      <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500 truncate">{{ block.note || 'Force' }}</h4>
+      <span v-if="rest" class="flex-shrink-0 text-xs font-semibold text-stone-400">repos {{ rest }}</span>
     </header>
 
-    <p v-if="block.note" class="px-3 py-2 bg-blue-100/60 border-b border-blue-100 text-[11px] text-blue-900 leading-relaxed">
-      {{ block.note }}
-    </p>
-
-    <div class="bg-blue-50 p-2 space-y-2">
+    <div class="space-y-2">
       <ExerciseLogCard
         v-for="line in block.rows"
         :key="line.id"
@@ -22,7 +16,7 @@
       />
     </div>
 
-    <ExerciseSheet v-if="openLine" :line="openLine" @close="openLine = null" />
+    <ExerciseSheet v-if="openLine" :line="openLine" :rest-sec="block.restSec" @close="openLine = null" />
   </section>
 </template>
 

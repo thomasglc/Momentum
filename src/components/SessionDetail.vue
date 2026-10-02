@@ -115,12 +115,30 @@
           Démarrer la séance
         </button>
 
-        <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
-        <div class="space-y-2">
+        <!-- Muscu : l'avancement de la séance, en séries -->
+        <div v-if="strengthRows.length" class="mb-4">
+          <div class="flex items-baseline justify-between gap-3 mb-1.5">
+            <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400">Programme</h3>
+            <p class="text-sm font-bold text-stone-800 tabular-nums">
+              {{ progress.done }} / {{ progress.planned }} <span class="font-medium text-stone-400">séries</span>
+            </p>
+          </div>
+          <div class="h-1.5 rounded-full bg-stone-200 overflow-hidden" aria-hidden="true">
+            <div
+              class="h-full rounded-full transition-all duration-300"
+              :class="progress.done >= progress.planned ? 'bg-emerald-500' : 'bg-blue-500'"
+              :style="{ width: progressWidth }"
+            />
+          </div>
+        </div>
+        <h3 v-else class="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-3">Programme</h3>
+
+        <div :class="flat ? 'space-y-5' : 'space-y-2'">
           <SessionProgramBlock
             v-for="(block, i) in visibleBlocks"
             :key="i"
             :block="block"
+            :flat="flat"
           />
         </div>
       </div>
@@ -136,17 +154,18 @@
 
     </div>
 
-    <WorkoutBar v-if="strengthRows.length" :session-id="session.id" />
+    <WorkoutBar v-if="strengthRows.length" :session-id="session.id" :done="progress.done" :planned="progress.planned" />
   </div>
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, provide, shallowRef, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
-import { strengthLinesOf } from '@/utils/workout'
+import { strengthLinesOf, sessionProgress, nextOpenLine, restLabelAfter } from '@/utils/workout'
+import { SESSION_FLOW } from './session/sessionFlow'
 import { structuredDetailToBlock, extractRunningSegmentsFromStructured } from '@/services/sessionParser'
 import { paceForZone } from '@/utils/paceCalculator'
 import { useTrainingStore } from '@/stores/training'
@@ -203,4 +222,40 @@ function loadSetLogs() {
 }
 
 watch(strengthRows, (rows) => { if (rows.length) loadSetLogs() }, { immediate: true })
+
+// ── Déroulé d'une séance de muscu ────────────────────────────────────────────
+// Une séance de muscu s'affiche en cartes plates, un exercice ouvert à la fois.
+const flat = computed(() => props.session?.type === 'strength')
+
+const sessionSets = computed(() => (setLogStore.sessionId === props.session?.id ? setLogStore.sets : []))
+const progress = computed(() => sessionProgress(strengthRows.value, sessionSets.value))
+const progressWidth = computed(() =>
+  `${progress.value.planned ? Math.min(100, Math.round((progress.value.done / progress.value.planned) * 100)) : 0}%`)
+
+const openLineId   = shallowRef(null) // exercice ouvert
+const revealLineId = shallowRef(null) // exercice à ramener à l'écran
+
+// À l'arrivée, une fois les séries chargées : on ouvre le premier exercice à faire
+let openedFor = null
+watch([() => props.session?.id, () => setLogStore.ready, strengthRows], () => {
+  const id = props.session?.id
+  if (!strengthRows.value.length || !setLogStore.ready || setLogStore.sessionId !== id || openedFor === id) return
+  openedFor = id
+  openLineId.value = nextOpenLine(strengthRows.value, sessionSets.value)
+}, { immediate: true })
+
+provide(SESSION_FLOW, {
+  openLineId,
+  revealLineId,
+  toggleLine(id) {
+    openLineId.value = openLineId.value === id ? null : id
+    revealLineId.value = openLineId.value
+  },
+  // Dernière série d'un exercice cochée : on passe au suivant, ou tout se replie si la séance est faite
+  lineDone(id) {
+    openLineId.value = nextOpenLine(strengthRows.value, sessionSets.value, id)
+    revealLineId.value = openLineId.value
+  },
+  restLabel: id => restLabelAfter(strengthRows.value, sessionSets.value, id),
+})
 </script>

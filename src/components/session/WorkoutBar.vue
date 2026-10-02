@@ -9,38 +9,38 @@
       <div class="pointer-events-auto mx-auto max-w-[456px] rounded-2xl shadow-lg text-white overflow-hidden transition-colors" :class="tone">
 
         <!-- Repos en cours -->
-        <div v-if="workout.rest" class="px-4 pt-2.5 pb-3">
-          <div class="flex items-center justify-between gap-3">
-            <div class="min-w-0">
-              <p class="text-[10px] font-semibold uppercase tracking-widest text-white/70 truncate">
-                Repos · {{ workout.rest.label }}
-              </p>
-              <p class="mt-0.5 text-3xl font-black tabular-nums leading-none" role="timer">{{ restClock }}</p>
-            </div>
+        <div v-if="workout.rest" class="px-4 pt-3 pb-3">
+          <!-- Ce qui suit le repos, sur toute la largeur -->
+          <p class="text-xs font-semibold text-white/75 truncate">Repos · {{ workout.rest.label }}</p>
+          <div class="mt-1 flex items-center justify-between gap-3">
+            <p class="text-3xl font-black tabular-nums leading-none" role="timer">{{ restClock }}</p>
             <div class="flex items-center gap-1.5 flex-shrink-0">
               <button type="button" :class="ADJUST" aria-label="Retirer 15 secondes de repos" @click="workout.adjustRest(-15)">−15 s</button>
               <button type="button" :class="ADJUST" aria-label="Ajouter 15 secondes de repos" @click="workout.adjustRest(15)">+15 s</button>
               <button
                 type="button"
-                class="h-9 px-3 rounded-lg bg-white text-blue-700 text-xs font-bold active:scale-95 transition-transform"
+                class="h-10 px-3.5 rounded-xl bg-white text-blue-700 text-sm font-bold active:scale-95 transition-transform"
                 @click="workout.skipRest()"
               >Passer</button>
             </div>
           </div>
-          <div class="mt-2.5 h-1 rounded-full bg-white/20 overflow-hidden" aria-hidden="true">
+          <div class="mt-3 h-1 rounded-full bg-white/20 overflow-hidden" aria-hidden="true">
             <div class="h-full rounded-full bg-white" :style="{ width: progressWidth }" />
           </div>
         </div>
 
         <!-- Repos terminé -->
         <div v-else-if="workout.restJustDone" class="px-4 py-3 flex items-center justify-between gap-3" role="status">
-          <p class="text-sm font-bold">Repos terminé, série suivante</p>
-          <p v-if="running" class="text-xs font-semibold tabular-nums text-white/80">{{ elapsedClock }}</p>
+          <p class="text-sm font-bold">Repos terminé, à toi</p>
+          <p v-if="running" class="text-sm font-semibold tabular-nums text-white/80">{{ elapsedClock }}</p>
         </div>
 
-        <!-- Séance en cours -->
-        <div v-else class="px-4 py-2.5 flex items-center justify-between gap-3">
-          <p class="text-[11px] font-semibold uppercase tracking-widest text-white/70">Séance en cours</p>
+        <!-- Séance en cours : où on en est, et depuis combien de temps -->
+        <div v-else class="px-4 py-3 flex items-center justify-between gap-3">
+          <p class="text-sm font-semibold text-white/80 tabular-nums">
+            <template v-if="planned > 0">{{ done }} / {{ planned }} séries</template>
+            <template v-else>Séance en cours</template>
+          </p>
           <p class="text-lg font-black tabular-nums leading-none" role="timer">{{ elapsedClock }}</p>
         </div>
 
@@ -54,10 +54,12 @@ import { computed } from 'vue'
 import { useWorkoutStore } from '@/stores/workout'
 import { formatClock } from '@/utils/workout'
 
-const ADJUST = 'h-9 px-2.5 rounded-lg bg-white/15 text-xs font-bold tabular-nums active:scale-95 transition-transform'
+const ADJUST = 'h-10 px-3 rounded-xl bg-white/15 text-sm font-bold tabular-nums active:scale-95 transition-transform'
 
 const props = defineProps({
   sessionId: { type: Number, required: true }, // séance affichée
+  done:      { type: Number, default: 0 },     // séries cochées
+  planned:   { type: Number, default: 0 },     // séries prévues
 })
 
 const workout = useWorkoutStore()
@@ -67,7 +69,7 @@ const visible = computed(() => running.value || !!workout.rest || workout.restJu
 
 const tone = computed(() => {
   if (workout.rest) return 'bg-blue-600'
-  return workout.restJustDone ? 'bg-emerald-500' : 'bg-stone-800'
+  return workout.restJustDone ? 'bg-emerald-500' : 'bg-slate-900'
 })
 
 const elapsedClock  = computed(() => formatClock(workout.elapsed))
