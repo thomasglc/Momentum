@@ -40,7 +40,8 @@
       </div>
 
       <!-- Progression par phase -->
-      <div v-if="station.progression">
+      <!-- Rédigée pour les plans doubles : masquée en solo plutôt que d'afficher des repères faux -->
+      <div v-if="station.progression && !trainingStore.isSolo">
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Progression par phase</p>
 
         <!-- Elle / Lui toggle — mixte uniquement -->
