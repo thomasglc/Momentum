@@ -127,7 +127,7 @@ async function finish() {
           <h2 class="text-xl font-black text-stone-800 text-center mb-2">Tes allures</h2>
           <p class="text-sm text-stone-500 text-center leading-relaxed mb-4">
             Chaque course est prescrite en zone (Z1 à Z5), calculée depuis ton temps
-            au 10km. Tes allures exactes sont dans l'onglet Guide.
+            au 10km. Tes allures exactes sont dans l'onglet Paramètres.
           </p>
           <div class="pointer-events-none select-none bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden divide-y divide-stone-50" aria-hidden="true">
             <div

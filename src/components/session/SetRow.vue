@@ -90,7 +90,7 @@ const valuePlaceholder  = computed(() => String(mainOf(props.row.previous) ?? ma
 // Champ vide = valeur proposée en filigrane (série précédente, sinon prévu)
 function resolve() {
   const values = resolveSetValues(props.line, props.row, { weight: weight.value, value: value.value })
-  if (!values) emit('invalid', timed.value ? 'Indiquez une durée en secondes.' : 'Indiquez un nombre de reps.')
+  if (!values) emit('invalid', timed.value ? 'Indique une durée en secondes.' : 'Indique un nombre de reps.')
   return values
 }
 

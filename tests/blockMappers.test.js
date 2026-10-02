@@ -69,8 +69,13 @@ test('imagesOf écarte ce qui n\'est pas une URL exploitable', () => {
 test('toExerciseRow structure une ligne d\'exercice', () => {
   assert.deepEqual(toExerciseRow(squatRow), {
     id: 496, exerciseId: 18, name: 'Front Squat', sets: 4, reps: 5,
-    durationSec: null, weightKg: null, note: 'RIR 2', images: ['u0', 'u1'],
+    durationSec: null, weightKg: null, note: 'RIR 2', tip: null, images: ['u0', 'u1'],
   })
+})
+test('toExerciseRow reprend la note du catalogue comme conseil de fiche', () => {
+  const row = { ...squatRow, exercise_id: { ...squatRow.exercise_id, notes: 'Alternative : squat arrière.' } }
+  assert.equal(toExerciseRow(row).tip, 'Alternative : squat arrière.')
+  assert.equal(toExerciseRow({ id: 1, exercise_id: 18, sets: 2, reps: 10 }).tip, null)
 })
 test('toExerciseRow traite les zéros et les chaînes vides comme absents', () => {
   const row = toExerciseRow({ ...squatRow, reps: 0, duration_sec: 45, note: '' })

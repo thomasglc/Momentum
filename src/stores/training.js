@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, shallowRef, computed } from 'vue'
 import { getPlan } from '@/services/trainingService'
 import { fetchCompletedSessions, completeSession, uncompleteSession } from '@/services/trainingService'
-import { getCurrentWeekNumber } from '@/utils/dateUtils'
+import { planStatus, todayIso } from '@/utils/planCalendar'
+import { audienceFor } from '@/utils/audience'
+import { getPhaseConfig } from '@/constants/phaseConfig'
 import { useAuthStore } from '@/stores/auth'
 
 const LS_TIME_LUI  = 'hyrox-10km-lui'
@@ -15,6 +17,11 @@ export const useTrainingStore = defineStore('training', () => {
   const tenKmTimeLui  = ref(null)
   const tenKmTimeElle = ref(null)
   const planType = ref('open_double_mixte')
+
+  // Plan de l'athlète : { startDate, raceDate, totalWeeks, lastWeek, phaseNames }
+  const plan = shallowRef(null)
+  // Où il en est aujourd'hui : { status: 'before'|'running'|'done', weekNumber, daysToStart, daysToRace }
+  const planState = shallowRef(null)
 
   // Charge les séances validées depuis Directus
   async function initCompletedSessions() {
@@ -69,17 +76,26 @@ export const useTrainingStore = defineStore('training', () => {
     if (_weekInitialized) return
     _weekInitialized = true
     try {
-      const plan = await getPlan()
-      const n = getCurrentWeekNumber(plan.plan.startDate, plan.plan.totalWeeks)
-      currentWeekNumber.value = n
-      todayWeekNumber.value   = n
-      planType.value = plan.plan.planType ?? 'open_double_mixte'
+      const { plan: loaded } = await getPlan()
+      plan.value = loaded
+      planType.value = loaded.planType ?? 'open_double_mixte'
+      if (!loaded.startDate) return
+      // La semaine du jour se calcule sur le calendrier de l'athlète (voir utils/planCalendar)
+      planState.value = planStatus(loaded, todayIso())
+      currentWeekNumber.value = planState.value.weekNumber
+      todayWeekNumber.value   = planState.value.weekNumber
     } catch {}
   }
 
-  const isDuoMixte = computed(() => planType.value === 'open_double_mixte')
-  const showLui    = computed(() => planType.value !== 'open_double_women')
-  const showElle   = computed(() => planType.value === 'open_double_mixte' || planType.value === 'open_double_women')
+  // À qui s'adresse l'affichage : en solo, le genre du profil décide
+  const audience   = computed(() => audienceFor(planType.value, useAuthStore().user?.gender ?? null))
+  const isSolo     = computed(() => audience.value.isSolo)
+  const isDuoMixte = computed(() => audience.value.isDuoMixte)
+  const showLui    = computed(() => audience.value.showLui)
+  const showElle   = computed(() => audience.value.showElle)
+
+  // Nom d'une phase : celui du plan s'il en définit, sinon le nom par défaut
+  const phaseName = id => plan.value?.phaseNames?.[id] ?? getPhaseConfig(id).name
 
   const isCompleted = computed(() => (id) => completedSessions.value.includes(id))
 
@@ -92,7 +108,8 @@ export const useTrainingStore = defineStore('training', () => {
   return {
     currentWeekNumber, todayWeekNumber, completedSessions,
     tenKmTimeLui, tenKmTimeElle,
-    planType, isDuoMixte, showLui, showElle,
+    plan, planState, phaseName,
+    planType, isSolo, isDuoMixte, showLui, showElle,
     initFromLocalStorage, initCompletedSessions,
     toggleSession, setWeek, initCurrentWeek, setTenKmTime,
     isCompleted, weekProgress,

@@ -4,37 +4,54 @@
     <WeekNav
       :weekNumber="store.currentWeekNumber"
       :todayWeekNumber="store.todayWeekNumber"
+      :showToday="planRunning"
       :theme="currentWeek?.theme || ''"
       :dateRange="formatDateRange(currentWeek?.startDate, currentWeek?.endDate)"
       :phase="currentWeek?.phase || null"
+      :phaseName="currentWeek?.phase ? store.phaseName(currentWeek.phase) : ''"
       :isDeload="currentWeek?.isDeload || false"
       :canGoPrev="store.currentWeekNumber > 1"
-      :canGoNext="store.currentWeekNumber < totalWeeks"
+      :canGoNext="store.currentWeekNumber < lastWeek"
       @prev="store.setWeek(store.currentWeekNumber - 1)"
       @next="store.setWeek(store.currentWeekNumber + 1)"
       @goToCurrent="store.setWeek(store.todayWeekNumber)"
     />
 
-    <!-- Barre de progression (séances obligatoires uniquement) -->
-    <ProgressBar :progress="progress" />
+    <!-- État du plan : pas encore commencé, ou terminé -->
+    <p
+      v-if="planBanner"
+      role="status"
+      class="mx-4 mt-3 rounded-xl px-3 py-2 text-xs font-medium"
+      :class="planBanner.tone"
+    >{{ planBanner.text }}</p>
 
-    <!-- Note de la semaine -->
-    <div
-      v-if="currentWeek?.weekNote"
-      class="mx-4 mt-3 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg px-3 py-2"
-    >
-      <p class="text-xs text-orange-800">{{ currentWeek.weekNote }}</p>
-    </div>
+    <template v-if="currentWeek">
+      <!-- Barre de progression (séances obligatoires uniquement) -->
+      <ProgressBar :progress="progress" />
 
-    <!-- Liste des séances -->
-    <div v-if="currentWeek" class="px-4 mt-3 flex flex-col gap-2.5">
-      <SessionCard
-        v-for="session in currentWeek.sessions"
-        :key="session.id"
-        :session="session"
-        :completed="store.isCompleted(session.id)"
-        @click="router.push({ path: `/session/${session.id}`, state: { session } })"
-      />
+      <!-- Note de la semaine -->
+      <div
+        v-if="currentWeek.weekNote"
+        class="mx-4 mt-3 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg px-3 py-2"
+      >
+        <ClampText :text="currentWeek.weekNote" class="text-xs text-orange-800" />
+      </div>
+
+      <!-- Liste des séances -->
+      <div class="px-4 mt-3 flex flex-col gap-2.5">
+        <SessionCard
+          v-for="session in currentWeek.sessions"
+          :key="session.id"
+          :session="session"
+          :completed="store.isCompleted(session.id)"
+          @click="router.push({ path: `/session/${session.id}`, state: { session } })"
+        />
+      </div>
+    </template>
+
+    <!-- Semaine du calendrier que le coach n'a pas encore écrite -->
+    <div v-else-if="loaded" class="flex items-center justify-center py-16 px-8">
+      <p class="text-sm text-stone-400 text-center">La semaine {{ store.currentWeekNumber }} n'est pas encore programmée.</p>
     </div>
 
     <!-- État de chargement -->
@@ -48,10 +65,11 @@
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useTrainingStore } from '@/stores/training'
-import { getPlan, getWeek } from '@/services/trainingService'
+import { getWeek } from '@/services/trainingService'
 import WeekNav from '@/components/WeekNav.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import SessionCard from '@/components/SessionCard.vue'
+import ClampText from '@/components/ClampText.vue'
 
 const store = useTrainingStore()
 const router = useRouter()
@@ -66,10 +84,34 @@ function formatDateRange(startDate, endDate) {
 }
 
 const currentWeek = ref(null)
-const totalWeeks = ref(19)
+const loaded = ref(false)
+
+// On navigue jusqu'à la dernière semaine écrite, pas jusqu'à la fin théorique du plan
+const lastWeek = computed(() => store.plan?.lastWeek ?? 1)
+
+const planRunning = computed(() => store.planState?.status === 'running')
+
+const planBanner = computed(() => {
+  const state = store.planState
+  if (!state || !store.plan?.startDate) return null
+  if (state.status === 'before') {
+    const day = new Date(`${store.plan.startDate}T00:00:00`)
+      .toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+    const wait = state.daysToStart === 1 ? 'demain' : `dans ${state.daysToStart} jours`
+    return { tone: 'bg-blue-50 text-blue-800', text: `Ton plan commence ${day}, ${wait}.` }
+  }
+  if (state.status === 'done') {
+    return { tone: 'bg-emerald-50 text-emerald-800', text: 'Ton plan est terminé. Bravo pour le chemin parcouru.' }
+  }
+  return null
+})
 
 async function loadWeek(n) {
-  currentWeek.value = await getWeek(n)
+  loaded.value = false
+  const week = await getWeek(n)
+  if (n !== store.currentWeekNumber) return // l'athlète a déjà changé de semaine
+  currentWeek.value = week
+  loaded.value = true
 }
 
 onBeforeRouteLeave(() => {
@@ -77,8 +119,6 @@ onBeforeRouteLeave(() => {
 })
 
 onMounted(async () => {
-  const plan = await getPlan()
-  totalWeeks.value = plan.plan.totalWeeks
   await loadWeek(store.currentWeekNumber)
   const saved = parseInt(sessionStorage.getItem('weekScrollY') || '0', 10)
   if (saved) {

@@ -59,7 +59,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon, addCollection } from '@iconify/vue'
-import ionIcons from '@iconify-json/ion/icons.json'
+import ionIcons from '@/icons/ion.json' // sous-ensemble généré par scripts/build-icons.cjs
 
 addCollection(ionIcons)
 import { useTrainingStore } from '@/stores/training'

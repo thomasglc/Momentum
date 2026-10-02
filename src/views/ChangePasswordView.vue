@@ -84,8 +84,8 @@ async function submit() {
         </h1>
         <p class="text-sm text-stone-500 mt-1.5 font-medium">
           {{ isFirstLogin
-              ? 'Choisissez un mot de passe personnel pour sécuriser votre compte.'
-              : 'Modifiez votre mot de passe.' }}
+              ? 'Choisis un mot de passe personnel pour sécuriser ton compte.'
+              : 'Modifie ton mot de passe.' }}
         </p>
       </div>
 

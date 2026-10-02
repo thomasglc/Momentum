@@ -1,7 +1,9 @@
 import { useAuthStore } from '@/stores/auth'
+import { getPhaseConfig } from '@/constants/phaseConfig'
+import { planStartFor, weekDates, groupPhases } from '@/utils/planCalendar'
+import { request } from './directus'
 import { strengthDetail, stationsDetail } from './blockMappers'
 
-const DIRECTUS_URL = import.meta.env.VITE_DIRECTUS_URL || 'http://localhost:8056'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 // v2 : les séances en cache portent les lignes d'exercice structurées et les images
 const SESSION_LS_PREFIX = 'momentum-session-v2-'
@@ -35,17 +37,9 @@ try {
     .forEach(k => localStorage.removeItem(k))
 } catch {}
 
-async function api(path, params = {}) {
-  const url = new URL(`${DIRECTUS_URL}${path}`)
-  for (const [k, v] of Object.entries(params)) url.searchParams.append(k, v)
-  const authStore = useAuthStore()
-  const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${authStore.token}` } })
-  if (res.status === 401) {
-    authStore.logout()
-    window.location.hash = '/login'
-    throw new Error('Session expirée')
-  }
-  return (await res.json()).data
+// Lecture authentifiée. request() rafraîchit le jeton une fois avant de déconnecter.
+function api(path, params = {}) {
+  return request('GET', path, { params })
 }
 
 export function clearPlanCache() {
@@ -54,7 +48,7 @@ export function clearPlanCache() {
   _sessionCache.clear()
   // Purger les entrées localStorage du plan
   Object.keys(localStorage)
-    .filter(k => k.startsWith('momentum-week-') || k.startsWith('momentum-session-') || k === 'momentum-plan')
+    .filter(k => k.startsWith('momentum-week-') || k.startsWith('momentum-session-') || k.startsWith('momentum-plan'))
     .forEach(k => localStorage.removeItem(k))
 }
 
@@ -67,14 +61,9 @@ function intensityLabel(score) {
   return 'Maximal'
 }
 
-function weekDates(startDate, weekNumber) {
-  const start = new Date(startDate)
-  start.setDate(start.getDate() + (weekNumber - 1) * 7)
-  const end = new Date(start)
-  end.setDate(end.getDate() + 6)
-  const fmt = d => d.toISOString().split('T')[0]
-  return { startDate: fmt(start), endDate: fmt(end) }
-}
+// Dates d'une semaine pour cet athlète (aucune si le plan n'a pas de date de début)
+const datesOf = (plan, weekNumber) =>
+  (plan.startDate ? weekDates(plan.startDate, weekNumber) : { startDate: null, endDate: null })
 
 const DAY_ORDER = { Lundi: 0, Mardi: 1, Mercredi: 2, Jeudi: 3, Vendredi: 4, Samedi: 5, Dimanche: 6 }
 
@@ -220,41 +209,76 @@ async function fetchBlock({ block_type, block_id }) {
   }
 }
 
-// Plan assigné à l'athlète connecté (athlete_profiles.plan_id)
-function currentPlanId() {
-  const authStore = useAuthStore()
-  return authStore.user?.plan_id ?? null
+// Plan assigné à l'athlète connecté et date de sa course (athlete_profiles)
+function currentAthlete() {
+  const user = useAuthStore().user
+  return { planId: user?.plan_id ?? null, raceDate: user?.race_date ?? null }
 }
 
 async function loadPlan() {
-  const pid = currentPlanId()
+  const { planId: pid, raceDate } = currentAthlete()
 
-  // Le cache mémoire n'est valable que s'il correspond au plan de l'utilisateur
-  if (_planCache && (!pid || _planCache.id === pid)) return _planCache
+  // Le cache mémoire n'est valable que pour le plan et la date de course de l'utilisateur
+  if (_planCache && (!pid || _planCache.id === pid) && _planCache.raceDate === raceDate) return _planCache
   _planCache = null
 
-  const cacheKey = `momentum-plan-v3-${pid ?? 'first'}`
+  const cacheKey = `momentum-plan-v4-${pid ?? 'first'}-${raceDate ?? 'sans-date'}`
   const cached = lsGet(cacheKey)
   if (cached) { _planCache = cached; return _planCache }
 
-  const params = { limit: 1, fields: 'id,start_date,plan_type' }
+  // fields=* : total_weeks et phase_names sont lus s'ils existent dans Directus, ignorés sinon
+  const params = { limit: 1, fields: '*' }
   if (pid) params['filter[id][_eq]'] = pid
   const plans = await api('/items/plans', params)
   const p = plans[0]
   const weeks = await api('/items/weeks', {
     'filter[plan_id][_eq]': p.id,
     sort: 'week_number',
-    fields: 'week_number',
+    fields: 'week_number,phase,theme,is_deload',
     limit: -1,
   })
-  _planCache = { id: p.id, startDate: p.start_date, totalWeeks: weeks.length, planType: p.plan_type ?? 'open_double_mixte' }
+  // Deux longueurs : celle du plan (calendrier) et la dernière semaine écrite (navigation)
+  const lastWeek = weeks.reduce((max, w) => Math.max(max, w.week_number), 0)
+  _planCache = {
+    id: p.id,
+    raceDate,
+    // Calendrier propre à l'athlète quand le plan connaît sa longueur, sinon date commune du plan
+    startDate: planStartFor({ raceDate, totalWeeks: p.total_weeks, planStartDate: p.start_date }),
+    totalWeeks: p.total_weeks ?? lastWeek,
+    lastWeek,
+    planType: p.plan_type ?? 'open_double_mixte',
+    phaseNames: p.phase_names ?? null,
+    weeks,
+  }
   lsSet(cacheKey, _planCache)
   return _planCache
 }
 
 export async function getPlan() {
   const p = await loadPlan()
-  return { plan: { startDate: p.startDate, totalWeeks: p.totalWeeks, planType: p.planType ?? 'open_double_mixte' } }
+  return {
+    plan: {
+      startDate: p.startDate,
+      raceDate: p.raceDate,
+      totalWeeks: p.totalWeeks,
+      lastWeek: p.lastWeek,
+      planType: p.planType ?? 'open_double_mixte',
+      phaseNames: p.phaseNames,
+    },
+  }
+}
+
+/** Phases du plan de l'athlète, avec leurs semaines datées */
+export async function getPlanOverview() {
+  const p = await loadPlan()
+  const nameOf = id => p.phaseNames?.[id] ?? (getPhaseConfig(id).name || `Phase ${id}`)
+  return {
+    startDate: p.startDate,
+    raceDate: p.raceDate,
+    totalWeeks: p.totalWeeks,
+    lastWeek: p.lastWeek,
+    phases: groupPhases(p.weeks, p.startDate, nameOf),
+  }
 }
 
 export async function getWeek(weekNumber) {
@@ -278,7 +302,7 @@ export async function getWeek(weekNumber) {
     sort: 'sort_order,id',
     limit: -1,
   })
-  const { startDate, endDate } = weekDates(p.startDate, weekNumber)
+  const { startDate, endDate } = datesOf(p, weekNumber)
 
   const result = {
     id: week.id,
@@ -324,7 +348,7 @@ export async function prefetchAll() {
     if (_weekCache.has(wKey)) continue
     const ls = lsGet(`momentum-week-${wKey}`)
     if (ls) { _weekCache.set(wKey, ls); continue }
-    const { startDate, endDate } = weekDates(p.startDate, w.week_number)
+    const { startDate, endDate } = datesOf(p, w.week_number)
     const weekSessions = sessions.filter(s => String(s.week_id) === String(w.id))
     const result = {
       id: w.id, weekNumber: w.week_number, phase: w.phase, theme: w.theme,
@@ -345,9 +369,24 @@ export async function prefetchAll() {
   })
   if (missing.length === 0) return
 
-  // ── 2. Tous les blocs en parallèle (13 requêtes) ─────────────────────────
+  // ── 2. Blocs des séances à charger, et d'elles seules ────────────────────
+  const sessionBlocks = await api('/items/session_blocks', {
+    'filter[session_id][_in]': missing.map(s => s.id).join(','),
+    limit: -1,
+    sort: 'position',
+  })
+  const idsOf = type => [...new Set(sessionBlocks.filter(b => b.block_type === type).map(b => b.block_id))]
+  const blocksOf = (type) => {
+    const ids = idsOf(type)
+    return ids.length ? api(`/items/${type}`, { 'filter[id][_in]': ids.join(','), limit: -1 }) : []
+  }
+  const childrenOf = (collection, type, expand) => {
+    const ids = idsOf(type)
+    return ids.length
+      ? api(`/items/${collection}`, { [`filter[${type}_id][_in]`]: ids.join(','), limit: -1, fields: `*,${expand}.*`, sort: 'position' })
+      : []
+  }
   const [
-    sessionBlocks,
     blockCardio, blockIntervals,
     blockStrength, blockStrengthExercises,
     blockCircuit, blockCircuitStations,
@@ -355,19 +394,12 @@ export async function prefetchAll() {
     blockStationActivation, blockStationActivationEntries,
     blockStationBlock, blockStationBlockEntries,
   ] = await Promise.all([
-    api('/items/session_blocks', { limit: -1, sort: 'position' }),
-    api('/items/block_cardio', { limit: -1 }),
-    api('/items/block_intervals', { limit: -1 }),
-    api('/items/block_strength', { limit: -1 }),
-    api('/items/block_strength_exercises', { limit: -1, fields: '*,exercise_id.*', sort: 'position' }),
-    api('/items/block_circuit', { limit: -1 }),
-    api('/items/block_circuit_stations', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
-    api('/items/block_mini_race', { limit: -1 }),
-    api('/items/block_mini_race_stations', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
-    api('/items/block_station_activation', { limit: -1 }),
-    api('/items/block_station_activation_entries', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
-    api('/items/block_station_block', { limit: -1 }),
-    api('/items/block_station_block_entries', { limit: -1, fields: '*,station_id.*', sort: 'position' }),
+    blocksOf('block_cardio'), blocksOf('block_intervals'),
+    blocksOf('block_strength'), childrenOf('block_strength_exercises', 'block_strength', 'exercise_id'),
+    blocksOf('block_circuit'), childrenOf('block_circuit_stations', 'block_circuit', 'station_id'),
+    blocksOf('block_mini_race'), childrenOf('block_mini_race_stations', 'block_mini_race', 'station_id'),
+    blocksOf('block_station_activation'), childrenOf('block_station_activation_entries', 'block_station_activation', 'station_id'),
+    blocksOf('block_station_block'), childrenOf('block_station_block_entries', 'block_station_block', 'station_id'),
   ])
 
   // ── 3. Maps de lookup ────────────────────────────────────────────────────
@@ -454,21 +486,13 @@ export async function fetchCompletedSessions(athleteProfileId) {
 }
 
 export async function completeSession(athleteProfileId, sessionId) {
-  const authStore = useAuthStore()
-  const res = await fetch(`${DIRECTUS_URL}/items/session_completions`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${authStore.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      athlete_profile_id: athleteProfileId,
-      session_id: sessionId,
-    }),
-  })
-  if (res.status === 401) { authStore.logout(); throw new Error('Session expirée') }
-  if (!res.ok) throw new Error('Impossible de valider la séance')
-  return (await res.json()).data
+  try {
+    return await request('POST', '/items/session_completions', {
+      body: { athlete_profile_id: athleteProfileId, session_id: sessionId },
+    })
+  } catch (e) {
+    throw new Error(e.status === 401 ? 'Session expirée' : 'Impossible de valider la séance')
+  }
 }
 
 export async function uncompleteSession(athleteProfileId, sessionId) {
@@ -479,13 +503,11 @@ export async function uncompleteSession(athleteProfileId, sessionId) {
     'limit': 1,
   })
   if (!rows.length) return
-  const authStore = useAuthStore()
-  const res = await fetch(`${DIRECTUS_URL}/items/session_completions/${rows[0].id}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${authStore.token}` },
-  })
-  if (res.status === 401) { authStore.logout(); throw new Error('Session expirée') }
-  if (!res.ok && res.status !== 204) throw new Error('Impossible de dévalider la séance')
+  try {
+    await request('DELETE', `/items/session_completions/${rows[0].id}`)
+  } catch (e) {
+    throw new Error(e.status === 401 ? 'Session expirée' : 'Impossible de dévalider la séance')
+  }
 }
 
 export async function getSession(id) {

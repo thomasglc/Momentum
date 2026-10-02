@@ -59,17 +59,17 @@
       <!-- Note optionnelle -->
       <div v-if="session.optional" class="mb-4 bg-violet-50 border-l-4 border-violet-300 rounded-r-lg px-3 py-2">
         <p class="text-xs text-violet-700">
-          Cette séance est <strong>optionnelle</strong>. À faire uniquement si vous vous sentez bien — le repos complet prime toujours.
+          Séance <strong>optionnelle</strong> : seulement si tu te sens bien. Le repos complet prime.
         </p>
       </div>
 
       <!-- Description -->
-      <p class="text-sm text-stone-600 mb-4 leading-relaxed">{{ session.description }}</p>
+      <p v-if="session.description" class="text-sm text-stone-600 mb-4 leading-relaxed">{{ session.description }}</p>
 
       <!-- Coach tip -->
       <div v-if="session.coachTip" class="mb-4 flex items-start gap-2.5 bg-stone-50 border border-stone-200 rounded-xl px-3 py-3">
         <span class="text-base flex-shrink-0">💬</span>
-        <p class="text-xs text-stone-600 leading-relaxed italic">{{ session.coachTip }}</p>
+        <ClampText :text="session.coachTip" class="text-xs text-stone-600 leading-relaxed italic" />
       </div>
 
       <!-- Graphique allures (running uniquement) -->
@@ -152,6 +152,7 @@ import { paceForZone } from '@/utils/paceCalculator'
 import { useTrainingStore } from '@/stores/training'
 import SessionPaceChart    from './session/SessionPaceChart.vue'
 import SessionProgramBlock from './session/SessionProgramBlock.vue'
+import ClampText           from './ClampText.vue'
 import WorkoutBar          from './session/WorkoutBar.vue'
 
 const props = defineProps({
