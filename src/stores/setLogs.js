@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
 import { computed, shallowRef, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { fetchSessionLogs, fetchExerciseLogs, createSetLog, updateSetLog, deleteSetLog } from '@/services/setLogService'
+import {
+  fetchSessionLogs, fetchExerciseLogs, fetchStationLogs, canLogStations, createSetLog, updateSetLog, deleteSetLog,
+} from '@/services/setLogService'
 import { createSyncQueue } from '@/services/syncQueue'
 import { overlay, unique } from '@/utils/outbox'
 import { toSet, groupHistory, previousByExercise, setKey, keyOfSet, sameSetValues, emptyTyping } from '@/utils/setLogs'
@@ -21,7 +23,7 @@ function writeJson(key, value) {
   try { localStorage.setItem(key, JSON.stringify(value)) } catch {} // quota dépassé : on continue en mémoire
 }
 
-// Séries réalisées de la séance affichée, et dernière séance précédente de chacun de ses exercices.
+// Séries et tours réalisés de la séance affichée, et dernière séance précédente de chacun de ses exercices et stations.
 // Le téléphone d'abord : une série cochée s'affiche tout de suite et part vers Directus en arrière-plan.
 // Ce qui attend d'être envoyé est dans la boîte d'envoi (utils/outbox, services/syncQueue).
 export const useSetLogStore = defineStore('setLogs', () => {
@@ -32,11 +34,24 @@ export const useSetLogStore = defineStore('setLogs', () => {
   const loadError = shallowRef(null)  // séries déjà enregistrées inconnues : ni réseau, ni copie sur le téléphone
   const typing    = shallowRef({})    // ligne d'exercice → saisie en cours (utils/setLogs : valeurs tapées et reportées)
   let known = false                   // `server` reflète bien Directus (lu à l'instant, ou copie du téléphone)
+  // Directus sait enregistrer un tour sur une station (scripts/add-station-logs.cjs) : les circuits à tours se saisissent
+  const stationLogging = shallowRef(canLogStations())
 
   const profileId = () => useAuthStore().user?.id ?? null
 
   // ── Boîte d'envoi ──────────────────────────────────────────────────────────
-  const payloadOf = values => ({ weight_kg: values.weightKg, reps: values.reps, duration_sec: values.durationSec })
+  // Ce qui part vers Directus. Un tour de station porte la clé de sa ligne, sa station et sa distance ;
+  // une série de muscu n'envoie aucun de ces champs, que Directus n'a peut-être pas encore.
+  const onStation = values => values.kind === 'station'
+  const measuresOf = values => ({
+    weight_kg: values.weightKg,
+    reps: values.reps,
+    duration_sec: values.durationSec,
+    ...(onStation(values) ? { distance_m: values.distanceM ?? null } : {}),
+  })
+  const lineOf = values => (onStation(values)
+    ? { line_key: values.lineId, station_id: values.stationId }
+    : { block_strength_exercise_id: values.lineId, exercise_id: values.exerciseId })
 
   const queue = createSyncQueue({
     owner: profileId,
@@ -44,16 +59,19 @@ export const useSetLogStore = defineStore('setLogs', () => {
     adapter: {
       keyOf: keyOfSet,
       same: sameSetValues,
-      read: async id => (await fetchSessionLogs(profileId(), id)).map(toSet),
+      read: async (id) => {
+        const logs = await fetchSessionLogs(profileId(), id)
+        stationLogging.value = canLogStations() // la lecture vient de dire si Directus a les champs des stations
+        return logs.map(toSet)
+      },
       create: async values => toSet(await createSetLog({
         athlete_profile_id: profileId(),
         session_id: values.sessionId,
-        block_strength_exercise_id: values.lineId,
-        exercise_id: values.exerciseId,
         set_number: values.setNumber,
-        ...payloadOf(values),
+        ...lineOf(values),
+        ...measuresOf(values),
       })),
-      update: async (id, values) => toSet(await updateSetLog(id, payloadOf(values))),
+      update: async (id, values) => toSet(await updateSetLog(id, measuresOf(values))),
       remove: id => deleteSetLog(id),
     },
     onChange: (state) => {
@@ -126,18 +144,21 @@ export const useSetLogStore = defineStore('setLogs', () => {
     return saved && saved.owner === profileId() && saved.sessionId === id ? saved.lines ?? {} : {}
   }
 
-  async function loadPrevious(id, exerciseIds) {
-    if (!exerciseIds.length) return
+  // Dernière séance de chaque exercice ou de chaque station : complète ce qu'on sait déjà
+  async function loadPrevious(id, fetchLogs) {
     try {
-      const past = await fetchExerciseLogs(profileId(), exerciseIds)
+      const past = await fetchLogs()
       if (sessionId.value !== id) return // l'athlète a changé de séance entre-temps
-      previous.value = previousByExercise(past.map(toSet), id)
+      previous.value = { ...previous.value, ...previousByExercise(past.map(toSet), id) }
       saveCopy()
     } catch {} // sans réseau, les propositions restent celles de la copie
   }
 
-  /** Ouvre une séance : la copie du téléphone tout de suite, Directus dès qu'il répond */
-  async function loadSession(id, exerciseIds) {
+  /**
+   * Ouvre une séance : la copie du téléphone tout de suite, Directus dès qu'il répond.
+   * exerciseIds, stationIds : ce que la séance fait travailler, pour retrouver la séance précédente de chacun.
+   */
+  async function loadSession(id, { exerciseIds = [], stationIds = [] } = {}) {
     sessionId.value = id
     loadError.value = null
     const copy = readCopy(id)
@@ -148,11 +169,17 @@ export const useSetLogStore = defineStore('setLogs', () => {
     ready.value    = known
 
     if (!profileId()) { loadError.value = 'Profil athlète introuvable'; return }
-    loadPrevious(id, exerciseIds)
+    if (exerciseIds.length) loadPrevious(id, () => fetchExerciseLogs(profileId(), exerciseIds))
+    const loadStations = () => {
+      if (stationIds.length && canLogStations()) loadPrevious(id, () => fetchStationLogs(profileId(), stationIds))
+    }
+    // Tant qu'on ne sait pas si Directus enregistre les stations, leur historique attend la relecture de la séance
+    const stationsKnown = canLogStations()
+    if (stationsKnown) loadStations()
     // La relecture passe par la file : elle ne croise jamais un envoi, et se refait seule si le réseau manque
-    const read = queue.refresh(id).catch((e) => {
-      if (sessionId.value === id && !known) loadError.value = e.message
-    })
+    const read = queue.refresh(id)
+      .then(() => { if (!stationsKnown && sessionId.value === id) loadStations() })
+      .catch((e) => { if (sessionId.value === id && !known) loadError.value = e.message })
     if (ready.value) return
     await Promise.race([read, new Promise(resolve => setTimeout(resolve, FIRST_LOAD_GRACE_MS))])
     if (sessionId.value === id) ready.value = true
@@ -164,7 +191,7 @@ export const useSetLogStore = defineStore('setLogs', () => {
 
   const onServer = key => server.value.find(set => keyOfSet(set) === key) ?? null
 
-  /** Coche ou corrige une série : elle s'affiche aussitôt. values = { weightKg, reps, durationSec } */
+  /** Coche ou corrige une série ou un tour : il s'affiche aussitôt. values = { weightKg, reps, durationSec, distanceM } */
   function saveSet(line, setNumber, values) {
     const id = sessionId.value
     const key = setKey(id, line.id, setNumber)
@@ -176,7 +203,16 @@ export const useSetLogStore = defineStore('setLogs', () => {
       // Sans savoir ce que Directus a déjà, on relira la séance avant de créer la série
       doubt: !known,
       at: Date.now(),
-      value: { lineId: line.id, exerciseId: line.exerciseId, sessionId: id, setNumber, ...values, date },
+      value: {
+        kind: line.kind ?? 'exercise',
+        lineId: line.id,
+        exerciseId: line.exerciseId ?? null,
+        stationId: line.stationId ?? null,
+        sessionId: id,
+        setNumber,
+        ...values,
+        date,
+      },
     })
   }
 
@@ -187,14 +223,16 @@ export const useSetLogStore = defineStore('setLogs', () => {
     queue.put({ key, scope: id, id: onServer(key)?.id ?? null, doubt: !known, at: Date.now(), value: null })
   }
 
-  /** Séances passées d'un exercice, la plus récente d'abord */
-  async function loadHistory(exerciseId) {
-    const logs = await fetchExerciseLogs(profileId(), [exerciseId], 200)
+  /** Séances passées de l'exercice ou de la station d'une ligne, la plus récente d'abord */
+  async function loadHistory(line) {
+    const logs = line.kind === 'station'
+      ? await fetchStationLogs(profileId(), [line.stationId], 200)
+      : await fetchExerciseLogs(profileId(), [line.exerciseId], 200)
     return groupHistory(logs.map(toSet))
   }
 
   return {
-    sessionId, sets, previous, ready, loadError, waiting, refused,
+    sessionId, sets, previous, ready, loadError, waiting, refused, stationLogging,
     loadSession, setsForLine, saveSet, removeSet, typingOf, setTyping,
     retry: queue.retry, forget: queue.forget, loadHistory,
   }

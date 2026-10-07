@@ -32,7 +32,7 @@ import { useProgressStore } from '@/stores/progress'
 import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
 import { getSession } from '@/services/trainingService'
-import { strengthLinesOf, summarizeWorkout } from '@/utils/workout'
+import { loggableLinesOf, summarizeWorkout } from '@/utils/workout'
 import { sessionProgressSets } from '@/utils/progress'
 import { useAppStore } from '@/stores/app'
 import SessionDetail from '@/components/SessionDetail.vue'
@@ -89,7 +89,7 @@ async function handleToggle() {
   })
   workout.finish(id)
 
-  const lines = strengthLinesOf(session.value.structuredDetails)
+  const lines = loggableLinesOf(session.value.structuredDetails, { stations: setLogStore.stationLogging })
   const sets = setLogStore.sessionId === id ? setLogStore.sets : []
   // Semaines et séries à jour pour le bilan ; sans elles, le récap s'affiche sans la semaine
   await progress.load()

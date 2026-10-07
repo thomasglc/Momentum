@@ -11,7 +11,6 @@
         v-for="line in block.rows"
         :key="line.id"
         :line="line"
-        :rest-sec="block.restSec"
         @open="openLine = $event"
       />
     </div>

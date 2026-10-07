@@ -73,7 +73,8 @@ import { useAuthStore } from '@/stores/auth'
 import { useTrainingStore } from '@/stores/training'
 import { useProgressStore } from '@/stores/progress'
 import { getSession } from '@/services/trainingService'
-import { strengthLinesOf } from '@/utils/workout'
+import { loggableLinesOf } from '@/utils/workout'
+import { useSetLogStore } from '@/stores/setLogs'
 import PlanHeader from '@/components/today/PlanHeader.vue'
 import FocusCard from '@/components/today/FocusCard.vue'
 import WeekDots from '@/components/today/WeekDots.vue'
@@ -125,7 +126,8 @@ watch(() => progress.focus?.session.id ?? null, async (id) => {
   try {
     const session = await getSession(id)
     if (progress.focus?.session.id !== id) return
-    const sets = strengthLinesOf(session.structuredDetails).reduce((sum, line) => sum + (line.sets ?? 0), 0)
+    const lines = loggableLinesOf(session.structuredDetails, { stations: useSetLogStore().stationLogging })
+    const sets = lines.reduce((sum, line) => sum + (line.sets ?? 0), 0)
     focusDetail.value = { id, sets, session }
   } catch {} // sans détail, la carte s'affiche sans le nombre de séries
 }, { immediate: true })

@@ -111,7 +111,17 @@ export function structuredDetailToBlock(d, resolvePace = null) {
         hdr = d.label ?? `Circuit × ${d.rounds ?? '?'} passage${d.rounds !== 1 ? 's' : ''}`
       }
       const rest = d.restBetweenMin > 0 ? ` — repos ${formatRest(Math.round(d.restBetweenMin * 60))}` : ''
-      return { type: 'circuit', header: hdr + rest, exercises: parseList(d.stations, d.stationImages), content: null }
+      return {
+        type: 'circuit',
+        header: hdr + rest,
+        exercises: parseList(d.stations, d.stationImages),
+        content: null,
+        // De quoi saisir un circuit à tours (voir isLoggableCircuit) ; rows manque dans un cache d'ancien format
+        format: d.format ?? 'rounds',
+        rounds: d.rounds ?? null,
+        restBetweenMin: d.restBetweenMin ?? null,
+        rows: d.rows ?? null,
+      }
     }
 
     case 'strength': {

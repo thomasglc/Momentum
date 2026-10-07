@@ -65,7 +65,7 @@
         <span />
         <span>Précédent</span>
         <span class="text-center">kg</span>
-        <span class="text-center">{{ timed ? 'sec' : 'reps' }}</span>
+        <span class="text-center">{{ UNIT[measure] }}</span>
         <span />
       </div>
 
@@ -85,10 +85,10 @@
 
       <div class="flex items-center justify-between gap-3 px-1 pt-2">
         <button type="button" class="py-1 text-sm font-semibold text-blue-600 active:opacity-60" @click="extra++">
-          + Ajouter une série
+          {{ station ? '+ Ajouter un tour' : '+ Ajouter une série' }}
         </button>
         <button v-if="canRemoveLast" type="button" class="py-1 text-sm text-stone-500 active:opacity-60" @click="extra--">
-          Retirer la dernière
+          {{ station ? 'Retirer le dernier' : 'Retirer la dernière' }}
         </button>
         <button v-else type="button" class="py-1 text-sm font-semibold text-stone-500 active:opacity-60" @click="emit('open', line)">
           Technique et historique ›
@@ -105,17 +105,28 @@ import { computed, inject, nextTick, shallowRef, watch } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
 import { exerciseEmoji } from '@/services/sessionParser'
-import { buildSetRows, isTimed, summarizeSets, resolveSetValues, sameSetValues, typeInto, pinTexts, draftOf, textsOf } from '@/utils/setLogs'
+import {
+  buildSetRows, measureOf, refKeyOf, summarizeSets, resolveSetValues, sameSetValues, typeInto, pinTexts, draftOf, textsOf,
+} from '@/utils/setLogs'
 import { describeLine } from '@/utils/workout'
 import { SET_GRID } from './setGrid'
 import { SESSION_FLOW } from './sessionFlow'
 import ExerciseThumb from './ExerciseThumb.vue'
 import SetRow from './SetRow.vue'
 
+// Une ligne à saisir : un exercice de muscu et ses séries, ou une station de circuit et ses tours
 const props = defineProps({
-  line:    { type: Object, required: true }, // { id, exerciseId, name, sets, reps, durationSec, weightKg, note, images }
-  restSec: { type: Number, default: null },  // repos du bloc, lancé quand une série est cochée
+  // { id, exerciseId | stationId, name, sets, reps, durationSec, distanceM, weightKg, note, images, group }
+  line: { type: Object, required: true },
 })
+
+// En-tête de la colonne de mesure et message quand elle manque, selon ce que la ligne compte
+const UNIT = { reps: 'reps', duration: 'sec', distance: 'm' }
+const MISSING = {
+  reps: 'Indique un nombre de reps.',
+  duration: 'Indique une durée en secondes.',
+  distance: 'Indique une distance en mètres.',
+}
 
 const emit = defineEmits(['open'])
 
@@ -130,7 +141,8 @@ const error = shallowRef('')
 const open   = computed(() => flow.openLineId.value === props.line.id)
 // La séance de cette carte est bien celle que le store suit (faux un instant pendant un changement de séance)
 const current = computed(() => store.sessionId === flow.sessionId.value)
-const timed  = computed(() => isTimed(props.line))
+const measure = computed(() => measureOf(props.line))
+const station = computed(() => props.line.kind === 'station')
 const emoji  = computed(() => exerciseEmoji(props.line.name))
 // Objectif (« 3 × 6-8 reps ») et repères restants (« RIR 2 », « par jambe »)
 const described = computed(() => describeLine(props.line))
@@ -146,7 +158,7 @@ const typing = computed({
 
 const lineSets = computed(() => store.setsForLine(props.line.id))
 const rows = computed(() =>
-  buildSetRows(props.line, lineSets.value, store.previous[props.line.exerciseId]?.sets, extra.value)
+  buildSetRows(props.line, lineSets.value, store.previous[refKeyOf(props.line)]?.sets, extra.value)
 )
 
 // Dernière série cochée de l'exercice : sans saisie, les séries à faire en reprennent les valeurs
@@ -155,7 +167,7 @@ const latest = computed(() =>
 
 // Textes des champs de chaque ligne du tableau, par numéro de série
 const drafts = computed(() =>
-  Object.fromEntries(rows.value.map(row => [row.setNumber, draftOf(typing.value, row, timed.value, latest.value)])))
+  Object.fromEntries(rows.value.map(row => [row.setNumber, draftOf(typing.value, row, measure.value, latest.value)])))
 
 const doneCount    = computed(() => lineSets.value.length)
 const plannedCount = computed(() => props.line.sets ?? rows.value.length)
@@ -190,7 +202,7 @@ function type(setNumber, field, text) {
 // Champ vide : la valeur proposée en filigrane (série précédente, sinon prévu). null si la saisie ne tient pas.
 function resolve(row) {
   const values = resolveSetValues(props.line, row, drafts.value[row.setNumber])
-  error.value = values ? '' : timed.value ? 'Indique une durée en secondes.' : 'Indique un nombre de reps.'
+  error.value = values ? '' : MISSING[measure.value]
   return values
 }
 
@@ -217,9 +229,12 @@ function toggle(row) {
   workout.unlockSound()
   store.saveSet(props.line, row.setNumber, values)
   workout.ensureStarted(store.sessionId)
-  workout.startRest(props.restSec, flow.restLabel(props.line.id))
-  // Plus aucune série à cocher, ajoutées comprises : on passe à l'exercice suivant
-  if (nextSetNumber.value == null) flow.lineDone(props.line.id)
+  // Dans un circuit à plusieurs stations, le repos attend la fin du tour
+  const rest = flow.restAfter(props.line.id)
+  if (rest.sec > 0) workout.startRest(rest.sec, rest.label)
+  else workout.skipRest()
+  // Plus aucune série à cocher, ajoutées comprises, ou station suivante du tour : on passe à la suite
+  if (props.line.group || nextSetNumber.value == null) flow.lineDone(props.line.id)
 }
 
 // Modifier une série déjà cochée la met à jour, sans relancer le repos
@@ -231,7 +246,7 @@ function commit(row) {
 
 function copyPrevious(row) {
   if (!row.previous || !current.value) return
-  const texts = textsOf(row.previous, timed.value)
+  const texts = textsOf(row.previous, measure.value)
   typing.value = typeInto(typeInto(typing.value, row.setNumber, 'weight', texts.weight), row.setNumber, 'value', texts.value)
   commit(row)
 }

@@ -6,7 +6,8 @@ import { strengthDetail, stationsDetail } from './blockMappers'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 // v2 : les séances en cache portent les lignes d'exercice structurées et les images
 // v3 : repos des blocs de muscu plafonnés (scripts/cap-strength-rest.cjs) ; relus dès la mise à jour, sans attendre 24 h
-const SESSION_LS_PREFIX = 'momentum-session-v3-'
+// v4 : les blocs de stations portent leurs lignes structurées, pour la saisie des tours
+const SESSION_LS_PREFIX = 'momentum-session-v4-'
 
 // ── Cache mémoire (ultra-rapide, dure le temps de la session) ─────────────
 let _planCache = null
@@ -154,7 +155,7 @@ async function fetchBlock({ block_type, block_id }) {
         rounds: b.rounds,
         durationMin: b.duration_min,
         restBetweenMin: b.rest_between_min,
-        ...stationsDetail(rows),
+        ...stationsDetail(rows, 'block_circuit_stations'),
       }
     }
 
@@ -173,7 +174,7 @@ async function fetchBlock({ block_type, block_id }) {
         runDistanceKm: b.run_distance_km,
         paceZone: b.pace_zone,
         restBetweenRoundsMin: b.rest_between_rounds_min,
-        ...stationsDetail(rows),
+        ...stationsDetail(rows, 'block_mini_race_stations'),
       }
     }
 
@@ -186,7 +187,7 @@ async function fetchBlock({ block_type, block_id }) {
           'sort': 'position',
         }),
       ])
-      return { type: 'station_activation', rounds: b.rounds, note: b.note, ...stationsDetail(rows) }
+      return { type: 'station_activation', rounds: b.rounds, note: b.note, ...stationsDetail(rows, 'block_station_activation_entries') }
     }
 
     case 'block_station_block': {
@@ -202,7 +203,7 @@ async function fetchBlock({ block_type, block_id }) {
         type: 'station_block',
         brickFormat: b.brick_format,
         formatNote: b.format_note,
-        ...stationsDetail(rows),
+        ...stationsDetail(rows, 'block_station_block_entries'),
       }
     }
 
@@ -454,22 +455,22 @@ export async function prefetchAll() {
       case 'block_circuit': {
         const b = maps.circuit.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'circuit', format: b.format, label: b.label, rounds: b.rounds, durationMin: b.duration_min, restBetweenMin: b.rest_between_min, ...stationsDetail(entries.circuitStations.get(block_id) || []) }
+        return { type: 'circuit', format: b.format, label: b.label, rounds: b.rounds, durationMin: b.duration_min, restBetweenMin: b.rest_between_min, ...stationsDetail(entries.circuitStations.get(block_id) || [], 'block_circuit_stations') }
       }
       case 'block_mini_race': {
         const b = maps.miniRace.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'mini_race', rounds: b.rounds, runDistanceKm: b.run_distance_km, paceZone: b.pace_zone, restBetweenRoundsMin: b.rest_between_rounds_min, ...stationsDetail(entries.miniRaceStations.get(block_id) || []) }
+        return { type: 'mini_race', rounds: b.rounds, runDistanceKm: b.run_distance_km, paceZone: b.pace_zone, restBetweenRoundsMin: b.rest_between_rounds_min, ...stationsDetail(entries.miniRaceStations.get(block_id) || [], 'block_mini_race_stations') }
       }
       case 'block_station_activation': {
         const b = maps.stationActivation.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'station_activation', rounds: b.rounds, note: b.note, ...stationsDetail(entries.stationActivationEntries.get(block_id) || []) }
+        return { type: 'station_activation', rounds: b.rounds, note: b.note, ...stationsDetail(entries.stationActivationEntries.get(block_id) || [], 'block_station_activation_entries') }
       }
       case 'block_station_block': {
         const b = maps.stationBlock.get(block_id)
         if (!b) return { type: 'text', label: '[bloc manquant]' }
-        return { type: 'station_block', brickFormat: b.brick_format, formatNote: b.format_note, ...stationsDetail(entries.stationBlockEntries.get(block_id) || []) }
+        return { type: 'station_block', brickFormat: b.brick_format, formatNote: b.format_note, ...stationsDetail(entries.stationBlockEntries.get(block_id) || [], 'block_station_block_entries') }
       }
       default: return { type: 'text', label: `[bloc inconnu: ${block_type}]` }
     }

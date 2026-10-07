@@ -27,7 +27,7 @@
       Historique indisponible pour le moment.
     </p>
     <p v-else-if="!entries.length" class="mt-5 text-sm text-stone-500">
-      Aucune série enregistrée pour cet exercice.
+      {{ line.kind === 'station' ? 'Aucun tour enregistré sur cette station.' : 'Aucune série enregistrée pour cet exercice.' }}
     </p>
 
     <template v-else>
@@ -62,14 +62,14 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
-import { formatNumber, formatRest, historyTrend, summarizeSets } from '@/utils/setLogs'
+import { formatNumber, formatRest, historyTrend, refKeyOf, summarizeSets } from '@/utils/setLogs'
 import { describeLine } from '@/utils/workout'
 import BottomSheet from './BottomSheet.vue'
 
 const FRAME_INTERVAL_MS = 1100
 
 const props = defineProps({
-  line:    { type: Object, required: true }, // ligne d'exercice structurée
+  line:    { type: Object, required: true }, // ligne structurée : exercice de muscu ou station
   restSec: { type: Number, default: null },  // repos du bloc
 })
 
@@ -79,7 +79,7 @@ const store = useSetLogStore()
 
 const frame   = shallowRef(0)
 const status  = shallowRef('loading') // loading | ready | error
-const history = shallowRef([])        // séances passées de l'exercice, la plus récente d'abord
+const history = shallowRef([])        // séances passées de l'exercice ou de la station, la plus récente d'abord
 
 const described = computed(() => describeLine(props.line))
 const target = computed(() => described.value.target)
@@ -110,16 +110,16 @@ const bars = computed(() => {
 })
 const trendLabel = computed(() => {
   const { unit, points } = trend.value
-  const suffix = { kg: 'kg', reps: 'reps', s: 's' }[unit]
+  const suffix = { kg: 'kg', reps: 'reps', m: 'm', s: 's' }[unit]
   const first = points[0].value
   const last = points.at(-1).value
   return first === last ? `${formatNumber(last)} ${suffix}` : `${formatNumber(first)} → ${formatNumber(last)} ${suffix}`
 })
 
 async function loadHistory() {
-  if (props.line.exerciseId == null) { status.value = 'ready'; return }
+  if (refKeyOf(props.line) == null) { status.value = 'ready'; return }
   try {
-    history.value = await store.loadHistory(props.line.exerciseId)
+    history.value = await store.loadHistory(props.line)
     status.value = 'ready'
   } catch {
     status.value = 'error'

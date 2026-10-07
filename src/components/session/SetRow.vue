@@ -11,7 +11,7 @@
       class="text-left text-xs leading-tight tabular-nums truncate"
       :class="row.previous ? 'text-stone-500 active:text-blue-600' : 'text-stone-300'"
       :disabled="!row.previous || disabled"
-      :aria-label="row.previous ? `Reprendre la série précédente : ${previousLabel}` : 'Pas de série précédente'"
+      :aria-label="row.previous ? `${words.copy} : ${previousLabel}` : words.none"
       @click="emit('copy')"
     >{{ previousLabel }}</button>
 
@@ -22,7 +22,7 @@
       autocomplete="off"
       :placeholder="weightPlaceholder"
       :disabled="disabled"
-      :aria-label="`Série ${row.setNumber} : charge en kg`"
+      :aria-label="`${words.item} ${row.setNumber} : charge en kg`"
       :class="[INPUT, row.logged ? 'bg-white' : 'bg-stone-100']"
       @input="emit('type', 'weight', $event.target.value)"
       @change="emit('commit')"
@@ -34,7 +34,7 @@
       autocomplete="off"
       :placeholder="valuePlaceholder"
       :disabled="disabled"
-      :aria-label="`Série ${row.setNumber} : ${timed ? 'durée en secondes' : 'reps'}`"
+      :aria-label="`${words.item} ${row.setNumber} : ${VALUE_LABEL[measure]}`"
       :class="[INPUT, row.logged ? 'bg-white' : 'bg-stone-100']"
       @input="emit('type', 'value', $event.target.value)"
       @change="emit('commit')"
@@ -47,7 +47,7 @@
       :class="row.logged ? 'bg-emerald-500 text-white' : next ? 'bg-blue-500 text-white shadow-sm' : 'bg-stone-100 text-stone-400'"
       :disabled="disabled"
       :aria-pressed="!!row.logged"
-      :aria-label="row.logged ? `Annuler la série ${row.setNumber}` : `Valider la série ${row.setNumber}`"
+      :aria-label="`${row.logged ? words.cancel : words.validate} ${row.setNumber}`"
       @click="emit('toggle')"
     >
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true">
@@ -59,7 +59,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { formatNumber, formatSetCompact, isTimed } from '@/utils/setLogs'
+import { formatNumber, formatSetCompact, measureOf, proposedMain } from '@/utils/setLogs'
 import { SET_GRID } from './setGrid'
 
 const INPUT = 'w-full min-w-0 h-11 rounded-xl px-1 text-center font-bold text-stone-900 tabular-nums '
@@ -78,11 +78,17 @@ const props = defineProps({
 // type(champ, texte) : saisie dans 'weight' ou 'value' · commit : champ quitté · copy : reprendre la série précédente
 const emit = defineEmits(['type', 'commit', 'toggle', 'copy'])
 
-const timed  = computed(() => isTimed(props.line))
-const mainOf = set => (timed.value ? set?.durationSec : set?.reps)
+const VALUE_LABEL = { reps: 'reps', duration: 'durée en secondes', distance: 'distance en mètres' }
+// Un exercice compte des séries, une station des tours
+const WORDS = {
+  exercise: { item: 'Série', validate: 'Valider la série', cancel: 'Annuler la série', copy: 'Reprendre la série précédente', none: 'Pas de série précédente' },
+  station:  { item: 'Tour',  validate: 'Valider le tour',  cancel: 'Annuler le tour',  copy: 'Reprendre le tour précédent',  none: 'Pas de tour précédent' },
+}
+const measure = computed(() => measureOf(props.line))
+const words   = computed(() => WORDS[props.line.kind === 'station' ? 'station' : 'exercise'])
 
-// Champ vide : la valeur proposée s'affiche en filigrane (série précédente, sinon prévu)
+// Champ vide : la valeur proposée s'affiche en filigrane (voir proposedMain pour ce que la ligne compte)
 const previousLabel     = computed(() => (props.row.previous ? formatSetCompact(props.row.previous) : '—'))
 const weightPlaceholder = computed(() => formatNumber(props.row.previous?.weightKg ?? props.line.weightKg) || '–')
-const valuePlaceholder  = computed(() => String(mainOf(props.row.previous) ?? mainOf(props.line) ?? '') || '–')
+const valuePlaceholder  = computed(() => String(proposedMain(props.line, props.row.previous) ?? '') || '–')
 </script>
