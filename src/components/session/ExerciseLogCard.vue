@@ -74,11 +74,13 @@
         :key="row.setNumber"
         :line="line"
         :row="row"
+        :draft="drafts[row.setNumber]"
         :next="row.setNumber === nextSetNumber"
-        :disabled="!store.ready || busy"
-        @save="save"
-        @remove="remove"
-        @invalid="error = $event"
+        :disabled="!store.ready || !current"
+        @type="(field, text) => type(row.setNumber, field, text)"
+        @commit="commit(row)"
+        @toggle="toggle(row)"
+        @copy="copyPrevious(row)"
       />
 
       <div class="flex items-center justify-between gap-3 px-1 pt-2">
@@ -103,7 +105,7 @@ import { computed, inject, nextTick, shallowRef, watch } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
 import { exerciseEmoji } from '@/services/sessionParser'
-import { buildSetRows, isTimed, summarizeSets } from '@/utils/setLogs'
+import { buildSetRows, isTimed, summarizeSets, resolveSetValues, sameSetValues, typeInto, pinTexts, draftOf, textsOf } from '@/utils/setLogs'
 import { describeLine } from '@/utils/workout'
 import { SET_GRID } from './setGrid'
 import { SESSION_FLOW } from './sessionFlow'
@@ -122,11 +124,12 @@ const workout = useWorkoutStore()
 const flow    = inject(SESSION_FLOW)
 
 const card  = shallowRef(null)
-const extra = shallowRef(0)     // séries ajoutées à la main, pas encore enregistrées
-const busy  = shallowRef(false) // un enregistrement est en cours pour cette carte
+const extra = shallowRef(0) // séries ajoutées à la main, pas encore enregistrées
 const error = shallowRef('')
 
 const open   = computed(() => flow.openLineId.value === props.line.id)
+// La séance de cette carte est bien celle que le store suit (faux un instant pendant un changement de séance)
+const current = computed(() => store.sessionId === flow.sessionId.value)
 const timed  = computed(() => isTimed(props.line))
 const emoji  = computed(() => exerciseEmoji(props.line.name))
 // Objectif (« 3 × 6-8 reps ») et repères restants (« RIR 2 », « par jambe »)
@@ -134,10 +137,25 @@ const described = computed(() => describeLine(props.line))
 const target = computed(() => described.value.target)
 const chips  = computed(() => described.value.chips)
 
+// Ce que l'athlète tape dans cet exercice : une valeur tapée vaut aussi pour ses autres séries à faire.
+// Le store la garde, pour qu'elle survive au repli de la carte et à un rechargement.
+const typing = computed({
+  get: () => store.typingOf(props.line.id),
+  set: next => store.setTyping(props.line.id, next),
+})
+
 const lineSets = computed(() => store.setsForLine(props.line.id))
 const rows = computed(() =>
   buildSetRows(props.line, lineSets.value, store.previous[props.line.exerciseId]?.sets, extra.value)
 )
+
+// Dernière série cochée de l'exercice : sans saisie, les séries à faire en reprennent les valeurs
+const latest = computed(() =>
+  lineSets.value.reduce((last, set) => (!last || set.setNumber > last.setNumber ? set : last), null))
+
+// Textes des champs de chaque ligne du tableau, par numéro de série
+const drafts = computed(() =>
+  Object.fromEntries(rows.value.map(row => [row.setNumber, draftOf(typing.value, row, timed.value, latest.value)])))
 
 const doneCount    = computed(() => lineSets.value.length)
 const plannedCount = computed(() => props.line.sets ?? rows.value.length)
@@ -164,36 +182,57 @@ watch(() => flow.revealLineId.value, async (id) => {
   card.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
 })
 
-// L'état ne change qu'après la réponse de Directus : en cas d'échec, la ligne reste comme elle était.
-async function run(action) {
-  if (busy.value) return
-  busy.value  = true
-  error.value = ''
-  try {
-    await action()
-  } catch (e) {
-    error.value = `Série non enregistrée : ${e?.message ?? 'erreur inconnue'}.`
-  } finally {
-    busy.value = false
+function type(setNumber, field, text) {
+  if (!current.value) return
+  typing.value = typeInto(typing.value, setNumber, field, text)
+}
+
+// Champ vide : la valeur proposée en filigrane (série précédente, sinon prévu). null si la saisie ne tient pas.
+function resolve(row) {
+  const values = resolveSetValues(props.line, row, drafts.value[row.setNumber])
+  error.value = values ? '' : timed.value ? 'Indique une durée en secondes.' : 'Indique un nombre de reps.'
+  return values
+}
+
+// Un double appui involontaire ne doit pas cocher la série puis la décocher dans la foulée
+const DOUBLE_TAP_MS = 400
+let lastToggle = { setNumber: null, at: 0 }
+
+// Rien n'attend le réseau : la série est cochée et le chrono part dans le geste, l'envoi suit en arrière-plan.
+function toggle(row) {
+  if (!current.value) return
+  const now = Date.now()
+  if (lastToggle.setNumber === row.setNumber && now - lastToggle.at < DOUBLE_TAP_MS) return
+  lastToggle = { setNumber: row.setNumber, at: now }
+
+  if (row.logged) {
+    // Décochée, elle garde ses valeurs pour être recochée telle quelle
+    typing.value = pinTexts(typing.value, row.setNumber, drafts.value[row.setNumber])
+    store.removeSet(props.line.id, row.setNumber)
+    workout.skipRest()
+    return
   }
+  const values = resolve(row)
+  if (!values) return
+  workout.unlockSound()
+  store.saveSet(props.line, row.setNumber, values)
+  workout.ensureStarted(store.sessionId)
+  workout.startRest(props.restSec, flow.restLabel(props.line.id))
+  // Plus aucune série à cocher, ajoutées comprises : on passe à l'exercice suivant
+  if (nextSetNumber.value == null) flow.lineDone(props.line.id)
 }
 
-function save(setNumber, values) {
-  // Cocher une nouvelle série lance le repos ; modifier une série déjà cochée ne le relance pas.
-  const isNew = !lineSets.value.some(s => s.setNumber === setNumber)
-  if (isNew) workout.unlockSound() // dans le geste de l'utilisateur, avant tout appel réseau
-  return run(async () => {
-    await store.saveSet(props.line, setNumber, values)
-    if (!isNew) return
-    workout.ensureStarted(store.sessionId)
-    workout.startRest(props.restSec, flow.restLabel(props.line.id))
-    // Plus aucune série à cocher, ajoutées comprises : on passe à l'exercice suivant
-    if (nextSetNumber.value == null) flow.lineDone(props.line.id)
-  })
+// Modifier une série déjà cochée la met à jour, sans relancer le repos
+function commit(row) {
+  if (!row.logged || !current.value) return
+  const values = resolve(row)
+  if (values && !sameSetValues(values, row.logged)) store.saveSet(props.line, row.setNumber, values)
 }
 
-const remove = logged => run(async () => {
-  await store.removeSet(logged.id)
-  workout.skipRest()
-})
+function copyPrevious(row) {
+  if (!row.previous || !current.value) return
+  const texts = textsOf(row.previous, timed.value)
+  typing.value = typeInto(typeInto(typing.value, row.setNumber, 'weight', texts.weight), row.setNumber, 'value', texts.value)
+  commit(row)
+}
 </script>

@@ -228,3 +228,125 @@ test('formatSetCompact garde la forme longue sans charge', () => {
   assert.equal(formatSetCompact({ weightKg: null, reps: null, durationSec: 45 }), '45 s')
   assert.equal(formatSetCompact({}), '')
 })
+
+// ── clé d'une série (boîte d'envoi) ──────────────────────────────────────────
+import { setKey, keyOfSet, sameSetValues, textsOf, emptyTyping, typeInto, pinTexts, draftOf } from '../src/utils/setLogs.js'
+
+test('setKey identifie une série par sa séance, sa ligne et son numéro', () => {
+  assert.equal(setKey(10, 100, 2), '10:100:2')
+  assert.equal(keyOfSet(set({ setNumber: 3 })), '10:100:3')
+})
+test('keyOfSet ne donne pas de clé à une série sans ligne ou sans séance : elle ne se rapproche d\'aucune autre', () => {
+  assert.equal(keyOfSet(set({ lineId: null })), null)
+  assert.equal(keyOfSet(set({ sessionId: null })), null)
+})
+test('sameSetValues compare ce qui s\'enregistre', () => {
+  assert.equal(sameSetValues({ weightKg: 60, reps: 5, durationSec: null }, set()), true)
+  assert.equal(sameSetValues({ weightKg: 62.5, reps: 5, durationSec: null }, set()), false)
+  assert.equal(sameSetValues({ weightKg: null, reps: null, durationSec: 45 }, set({ weightKg: null, reps: null, durationSec: 45 })), true)
+})
+
+// ── saisie d'un exercice : valeurs tapées et valeurs reportées ───────────────
+const rowOf = (setNumber, logged = null) => ({ setNumber, logged, previous: null, planned: true })
+
+test('textsOf écrit une série comme dans les champs', () => {
+  assert.deepEqual(textsOf(set({ weightKg: 62.5, reps: 5 }), false), { weight: '62,5', value: '5' })
+  assert.deepEqual(textsOf(set({ weightKg: null, reps: null, durationSec: 45 }), true), { weight: '', value: '45' })
+})
+
+test('une charge tapée dans une série s\'affiche dans les autres séries à faire', () => {
+  const typing = typeInto(emptyTyping(), 1, 'weight', '60')
+  assert.deepEqual(draftOf(typing, rowOf(1), false), { weight: '60', value: '' })
+  assert.deepEqual(draftOf(typing, rowOf(2), false), { weight: '60', value: '' })
+  assert.deepEqual(draftOf(typing, rowOf(5), false), { weight: '60', value: '' }) // série ajoutée ensuite
+})
+
+test('les reps se reportent de la même façon, sans toucher à la charge', () => {
+  const typing = typeInto(typeInto(emptyTyping(), 1, 'weight', '60'), 1, 'value', '8')
+  assert.deepEqual(draftOf(typing, rowOf(3), false), { weight: '60', value: '8' })
+})
+
+test('une série où l\'athlète a tapé garde sa valeur ; les autres suivent la dernière saisie', () => {
+  let typing = typeInto(emptyTyping(), 1, 'weight', '60')
+  typing = typeInto(typing, 3, 'weight', '62,5')
+  assert.equal(draftOf(typing, rowOf(1), false).weight, '60')   // tapée par lui
+  assert.equal(draftOf(typing, rowOf(3), false).weight, '62,5')
+  assert.equal(draftOf(typing, rowOf(2), false).weight, '62,5') // pas touchée : la dernière saisie
+  assert.equal(draftOf(typing, rowOf(4), false).weight, '62,5')
+})
+
+test('une série cochée ne change jamais toute seule', () => {
+  const logged = set({ setNumber: 1, weightKg: 60, reps: 5 })
+  const typing = typeInto(emptyTyping(), 3, 'weight', '62,5')
+  assert.deepEqual(draftOf(typing, rowOf(1, logged), false), { weight: '60', value: '5' })
+})
+
+test('corriger une série cochée vaut aussi pour les séries à faire', () => {
+  const logged = set({ setNumber: 1, weightKg: 60, reps: 5 })
+  const typing = typeInto(emptyTyping(), 1, 'weight', '65')
+  assert.deepEqual(draftOf(typing, rowOf(1, logged), false), { weight: '65', value: '5' })
+  assert.equal(draftOf(typing, rowOf(2), false).weight, '65')
+})
+
+test('un champ vidé redevient une proposition, pour la série et pour celles qui la suivent', () => {
+  const typing = typeInto(typeInto(emptyTyping(), 1, 'weight', '60'), 1, 'weight', '')
+  assert.equal(draftOf(typing, rowOf(1), false).weight, '')
+  assert.equal(draftOf(typing, rowOf(2), false).weight, '')
+})
+
+test('pinTexts fige les champs d\'une série décochée : elle se recoche telle quelle', () => {
+  let typing = typeInto(emptyTyping(), 1, 'weight', '60')
+  typing = pinTexts(typing, 2, { weight: '60', value: '5' }) // la série 2 vient d'être décochée
+  typing = typeInto(typing, 3, 'weight', '62,5')
+  assert.deepEqual(draftOf(typing, rowOf(2), false), { weight: '60', value: '5' })
+})
+
+test('typeInto et pinTexts ne modifient pas la saisie d\'origine', () => {
+  const typing = emptyTyping()
+  typeInto(typing, 1, 'weight', '60')
+  pinTexts(typing, 1, { weight: '60', value: '5' })
+  assert.deepEqual(typing, { own: {}, carry: {} })
+})
+
+test('une ligne en durée reporte les secondes', () => {
+  const typing = typeInto(emptyTyping(), 1, 'value', '50')
+  assert.deepEqual(draftOf(typing, rowOf(2), true), { weight: '', value: '50' })
+  assert.deepEqual(draftOf(emptyTyping(), rowOf(1, set({ weightKg: null, reps: null, durationSec: 45 })), true), { weight: '', value: '45' })
+})
+
+// ── bandeau d'envoi ──────────────────────────────────────────────────────────
+import { syncNotice } from '../src/utils/setLogs.js'
+
+test('syncNotice ne dit rien tant que tout part normalement', () => {
+  assert.equal(syncNotice(0, []), null)
+})
+test('syncNotice compte les séries qui attendent le réseau', () => {
+  assert.deepEqual(syncNotice(1, []), { tone: 'waiting', text: '1 série gardée sur ton téléphone, en attente de réseau.' })
+  assert.deepEqual(syncNotice(3, []), { tone: 'waiting', text: '3 séries gardées sur ton téléphone, en attente de réseau.' })
+})
+test('syncNotice signale d\'abord un refus du serveur, avec sa raison', () => {
+  assert.deepEqual(syncNotice(2, [{ error: 'Accès refusé' }]), { tone: 'refused', text: '1 série refusée par le serveur : Accès refusé.' })
+  assert.equal(syncNotice(0, [{ error: 'Accès refusé' }, { error: 'Erreur 400' }]).text, '2 séries refusées par le serveur : Accès refusé.')
+})
+
+// ── valeurs reportées depuis la dernière série cochée ────────────────────────
+test('sans saisie, les séries à faire reprennent la dernière série cochée de l\'exercice', () => {
+  const latest = set({ setNumber: 2, weightKg: 62.5, reps: 5 })
+  assert.deepEqual(draftOf(emptyTyping(), rowOf(3), false, latest), { weight: '62,5', value: '5' })
+  assert.deepEqual(draftOf(emptyTyping(), rowOf(3), false, null), { weight: '', value: '' })
+  // Au poids de corps, la charge reste une proposition
+  assert.deepEqual(draftOf(emptyTyping(), rowOf(2), false, set({ weightKg: null, reps: 9 })), { weight: '', value: '9' })
+})
+test('ce que l\'athlète vient de taper passe avant la dernière série cochée', () => {
+  const latest = set({ setNumber: 1, weightKg: 60, reps: 5 })
+  const typing = typeInto(emptyTyping(), 2, 'weight', '62,5')
+  assert.deepEqual(draftOf(typing, rowOf(3), false, latest), { weight: '62,5', value: '5' })
+  // Un champ vidé reste vide : la proposition en filigrane reprend la main
+  assert.equal(draftOf(typeInto(typing, 2, 'weight', ''), rowOf(3), false, latest).weight, '')
+})
+test('la dernière série cochée ne change pas une série cochée ni une série décochée', () => {
+  const latest = set({ setNumber: 3, weightKg: 65, reps: 4 })
+  assert.deepEqual(draftOf(emptyTyping(), rowOf(1, set({ weightKg: 60, reps: 5 })), false, latest), { weight: '60', value: '5' })
+  const pinned = pinTexts(emptyTyping(), 2, { weight: '60', value: '5' })
+  assert.deepEqual(draftOf(pinned, rowOf(2), false, latest), { weight: '60', value: '5' })
+})

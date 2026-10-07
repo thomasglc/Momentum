@@ -33,6 +33,7 @@ import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
 import { getSession } from '@/services/trainingService'
 import { strengthLinesOf, summarizeWorkout } from '@/utils/workout'
+import { sessionProgressSets } from '@/utils/progress'
 import { useAppStore } from '@/stores/app'
 import SessionDetail from '@/components/SessionDetail.vue'
 import SessionRecap from '@/components/session/SessionRecap.vue'
@@ -94,7 +95,8 @@ async function handleToggle() {
   await progress.load()
   recap.value = {
     workout: lines.length ? { durationSec, summary: summarizeWorkout(lines, sets) } : null,
-    week: progress.summaryFor(id),
+    // Les séries de la séance viennent du téléphone : celles qui attendent encore le réseau comptent dans le bilan
+    week: progress.summaryFor(id, lines.length ? sessionProgressSets(lines, sets) : null),
   }
 }
 

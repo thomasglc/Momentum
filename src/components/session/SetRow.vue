@@ -12,11 +12,11 @@
       :class="row.previous ? 'text-stone-500 active:text-blue-600' : 'text-stone-300'"
       :disabled="!row.previous || disabled"
       :aria-label="row.previous ? `Reprendre la série précédente : ${previousLabel}` : 'Pas de série précédente'"
-      @click="copyPrevious"
+      @click="emit('copy')"
     >{{ previousLabel }}</button>
 
     <input
-      v-model="weight"
+      :value="draft.weight"
       type="text"
       inputmode="decimal"
       autocomplete="off"
@@ -24,10 +24,11 @@
       :disabled="disabled"
       :aria-label="`Série ${row.setNumber} : charge en kg`"
       :class="[INPUT, row.logged ? 'bg-white' : 'bg-stone-100']"
-      @change="commitEdit"
+      @input="emit('type', 'weight', $event.target.value)"
+      @change="emit('commit')"
     />
     <input
-      v-model="value"
+      :value="draft.value"
       type="text"
       inputmode="numeric"
       autocomplete="off"
@@ -35,7 +36,8 @@
       :disabled="disabled"
       :aria-label="`Série ${row.setNumber} : ${timed ? 'durée en secondes' : 'reps'}`"
       :class="[INPUT, row.logged ? 'bg-white' : 'bg-stone-100']"
-      @change="commitEdit"
+      @input="emit('type', 'value', $event.target.value)"
+      @change="emit('commit')"
     />
 
     <!-- La prochaine série à faire porte le bouton mis en avant -->
@@ -46,7 +48,7 @@
       :disabled="disabled"
       :aria-pressed="!!row.logged"
       :aria-label="row.logged ? `Annuler la série ${row.setNumber}` : `Valider la série ${row.setNumber}`"
-      @click="toggle"
+      @click="emit('toggle')"
     >
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -56,66 +58,31 @@
 </template>
 
 <script setup>
-import { computed, shallowRef, watch } from 'vue'
-import { formatNumber, formatSetCompact, isTimed, resolveSetValues } from '@/utils/setLogs'
+import { computed } from 'vue'
+import { formatNumber, formatSetCompact, isTimed } from '@/utils/setLogs'
 import { SET_GRID } from './setGrid'
 
 const INPUT = 'w-full min-w-0 h-11 rounded-xl px-1 text-center font-bold text-stone-900 tabular-nums '
   + 'placeholder:text-stone-400 placeholder:font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-400 disabled:opacity-60'
 
+// Une ligne du tableau des séries. Elle n'a pas d'état : la carte de l'exercice porte la saisie,
+// pour qu'une valeur tapée dans une série se reporte sur les autres.
 const props = defineProps({
   line:     { type: Object,  required: true },  // ligne d'exercice prévue
   row:      { type: Object,  required: true },  // { setNumber, logged, previous, planned }
+  draft:    { type: Object,  required: true },  // { weight, value } : textes des deux champs
   next:     { type: Boolean, default: false },  // prochaine série à faire dans cet exercice
   disabled: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['save', 'remove', 'invalid'])
-
-const weight = shallowRef('')
-const value  = shallowRef('') // reps, ou secondes pour une ligne en durée
+// type(champ, texte) : saisie dans 'weight' ou 'value' · commit : champ quitté · copy : reprendre la série précédente
+const emit = defineEmits(['type', 'commit', 'toggle', 'copy'])
 
 const timed  = computed(() => isTimed(props.line))
 const mainOf = set => (timed.value ? set?.durationSec : set?.reps)
-const fill = (set) => {
-  weight.value = formatNumber(set.weightKg)
-  value.value  = String(mainOf(set) ?? '')
-}
 
-// Une série enregistrée remplit les champs avec ce qui a été retenu ;
-// la décocher les laisse tels quels pour pouvoir la recocher.
-watch(() => props.row.logged, (logged) => { if (logged) fill(logged) }, { immediate: true })
-
+// Champ vide : la valeur proposée s'affiche en filigrane (série précédente, sinon prévu)
 const previousLabel     = computed(() => (props.row.previous ? formatSetCompact(props.row.previous) : '—'))
 const weightPlaceholder = computed(() => formatNumber(props.row.previous?.weightKg ?? props.line.weightKg) || '–')
 const valuePlaceholder  = computed(() => String(mainOf(props.row.previous) ?? mainOf(props.line) ?? '') || '–')
-
-// Champ vide = valeur proposée en filigrane (série précédente, sinon prévu)
-function resolve() {
-  const values = resolveSetValues(props.line, props.row, { weight: weight.value, value: value.value })
-  if (!values) emit('invalid', timed.value ? 'Indique une durée en secondes.' : 'Indique un nombre de reps.')
-  return values
-}
-
-function toggle() {
-  if (props.row.logged) { emit('remove', props.row.logged); return }
-  const values = resolve()
-  if (values) emit('save', props.row.setNumber, values)
-}
-
-// Modifier une série déjà cochée la met à jour
-function commitEdit() {
-  const logged = props.row.logged
-  if (!logged) return
-  const values = resolve()
-  if (!values) return
-  const changed = values.weightKg !== logged.weightKg || values.reps !== logged.reps || values.durationSec !== logged.durationSec
-  if (changed) emit('save', props.row.setNumber, values)
-}
-
-function copyPrevious() {
-  if (!props.row.previous) return
-  fill(props.row.previous)
-  commitEdit()
-}
 </script>

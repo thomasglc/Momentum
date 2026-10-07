@@ -356,3 +356,44 @@ test('weekOutlook annonce la semaine suivante, un changement de phase, la fin du
   assert.deepEqual(weekOutlook(weeks, 3, 5), { next: null, phaseChange: false, last: false })
   assert.deepEqual(weekOutlook(weeks, 3, 3), { next: null, phaseChange: false, last: true })
 })
+
+// ── séries d'une séance vues du téléphone ────────────────────────────────────
+import { withSessionSets } from '../src/utils/progress.js'
+
+test('withSessionSets remplace les séries d\'une séance par celles du téléphone, envois en attente compris', () => {
+  const server = [
+    { exerciseId: 18, sessionId: 11, weightKg: 60, reps: 5 },
+    { exerciseId: 18, sessionId: 21, weightKg: 62.5, reps: 5 },
+  ]
+  const local = [
+    { exerciseId: 18, sessionId: 21, weightKg: 62.5, reps: 5 },
+    { exerciseId: 18, sessionId: 21, weightKg: 62.5, reps: 4 }, // pas encore envoyée
+  ]
+  assert.deepEqual(withSessionSets(server, 21, local), [server[0], ...local])
+  assert.deepEqual(withSessionSets(server, 21, []), [server[0]])
+})
+
+import { sessionProgressSets } from '../src/utils/progress.js'
+
+test('sessionProgressSets met les séries du téléphone au format des calculs, avec le nom de l\'exercice', () => {
+  const lines = [{ id: 100, name: 'Front Squat' }, { id: 101, name: 'Planche' }]
+  const sets = [
+    { id: 55, lineId: 100, exerciseId: 18, sessionId: 21, setNumber: 1, weightKg: 62.5, reps: 5, durationSec: null, date: '2026-10-12T18:00:00.000Z' },
+    { id: null, lineId: 101, exerciseId: 11, sessionId: 21, setNumber: 1, weightKg: null, reps: null, durationSec: 45, date: '2026-10-12T18:40:00.000Z', pending: true },
+    { id: 56, lineId: 999, exerciseId: 4, sessionId: 21, setNumber: 1, weightKg: 80, reps: 6, durationSec: null, date: null },
+  ]
+  assert.deepEqual(sessionProgressSets(lines, sets), [
+    { exerciseId: 18, name: 'Front Squat', sessionId: 21, weightKg: 62.5, reps: 5, durationSec: null, date: '2026-10-12T18:00:00.000Z' },
+    { exerciseId: 11, name: 'Planche', sessionId: 21, weightKg: null, reps: null, durationSec: 45, date: '2026-10-12T18:40:00.000Z' },
+    { exerciseId: 4, name: null, sessionId: 21, weightKg: 80, reps: 6, durationSec: null, date: null },
+  ])
+})
+
+test('le bilan de semaine compte une série cochée qui n\'est pas encore envoyée', () => {
+  const week3 = WEEKS[2]
+  const sessionId = week3.sessions[0].id
+  const pending = [{ exerciseId: 18, name: 'Front Squat', sessionId, weightKg: 100, reps: 5, durationSec: null, date: '2026-10-19T18:00:00.000Z' }]
+  const without = weekSummary(week3, done(sessionId), () => null, withSessionSets(WEEK_SETS, sessionId, []))
+  const withIt = weekSummary(week3, done(sessionId), () => null, withSessionSets(WEEK_SETS, sessionId, pending))
+  assert.equal(withIt.volumeKg - without.volumeKg, 500)
+})

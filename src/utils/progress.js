@@ -249,6 +249,26 @@ export function toProgressSet(log) {
 }
 
 /**
+ * Séries de l'athlète où celles d'une séance sont remplacées par ce que le téléphone en sait :
+ * les séries cochées mais pas encore envoyées comptent dans le bilan.
+ */
+export const withSessionSets = (sets, sessionId, own) => [...sets.filter(set => set.sessionId !== sessionId), ...own]
+
+/** Séries d'une séance telles que le téléphone les connaît → séries pour les calculs de progression */
+export function sessionProgressSets(lines, sets) {
+  const names = new Map(lines.map(line => [line.id, line.name]))
+  return sets.map(set => ({
+    exerciseId: set.exerciseId ?? null,
+    name: names.get(set.lineId) ?? null,
+    sessionId: set.sessionId ?? null,
+    weightKg: set.weightKg ?? null,
+    reps: set.reps ?? null,
+    durationSec: set.durationSec ?? null,
+    date: set.date ?? null,
+  }))
+}
+
+/**
  * Séries regroupées par exercice, puis par séance, de la plus ancienne à la plus récente.
  * La valeur d'une séance est sa plus lourde série ; sans charge, le plus de reps ; en gainage, la plus longue tenue.
  * → [{ exerciseId, name, unit: 'kg' | 'reps' | 's', sessions: [{ sessionId, date, value }] }]
