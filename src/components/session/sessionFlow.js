@@ -1,4 +1,5 @@
 // Déroulé d'une séance de muscu, fourni par SessionDetail à ses cartes d'exercice (provide / inject) :
+//   sessionId     séance affichée
 //   openLineId    exercice ouvert (un seul à la fois), ou null
 //   revealLineId  exercice à ramener à l'écran après une ouverture
 //   toggleLine(id)  ouvre ou replie un exercice

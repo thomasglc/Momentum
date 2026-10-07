@@ -73,6 +73,17 @@ export function toSet(log) {
   }
 }
 
+/** Identité d'une série pour la boîte d'envoi : sa séance, sa ligne d'exercice, son numéro */
+export const setKey = (sessionId, lineId, setNumber) => `${sessionId}:${lineId}:${setNumber}`
+
+/** Clé d'une série ; null sans ligne ou sans séance (supprimées depuis) : elle ne se rapproche alors d'aucune autre */
+export const keyOfSet = set =>
+  (set.lineId == null || set.sessionId == null ? null : setKey(set.sessionId, set.lineId, set.setNumber))
+
+/** Vrai si la série porte déjà les valeurs à enregistrer */
+export const sameSetValues = (values, set) =>
+  values.weightKg === set.weightKg && values.reps === set.reps && values.durationSec === set.durationSec
+
 // Les dates sont des chaînes ISO : l'ordre alphabétique est l'ordre chronologique.
 const byDate = (a, b) => String(a ?? '').localeCompare(String(b ?? ''))
 
@@ -141,6 +152,60 @@ export function resolveSetValues(line, row, draft) {
   return timed
     ? { weightKg, reps: null, durationSec: main }
     : { weightKg, reps: main, durationSec: null }
+}
+
+// ── Saisie d'un exercice ─────────────────────────────────────────────────────
+// Ce que l'athlète tape pendant un exercice : { own, carry }
+//   own    { [numéro de série]: { weight, value } }  ce qu'il a tapé dans cette série-là
+//   carry  { weight, value }                         sa dernière saisie, reportée sur les séries qu'il n'a pas touchées
+// weight et value sont les textes des champs ; value = reps, ou secondes pour une ligne en durée.
+
+export const emptyTyping = () => ({ own: {}, carry: {} })
+
+/** Textes des deux champs pour une série enregistrée */
+export const textsOf = (set, timed) => ({
+  weight: formatNumber(set.weightKg),
+  value: String((timed ? set.durationSec : set.reps) ?? ''),
+})
+
+/** L'athlète tape dans un champ (`field` : 'weight' ou 'value') : la valeur se reporte sur les autres séries à faire */
+export function typeInto(typing, setNumber, field, text) {
+  return {
+    own: { ...typing.own, [setNumber]: { ...typing.own[setNumber], [field]: text } },
+    carry: { ...typing.carry, [field]: text },
+  }
+}
+
+/** Fige les deux champs d'une série : décochée, elle garde ses valeurs et ne suit plus les autres */
+export function pinTexts(typing, setNumber, texts) {
+  return { own: { ...typing.own, [setNumber]: { weight: texts.weight, value: texts.value } }, carry: typing.carry }
+}
+
+/**
+ * Textes des champs d'une ligne du tableau : ce que l'athlète y a tapé, sinon la série cochée.
+ * Une série à faire reprend sa dernière saisie dans l'exercice, sinon `latest`, la dernière série cochée
+ * de l'exercice : la charge ne se retape pas. Une série cochée ne change jamais toute seule.
+ */
+export function draftOf(typing, row, timed, latest = null) {
+  const own = typing.own[row.setNumber] ?? {}
+  const logged = row.logged ? textsOf(row.logged, timed) : null
+  const carried = latest ? textsOf(latest, timed) : {}
+  const pick = field => own[field] ?? (logged ? logged[field] : typing.carry[field] ?? carried[field] ?? '')
+  return { weight: pick('weight'), value: pick('value') }
+}
+
+/**
+ * Bandeau d'envoi : rien à dire tant que les séries partent normalement.
+ * waiting : séries qui attendent le réseau ; refused : entrées que le serveur a refusées ({ error }).
+ * → { tone: 'waiting' | 'refused', text } ou null
+ */
+export function syncNotice(waiting, refused) {
+  if (refused.length) {
+    const many = refused.length > 1
+    return { tone: 'refused', text: `${refused.length} ${many ? 'séries refusées' : 'série refusée'} par le serveur : ${refused[0].error}.` }
+  }
+  if (!waiting) return null
+  return { tone: 'waiting', text: `${waiting} ${waiting > 1 ? 'séries gardées' : 'série gardée'} sur ton téléphone, en attente de réseau.` }
 }
 
 /** Résumé compact des séries d'un exercice : "62,5 kg × 5, 5, 5, 4", "10, 9 reps", "45, 40 s" */

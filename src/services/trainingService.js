@@ -5,7 +5,8 @@ import { strengthDetail, stationsDetail } from './blockMappers'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 // v2 : les séances en cache portent les lignes d'exercice structurées et les images
-const SESSION_LS_PREFIX = 'momentum-session-v2-'
+// v3 : repos des blocs de muscu plafonnés (scripts/cap-strength-rest.cjs) ; relus dès la mise à jour, sans attendre 24 h
+const SESSION_LS_PREFIX = 'momentum-session-v3-'
 
 // ── Cache mémoire (ultra-rapide, dure le temps de la session) ─────────────
 let _planCache = null

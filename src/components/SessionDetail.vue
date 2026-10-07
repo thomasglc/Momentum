@@ -92,14 +92,17 @@
 
       <!-- Programme -->
       <div v-else-if="visibleBlocks.length" class="mb-6">
-        <!-- Séries déjà enregistrées non chargées : la saisie reste désactivée tant que ce n'est pas réglé -->
+        <!-- Ni réseau ni copie de la séance sur le téléphone : la saisie reste ouverte, les séries déjà cochées arriveront -->
         <div
           v-if="strengthRows.length && setLogStore.loadError"
-          role="alert"
-          class="mb-3 flex items-center gap-3 bg-red-50 border border-red-100 rounded-xl px-3 py-2"
+          role="status"
+          class="mb-3 flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2"
         >
-          <p class="flex-1 text-xs text-red-700">Séries enregistrées non chargées : {{ setLogStore.loadError }}.</p>
-          <button type="button" class="flex-shrink-0 text-xs font-semibold text-red-700 underline" @click="loadSetLogs">
+          <p class="flex-1 text-xs text-amber-800">
+            {{ setLogStore.loadError }} : tes séries déjà cochées ne s'affichent pas encore.
+            <template v-if="setLogStore.ready">Tu peux continuer.</template>
+          </p>
+          <button type="button" class="flex-shrink-0 text-xs font-semibold text-amber-800 underline" @click="loadSetLogs">
             Réessayer
           </button>
         </div>
@@ -245,6 +248,7 @@ watch([() => props.session?.id, () => setLogStore.ready, strengthRows], () => {
 }, { immediate: true })
 
 provide(SESSION_FLOW, {
+  sessionId: computed(() => props.session?.id ?? null),
   openLineId,
   revealLineId,
   toggleLine(id) {

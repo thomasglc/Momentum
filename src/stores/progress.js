@@ -6,7 +6,7 @@ import { getAllWeeks } from '@/services/trainingService'
 import { fetchAllLogs } from '@/services/setLogService'
 import {
   weekDays, weekCompletion, focusSession, completeWeekStreak, planTotals, planTimeline,
-  toProgressSet, exerciseProgress, totalVolumeKg, weekSummary, weekOutlook,
+  toProgressSet, exerciseProgress, totalVolumeKg, weekSummary, weekOutlook, withSessionSets,
 } from '@/utils/progress'
 
 // Progression de l'athlète dans son plan : ce qu'on charge (semaines écrites, séries enregistrées)
@@ -104,12 +104,16 @@ export const useProgressStore = defineStore('progress', () => {
 
   const loads = computed(() => exerciseProgress(sets.value))
 
-  /** Bilan de la semaine d'une séance, pour le récap de validation ; null si ses semaines ne sont pas chargées */
-  function summaryFor(sessionId) {
+  /**
+   * Bilan de la semaine d'une séance, pour le récap de validation ; null si ses semaines ne sont pas chargées.
+   * sessionSets : séries de la séance vues du téléphone, pour compter celles qui ne sont pas encore envoyées.
+   */
+  function summaryFor(sessionId, sessionSets = null) {
     const own = weeks.value?.find(w => w.sessions.some(s => s.id === sessionId))
     if (!own) return null
+    const all = sessionSets ? withSessionSets(sets.value, sessionId, sessionSets) : sets.value
     return {
-      ...weekSummary(own, isDone, detailOf, sets.value),
+      ...weekSummary(own, isDone, detailOf, all),
       streak: streak.value,
       outlook: weekOutlook(weeks.value, own.weekNumber, training.plan?.totalWeeks ?? 0),
     }

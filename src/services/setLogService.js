@@ -5,6 +5,9 @@ import { request } from './directus'
 
 const FIELDS = 'id,session_id,block_strength_exercise_id,exercise_id,set_number,weight_kg,reps,duration_sec,date_created'
 
+// En salle le réseau est faible : un appel sans réponse est abandonné, la boîte d'envoi le reprendra.
+const TIMEOUT_MS = 15000
+
 /** Séries enregistrées par l'athlète pour une séance */
 export function fetchSessionLogs(profileId, sessionId) {
   return request('GET', '/items/set_logs', {
@@ -15,6 +18,7 @@ export function fetchSessionLogs(profileId, sessionId) {
       sort: 'set_number',
       limit: -1,
     },
+    timeoutMs: TIMEOUT_MS,
   })
 }
 
@@ -28,6 +32,7 @@ export function fetchExerciseLogs(profileId, exerciseIds, limit = 400) {
       sort: '-date_created',
       limit,
     },
+    timeoutMs: TIMEOUT_MS,
   })
 }
 
@@ -44,13 +49,13 @@ export function fetchAllLogs(profileId) {
 }
 
 export function createSetLog(payload) {
-  return request('POST', '/items/set_logs', { body: payload })
+  return request('POST', '/items/set_logs', { body: payload, timeoutMs: TIMEOUT_MS })
 }
 
 export function updateSetLog(id, patch) {
-  return request('PATCH', `/items/set_logs/${id}`, { body: patch })
+  return request('PATCH', `/items/set_logs/${id}`, { body: patch, timeoutMs: TIMEOUT_MS })
 }
 
 export function deleteSetLog(id) {
-  return request('DELETE', `/items/set_logs/${id}`)
+  return request('DELETE', `/items/set_logs/${id}`, { timeoutMs: TIMEOUT_MS })
 }

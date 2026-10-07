@@ -9,35 +9,50 @@ function messageFor(status) {
   return `Erreur ${status}`
 }
 
+const offline = () => new Error('Pas de connexion')
+
 /**
  * Appel authentifié à Directus. Le jeton est rafraîchi une fois si la réponse est 401,
  * pour qu'une saisie faite en cours de séance ne soit pas perdue quand il expire.
  * Lève une Error (avec .status quand le serveur a répondu) si l'appel échoue.
+ * timeoutMs : abandonne l'appel passé ce délai, plutôt que de rester pendu sur un réseau faible.
  */
-export async function request(method, path, { params, body } = {}) {
+export async function request(method, path, { params, body, timeoutMs } = {}) {
   const url = new URL(`${DIRECTUS_URL}${path}`)
   for (const [key, value] of Object.entries(params ?? {})) url.searchParams.append(key, value)
 
   const auth = useAuthStore()
-  let res
+  const controller = timeoutMs ? new AbortController() : null
+  const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null
   try {
-    res = await auth.authedFetch(url.toString(), {
-      method,
-      headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    })
-  } catch {
-    throw new Error('Pas de connexion')
-  }
+    let res
+    try {
+      res = await auth.authedFetch(url.toString(), {
+        method,
+        headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
+        body: body === undefined ? undefined : JSON.stringify(body),
+        ...(controller ? { signal: controller.signal } : {}),
+      })
+    } catch {
+      throw offline()
+    }
 
-  if (res.status === 401) {
-    auth.logout()
-    window.location.hash = '/login'
+    if (res.status === 401) {
+      auth.logout()
+      window.location.hash = '/login'
+    }
+    if (!res.ok) {
+      const error = new Error(messageFor(res.status))
+      error.status = res.status
+      throw error
+    }
+    if (res.status === 204) return null
+    try {
+      return (await res.json()).data
+    } catch {
+      throw offline() // réponse coupée en route : on ne sait pas ce que le serveur a fait
+    }
+  } finally {
+    clearTimeout(timer)
   }
-  if (!res.ok) {
-    const error = new Error(messageFor(res.status))
-    error.status = res.status
-    throw error
-  }
-  return res.status === 204 ? null : (await res.json()).data
 }

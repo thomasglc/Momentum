@@ -18,6 +18,8 @@
 
     <!-- Contenu -->
     <main :class="isLoginPage ? '' : 'max-w-[480px] mx-auto'" :style="isLoginPage ? '' : 'padding-bottom: calc(3rem + env(safe-area-inset-bottom))'">
+      <!-- Séries cochées qui attendent le réseau -->
+      <SyncNotice v-if="!isLoginPage && appStore.ready" />
       <div class="nav-container">
         <RouterView v-slot="{ Component }">
           <Transition
@@ -65,6 +67,7 @@ addCollection(ionIcons)
 import { useTrainingStore } from '@/stores/training'
 import { useAuthStore } from '@/stores/auth'
 import { useAppStore } from '@/stores/app'
+import SyncNotice from '@/components/SyncNotice.vue'
 
 const store    = useTrainingStore()
 const auth     = useAuthStore()
