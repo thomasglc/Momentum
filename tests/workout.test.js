@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   formatClock, elapsedSeconds, remainingSeconds, isStale, restProgress,
-  strengthLinesOf, summarizeWorkout, formatKg,
+  loggableLinesOf, summarizeWorkout, formatKg,
 } from '../src/utils/workout.js'
 
 const HOUR = 60 * 60 * 1000
@@ -53,7 +53,7 @@ test('restProgress reste entre 0 et 1', () => {
 })
 
 // ── lignes de muscu d'une séance ─────────────────────────────────────────────
-test('strengthLinesOf rassemble les lignes des blocs de muscu, dans l\'ordre', () => {
+test('loggableLinesOf rassemble les lignes des blocs de muscu, dans l\'ordre', () => {
   const details = [
     { type: 'warmup', durationMin: 10 },
     { type: 'strength', rows: [{ id: 1 }, { id: 2 }] },
@@ -61,11 +61,11 @@ test('strengthLinesOf rassemble les lignes des blocs de muscu, dans l\'ordre', (
     { type: 'strength', rows: [{ id: 3 }] },
     { type: 'strength' }, // cache d'ancien format, sans lignes
   ]
-  assert.deepEqual(strengthLinesOf(details).map(l => l.id), [1, 2, 3])
+  assert.deepEqual(loggableLinesOf(details).map(l => l.id), [1, 2, 3])
 })
-test('strengthLinesOf renvoie une liste vide sans détail de séance', () => {
-  assert.deepEqual(strengthLinesOf(undefined), [])
-  assert.deepEqual(strengthLinesOf([]), [])
+test('loggableLinesOf renvoie une liste vide sans détail de séance', () => {
+  assert.deepEqual(loggableLinesOf(undefined), [])
+  assert.deepEqual(loggableLinesOf([]), [])
 })
 
 // ── récap ────────────────────────────────────────────────────────────────────

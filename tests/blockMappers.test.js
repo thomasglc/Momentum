@@ -108,8 +108,8 @@ test('stationsDetail renvoie les chaînes et les images en parallèle', () => {
     { station_id: { name: 'Farmers Carry', image_urls: ['f0', 'f1'] }, distance_m: 30 },
     { station_id: { name: 'Wall Balls', image_urls: null }, reps: 10 },
   ]
-  assert.deepEqual(stationsDetail(rows), {
-    stations: ['Farmers Carry 30m', 'Wall Balls 10 reps'],
-    stationImages: [['f0', 'f1'], []],
-  })
+  const detail = stationsDetail(rows, 'block_circuit_stations')
+  assert.deepEqual(detail.stations, ['Farmers Carry 30m', 'Wall Balls 10 reps'])
+  assert.deepEqual(detail.stationImages, [['f0', 'f1'], []])
+  assert.deepEqual(detail.rows.map(row => [row.name, row.distanceM, row.reps]), [['Farmers Carry', 30, null], ['Wall Balls', null, 10]])
 })

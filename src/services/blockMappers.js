@@ -64,10 +64,38 @@ export function strengthDetail(block, rows) {
   }
 }
 
-/** Chaînes des stations et, en parallèle, leurs images */
-export function stationsDetail(rows) {
+/**
+ * Ligne de station (station_id déplié) → ligne structurée pour la saisie des tours.
+ * `collection` : la collection de la ligne. Les stations vivent dans quatre collections,
+ * leur identifiant seul ne suffit donc pas à désigner une ligne.
+ */
+export function toStationRow(row, collection) {
+  const catalog = row.station_id
+  const expanded = catalog !== null && typeof catalog === 'object'
+  return {
+    id: `${collection}:${row.id}`,
+    kind: 'station',
+    exerciseId: null,
+    stationId: (expanded ? catalog.id : catalog) ?? null,
+    name: (expanded ? catalog.name : null) ?? row.custom_label ?? 'Station',
+    // Les données existantes contiennent des 0 et des chaînes vides là où rien n'est prévu.
+    reps: row.reps || null,
+    durationSec: row.duration_sec || null,
+    distanceM: row.distance_m || null,
+    weightKgFemale: row.weight_kg_female ?? null,
+    weightKgMale: row.weight_kg_male ?? null,
+    note: row.note || null,
+    // Note du catalogue : affichée dans la fiche, pas sur la carte
+    tip: (expanded ? catalog.notes : null) || null,
+    images: imagesOf(catalog),
+  }
+}
+
+/** Chaînes des stations, leurs images en parallèle, et les lignes structurées pour la saisie */
+export function stationsDetail(rows, collection) {
   return {
     stations: rows.map(formatStation),
     stationImages: rows.map(row => imagesOf(row.station_id)),
+    rows: rows.map(row => toStationRow(row, collection)),
   }
 }

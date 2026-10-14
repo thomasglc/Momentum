@@ -1,5 +1,5 @@
 // Logique pure du chrono de séance, du chrono de repos et du récap (testable avec node --test).
-import { formatNumber, formatSet, formatTarget } from './setLogs.js'
+import { formatNumber, formatSet, formatTarget, measureOf } from './setLogs.js'
 import { noteChips } from './text.js'
 
 const STALE_AFTER_MS = 6 * 60 * 60 * 1000
@@ -35,9 +35,38 @@ export function restProgress(totalSec, remainingSec) {
   return Math.min(1, Math.max(0, (totalSec - remainingSec) / totalSec))
 }
 
-/** Lignes d'exercice des blocs de muscu d'une séance, dans l'ordre du programme */
-export function strengthLinesOf(structuredDetails) {
-  return (structuredDetails ?? []).flatMap(detail => (detail.type === 'strength' ? detail.rows ?? [] : []))
+/** Circuit qui se saisit tour par tour : format « tours », au moins un tour et une station structurée */
+export const isLoggableCircuit = detail =>
+  detail.type === 'circuit' && (detail.format ?? 'rounds') === 'rounds' && detail.rounds > 0 && (detail.rows?.length ?? 0) > 0
+
+/**
+ * Lignes à saisir d'un circuit à tours : chaque station compte autant de séries que le circuit a de tours.
+ * Avec plusieurs stations, elles portent le même `group` : on les enchaîne, le repos vient après le tour.
+ * female : charge prévue pour une athlète, sinon celle des hommes.
+ * plannedMax : haut de la fourchette prévue (« 30-40 m » → 40), pour savoir si le tour précédent se propose encore.
+ */
+export function circuitLines(detail, { female = false } = {}) {
+  const restSec = Math.round((detail.restBetweenMin ?? 0) * 60) || null
+  const group = detail.rows.length > 1 ? detail.rows[0].id : null
+  return detail.rows.map(row => ({
+    ...row,
+    sets: detail.rounds,
+    weightKg: (female ? row.weightKgFemale : row.weightKgMale) ?? null,
+    plannedMax: plannedRange(row, noteChips(row.note))?.high ?? null,
+    restSec,
+    group,
+  }))
+}
+
+/**
+ * Lignes à saisir d'une séance, dans l'ordre du programme : exercices de muscu, et stations des circuits
+ * à tours quand Directus sait les enregistrer (`stations`). Chaque ligne porte le repos de son bloc.
+ */
+export function loggableLinesOf(structuredDetails, { stations = false, female = false } = {}) {
+  return (structuredDetails ?? []).flatMap((detail) => {
+    if (detail.type === 'strength') return (detail.rows ?? []).map(row => ({ ...row, restSec: detail.restSec ?? null }))
+    return stations && isLoggableCircuit(detail) ? circuitLines(detail, { female }) : []
+  })
 }
 
 /** Charge × reps telles que saisies. Sans charge ou en durée, la série ne pèse rien. */
@@ -93,41 +122,86 @@ export function sessionProgress(lines, sets) {
   }
 }
 
-/** Exercice à ouvrir : le premier à faire après `afterId`, sinon le premier laissé de côté ; null si tout est fait */
-export function nextOpenLine(lines, sets, afterId = null) {
-  const start = lines.findIndex(line => line.id === afterId) + 1 // 0 quand afterId est absent
-  const order = [...lines.slice(start), ...lines.slice(0, start)]
-  return order.find(line => !isComplete(line, sets))?.id ?? null
+// Stations d'un même circuit (voir circuitLines) : la moins avancée, la première en cas d'égalité ; null s'il est fini
+function laggard(lines, group, sets) {
+  let last = null
+  for (const line of lines) {
+    if (line.group !== group || isComplete(line, sets)) continue
+    if (!last || loggedCount(sets, line.id) < loggedCount(sets, last.id)) last = line
+  }
+  return last
 }
 
-/** Libellé du repos qui suit une série : la série suivante, l'exercice suivant, ou la fin de la séance */
+/**
+ * Ligne à ouvrir : la première à faire après `afterId`, sinon la première laissée de côté ; null si tout est fait.
+ * Dans un circuit à plusieurs stations, on finit le tour avant de passer à autre chose.
+ */
+export function nextOpenLine(lines, sets, afterId = null) {
+  const start = lines.findIndex(line => line.id === afterId) + 1 // 0 quand afterId est absent
+  const after = lines[start - 1]
+  const inCircuit = after?.group ? laggard(lines, after.group, sets) : null
+  if (inCircuit) return inCircuit.id
+  const order = [...lines.slice(start), ...lines.slice(0, start)]
+  const next = order.find(line => !isComplete(line, sets))
+  if (!next) return null
+  return next.group ? laggard(lines, next.group, sets).id : next.id
+}
+
+/** Libellé du repos qui suit une série : la série ou le tour suivant, l'exercice suivant, ou la fin de la séance */
 export function restLabelAfter(lines, sets, lineId) {
   const line = lines.find(l => l.id === lineId)
-  const done = loggedCount(sets, lineId)
-  if (line && done < (line.sets ?? 1)) return `${line.name} · série ${done + 1} sur ${line.sets}`
+  // La suite est dans le même exercice, ou dans le même circuit
+  const same = line?.group ? laggard(lines, line.group, sets) : line && !isComplete(line, sets) ? line : null
+  if (same) return `${same.name} · ${same.kind === 'station' ? 'tour' : 'série'} ${loggedCount(sets, same.id) + 1} sur ${same.sets}`
   const next = lines.find(l => l.id === nextOpenLine(lines, sets, lineId))
   return next ? `Ensuite : ${next.name}` : 'Dernière série faite'
 }
 
-const RANGE_CHIP = /^(\d+)\s*-\s*(\d+)\s*(reps|s)(?:\s+(.+))?$/i
+/**
+ * Repos à lancer après une série ou un tour : { sec, label }. sec vaut 0 quand il n'y en a pas :
+ * dans un circuit à plusieurs stations, le repos attend que le tour soit bouclé.
+ */
+export function restAfter(lines, sets, lineId) {
+  const line = lines.find(l => l.id === lineId)
+  if (!line) return { sec: 0, label: '' }
+  if (line.group) {
+    const round = loggedCount(sets, lineId)
+    const roundDone = lines.every(l => l.group !== line.group || loggedCount(sets, l.id) >= round)
+    if (!roundDone) return { sec: 0, label: '' }
+  }
+  return { sec: line.restSec ?? 0, label: restLabelAfter(lines, sets, lineId) }
+}
+
+const RANGE_CHIP = /^(\d+)\s*-\s*(\d+)\s*(reps|s|m)(?:\s+(.+))?$/i
+// Unité d'une fourchette selon ce que la ligne compte, et champ qui porte la valeur prévue
+const RANGE_UNIT = { reps: 'reps', duration: 's', distance: 'm' }
+const PLANNED_FIELD = { reps: 'reps', duration: 'durationSec', distance: 'distanceM' }
+
+// Fourchette écrite dans la note et qui part de la valeur prévue (« 30-40 m » pour 30 m prévus), parmi les repères `chips` :
+// { index, low, high, unit, rest } (rest : ce qui suit la fourchette dans le même repère), ou null
+function plannedRange(line, chips) {
+  const measure = measureOf(line)
+  const planned = line[PLANNED_FIELD[measure]]
+  for (const [index, chip] of chips.entries()) {
+    const range = RANGE_CHIP.exec(chip)
+    if (range && Number(range[1]) === planned && range[3].toLowerCase() === RANGE_UNIT[measure]) {
+      return { index, low: Number(range[1]), high: Number(range[2]), unit: range[3].toLowerCase(), rest: range[4] ?? null }
+    }
+  }
+  return null
+}
 
 /**
- * Objectif d'une ligne et ses repères. Une fourchette de la note (« 6-8 reps », « 45-60 s »)
+ * Objectif d'une ligne et ses repères. Une fourchette de la note (« 6-8 reps », « 45-60 s », « 30-40 m »)
  * qui part de la valeur prévue rejoint l'objectif (« 3 × 6-8 reps ») ; le reste devient des pastilles.
  * → { target, chips }
  */
 export function describeLine(line) {
   const chips = noteChips(line.note)
-  const planned = line.reps ?? line.durationSec
-  const index = chips.findIndex((chip) => {
-    const range = RANGE_CHIP.exec(chip)
-    if (!range || Number(range[1]) !== planned) return false
-    return (range[3].toLowerCase() === 's') === (line.reps == null)
-  })
-  if (index < 0 || !line.sets) return { target: formatTarget(line), chips }
+  const range = line.sets ? plannedRange(line, chips) : null
+  if (!range) return { target: formatTarget(line), chips }
 
-  const [, low, high, unit, rest] = RANGE_CHIP.exec(chips[index])
   const weight = line.weightKg ? ` · ${formatNumber(line.weightKg)} kg` : ''
-  chips.splice(index, 1, ...(rest ? [rest] : []))
-  return { target: `${line.sets} × ${low}-${high} ${unit.toLowerCase()}${weight}`, chips }
+  chips.splice(range.index, 1, ...(range.rest ? [range.rest] : []))
+  return { target: `${line.sets} × ${range.low}-${range.high} ${range.unit}${weight}`, chips }
 }

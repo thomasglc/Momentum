@@ -173,7 +173,7 @@ const weekStats = computed(() => [
   props.week.km > 0 ? { value: `${formatNumber(props.week.km)} km`, label: 'parcourus' } : null,
 ].filter(Boolean))
 
-const UNIT = { kg: 'kg', reps: 'reps', s: 's' }
+const UNIT = { kg: 'kg', reps: 'reps', m: 'm', s: 's' }
 const gains = computed(() => props.week.gains.slice(0, 5).map(gain => ({
   ...gain,
   range: `${formatNumber(gain.from)} → ${formatNumber(gain.to)} ${UNIT[gain.unit]}`,

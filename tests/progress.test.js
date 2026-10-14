@@ -219,8 +219,8 @@ const log = (exerciseId, name, sessionId, date, values) => ({ exerciseId, name, 
 
 test('toProgressSet lit une ligne set_logs, exercice déplié ou non', () => {
   const row = { id: 1, session_id: 31, exercise_id: { id: 18, name: 'Front Squat' }, weight_kg: 60, reps: 5, duration_sec: null, date_created: '2026-10-05T18:00:00.000Z' }
-  assert.deepEqual(toProgressSet(row), { exerciseId: 18, name: 'Front Squat', sessionId: 31, weightKg: 60, reps: 5, durationSec: null, date: '2026-10-05T18:00:00.000Z' })
-  assert.deepEqual(toProgressSet({ ...row, exercise_id: 18 }), { exerciseId: 18, name: null, sessionId: 31, weightKg: 60, reps: 5, durationSec: null, date: '2026-10-05T18:00:00.000Z' })
+  assert.deepEqual(toProgressSet(row), { exerciseId: 18, name: 'Front Squat', sessionId: 31, weightKg: 60, reps: 5, durationSec: null, distanceM: null, date: '2026-10-05T18:00:00.000Z' })
+  assert.deepEqual(toProgressSet({ ...row, exercise_id: 18 }), { exerciseId: 18, name: null, sessionId: 31, weightKg: 60, reps: 5, durationSec: null, distanceM: null, date: '2026-10-05T18:00:00.000Z' })
   assert.equal(toProgressSet({ ...row, exercise_id: null }).exerciseId, null)
 })
 test('exerciseProgress compare la meilleure série de la première et de la dernière séance', () => {
@@ -383,9 +383,9 @@ test('sessionProgressSets met les séries du téléphone au format des calculs, 
     { id: 56, lineId: 999, exerciseId: 4, sessionId: 21, setNumber: 1, weightKg: 80, reps: 6, durationSec: null, date: null },
   ]
   assert.deepEqual(sessionProgressSets(lines, sets), [
-    { exerciseId: 18, name: 'Front Squat', sessionId: 21, weightKg: 62.5, reps: 5, durationSec: null, date: '2026-10-12T18:00:00.000Z' },
-    { exerciseId: 11, name: 'Planche', sessionId: 21, weightKg: null, reps: null, durationSec: 45, date: '2026-10-12T18:40:00.000Z' },
-    { exerciseId: 4, name: null, sessionId: 21, weightKg: 80, reps: 6, durationSec: null, date: null },
+    { exerciseId: 18, name: 'Front Squat', sessionId: 21, weightKg: 62.5, reps: 5, durationSec: null, distanceM: null, date: '2026-10-12T18:00:00.000Z' },
+    { exerciseId: 11, name: 'Planche', sessionId: 21, weightKg: null, reps: null, durationSec: 45, distanceM: null, date: '2026-10-12T18:40:00.000Z' },
+    { exerciseId: 4, name: null, sessionId: 21, weightKg: 80, reps: 6, durationSec: null, distanceM: null, date: null },
   ])
 })
 
@@ -396,4 +396,24 @@ test('le bilan de semaine compte une série cochée qui n\'est pas encore envoy�
   const without = weekSummary(week3, done(sessionId), () => null, withSessionSets(WEEK_SETS, sessionId, []))
   const withIt = weekSummary(week3, done(sessionId), () => null, withSessionSets(WEEK_SETS, sessionId, pending))
   assert.equal(withIt.volumeKg - without.volumeKg, 500)
+})
+
+// ── stations dans la progression ─────────────────────────────────────────────
+test('toProgressSet range un tour de station sous la clé de sa station, avec sa distance', () => {
+  const row = { id: 9, session_id: 292, exercise_id: null, station_id: { id: 6, name: 'Farmers Carry' }, weight_kg: 24, reps: null, duration_sec: null, distance_m: 40, date_created: '2026-10-09T18:00:00.000Z' }
+  assert.deepEqual(toProgressSet(row), { exerciseId: 's6', name: 'Farmers Carry', sessionId: 292, weightKg: 24, reps: null, durationSec: null, distanceM: 40, date: '2026-10-09T18:00:00.000Z' })
+  assert.equal(toProgressSet({ ...row, station_id: 6 }).exerciseId, 's6')
+  // Une station et un exercice de même numéro restent distincts
+  assert.notEqual(toProgressSet(row).exerciseId, toProgressSet({ ...row, station_id: null, exercise_id: 6 }).exerciseId)
+})
+test('exerciseProgress suit la charge portée sur une station, ou la distance quand il n\'y a pas de charge', () => {
+  const carry = (sessionId, date, weightKg) => ({ exerciseId: 's6', name: 'Farmers Carry', sessionId, weightKg, reps: null, durationSec: null, distanceM: 40, date })
+  const jump = (sessionId, date, distanceM) => ({ exerciseId: 's5', name: 'Burpee Broad Jump', sessionId, weightKg: null, reps: null, durationSec: null, distanceM, date })
+  const progress = exerciseProgress([carry(11, '2026-10-09T18:00:00Z', 24), carry(21, '2026-10-16T18:00:00Z', 28), jump(11, '2026-10-09T18:10:00Z', 40), jump(21, '2026-10-16T18:10:00Z', 60)])
+  assert.deepEqual(progress.map(p => [p.name, p.unit, p.first, p.last]), [['Burpee Broad Jump', 'm', 40, 60], ['Farmers Carry', 'kg', 24, 28]])
+})
+test('sessionProgressSets range les tours de station sous la clé de leur station', () => {
+  const lines = [{ id: 'block_circuit_stations:173', name: 'Farmers Carry' }]
+  const sets = [{ id: null, lineId: 'block_circuit_stations:173', exerciseId: null, stationId: 6, sessionId: 292, setNumber: 1, weightKg: 24, reps: null, durationSec: null, distanceM: 40, date: '2026-10-09T18:00:00.000Z' }]
+  assert.deepEqual(sessionProgressSets(lines, sets), [{ exerciseId: 's6', name: 'Farmers Carry', sessionId: 292, weightKg: 24, reps: null, durationSec: null, distanceM: 40, date: '2026-10-09T18:00:00.000Z' }])
 })

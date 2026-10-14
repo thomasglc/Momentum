@@ -3,6 +3,6 @@
 //   openLineId    exercice ouvert (un seul à la fois), ou null
 //   revealLineId  exercice à ramener à l'écran après une ouverture
 //   toggleLine(id)  ouvre ou replie un exercice
-//   lineDone(id)    dernière série cochée : passe à l'exercice suivant
-//   restLabel(id)   libellé du repos qui suit une série de cet exercice
+//   lineDone(id)    dernière série cochée, ou station d'un circuit faite : passe à la suite
+//   restAfter(id)   repos à lancer après une série de cette ligne : { sec, label } (sec vaut 0 sans repos)
 export const SESSION_FLOW = Symbol('sessionFlow')

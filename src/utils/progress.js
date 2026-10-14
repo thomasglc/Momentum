@@ -233,17 +233,27 @@ export function groupByPhase(entries) {
   return groups
 }
 
-/** Ligne Directus set_logs (exercice déplié ou non) → série pour les calculs de progression */
+// Une relation Directus arrive dépliée ({ id, name }) ou réduite à son identifiant
+const relation = value => (value !== null && typeof value === 'object' ? value : { id: value ?? null, name: null })
+
+/** Clé d'une station dans les calculs par exercice : son numéro peut être celui d'un exercice */
+const stationKey = id => `s${id}`
+
+/**
+ * Ligne Directus set_logs (exercice ou station, dépliés ou non) → série pour les calculs de progression.
+ * exerciseId est la clé du regroupement : l'exercice, ou la station sous la forme « s6 ».
+ */
 export function toProgressSet(log) {
-  const exercise = log.exercise_id
-  const expanded = exercise !== null && typeof exercise === 'object'
+  const exercise = relation(log.exercise_id)
+  const station = relation(log.station_id)
   return {
-    exerciseId: (expanded ? exercise.id : exercise) ?? null,
-    name: (expanded ? exercise.name : null) ?? null,
+    exerciseId: station.id != null ? stationKey(station.id) : exercise.id,
+    name: (station.id != null ? station.name : exercise.name) ?? null,
     sessionId: log.session_id ?? null,
     weightKg: log.weight_kg ?? null,
     reps: log.reps ?? null,
     durationSec: log.duration_sec ?? null,
+    distanceM: log.distance_m ?? null,
     date: log.date_created ?? null,
   }
 }
@@ -258,12 +268,13 @@ export const withSessionSets = (sets, sessionId, own) => [...sets.filter(set => 
 export function sessionProgressSets(lines, sets) {
   const names = new Map(lines.map(line => [line.id, line.name]))
   return sets.map(set => ({
-    exerciseId: set.exerciseId ?? null,
+    exerciseId: set.stationId != null ? stationKey(set.stationId) : set.exerciseId ?? null,
     name: names.get(set.lineId) ?? null,
     sessionId: set.sessionId ?? null,
     weightKg: set.weightKg ?? null,
     reps: set.reps ?? null,
     durationSec: set.durationSec ?? null,
+    distanceM: set.distanceM ?? null,
     date: set.date ?? null,
   }))
 }
@@ -282,8 +293,11 @@ function exerciseSessions(sets) {
   }
 
   return [...byExercise].map(([exerciseId, own]) => {
-    const unit = own.some(s => s.weightKg > 0) ? 'kg' : own.some(s => s.reps > 0) ? 'reps' : 's'
-    const valueOf = s => (unit === 'kg' ? s.weightKg : unit === 'reps' ? s.reps : s.durationSec) ?? 0
+    const unit = own.some(s => s.weightKg > 0) ? 'kg'
+      : own.some(s => s.reps > 0) ? 'reps'
+        : own.some(s => s.distanceM > 0) ? 'm' : 's'
+    const field = { kg: 'weightKg', reps: 'reps', m: 'distanceM', s: 'durationSec' }[unit]
+    const valueOf = s => s[field] ?? 0
 
     // Une série dont la séance a été supprimée (sessionId null) est rattachée à son jour
     const bySession = new Map()

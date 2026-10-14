@@ -41,6 +41,9 @@
   <!-- Muscu avec lignes structurées : saisie des séries -->
   <StrengthBlock v-else-if="block.type === 'strength' && block.rows?.length" :block="block" />
 
+  <!-- Circuit à tours : saisie des tours, quand Directus sait les enregistrer -->
+  <CircuitBlock v-else-if="setLogStore.stationLogging && isLoggableCircuit(block)" :block="block" />
+
   <!-- Circuit / Finisher, et muscu d'ancien format — exercise grid -->
   <ExerciseGrid
     v-else-if="block.type === 'circuit' || block.type === 'strength' || block.type === 'finisher'"
@@ -334,8 +337,11 @@
 import ExerciseGrid from './ExerciseGrid.vue'
 import ExerciseThumb from './ExerciseThumb.vue'
 import StrengthBlock from './StrengthBlock.vue'
+import CircuitBlock from './CircuitBlock.vue'
 import { exerciseEmoji } from '@/services/sessionParser'
 import { useTrainingStore } from '@/stores/training'
+import { useSetLogStore } from '@/stores/setLogs'
+import { isLoggableCircuit } from '@/utils/workout'
 
 defineProps({
   block: { type: Object,  required: true },
@@ -343,6 +349,7 @@ defineProps({
 })
 
 const trainingStore = useTrainingStore()
+const setLogStore = useSetLogStore()
 
 const FORMAT_ICONS = {
   standard:          '⚡',

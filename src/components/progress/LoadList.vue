@@ -46,7 +46,7 @@ const props = defineProps({
 const LIMIT = 6
 const showAll = shallowRef(false)
 
-const UNIT = { kg: 'kg', reps: 'reps', s: 's' }
+const UNIT = { kg: 'kg', reps: 'reps', m: 'm', s: 's' }
 const round1 = n => Math.round(n * 10) / 10
 
 const rows = computed(() => props.loads.map((load) => {

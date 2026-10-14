@@ -1,7 +1,8 @@
 // Logique pure des séries réalisées (aucun import : testable avec node --test).
 //
-// Série   : { id, lineId, exerciseId, sessionId, setNumber, weightKg, reps, durationSec, date }
-// Ligne   : ligne d'exercice prévue { id, exerciseId, sets, reps, durationSec, weightKg, … }
+// Série   : { id, lineId, exerciseId, stationId, sessionId, setNumber, weightKg, reps, durationSec, distanceM, date }
+//           une série de muscu, ou un tour sur une station (exerciseId ou stationId, jamais les deux)
+// Ligne   : ligne prévue { id, exerciseId | stationId, sets, reps, durationSec, distanceM, weightKg, … }
 
 const PLAIN_NUMBER = /^\d+(?:[.,]\d+)?$/
 
@@ -26,52 +27,74 @@ export function formatRest(sec) {
   return rest ? `${min} min ${String(rest).padStart(2, '0')}` : `${min} min`
 }
 
-/** Ligne mesurée en durée (gainage) plutôt qu'en reps */
-export function isTimed(line) {
-  return line.reps == null && line.durationSec != null
+/**
+ * Ce qu'on compte sur une ligne : 'distance' si elle en prévoit une (portés, ergomètres),
+ * sinon 'reps', sinon 'duration' (gainage).
+ */
+export function measureOf(line) {
+  if (line.distanceM != null) return 'distance'
+  return line.reps == null && line.durationSec != null ? 'duration' : 'reps'
 }
 
-function amount(reps, durationSec) {
+/** Ligne mesurée en durée (gainage) plutôt qu'en reps */
+export const isTimed = line => measureOf(line) === 'duration'
+
+// Champ d'une série ou d'une ligne qui porte la mesure
+const MAIN_FIELD = { reps: 'reps', duration: 'durationSec', distance: 'distanceM' }
+
+/** Valeur mesurée d'une série ou d'une ligne : ses reps, ses secondes ou ses mètres */
+export const mainOf = (item, measure) => item?.[MAIN_FIELD[measure]] ?? null
+
+function amount({ reps, durationSec, distanceM }) {
   if (reps != null) return String(reps)
+  if (distanceM != null) return `${distanceM} m`
   return durationSec != null ? `${durationSec} s` : ''
 }
 
-/** "60 kg × 8", "8 reps", "5 kg × 45 s", "45 s" */
-export function formatSet({ weightKg, reps, durationSec } = {}) {
-  const what = amount(reps, durationSec)
+/** "60 kg × 8", "8 reps", "5 kg × 45 s", "45 s", "24 kg × 40 m" */
+export function formatSet(set = {}) {
+  const what = amount(set)
   if (!what) return ''
-  if (weightKg) return `${formatNumber(weightKg)} kg × ${what}`
-  return reps != null ? `${reps} reps` : what
+  if (set.weightKg) return `${formatNumber(set.weightKg)} kg × ${what}`
+  return set.reps != null ? `${set.reps} reps` : what
 }
 
-/** Forme courte pour la colonne « Précédent » du tableau : "62,5 × 12", "8 reps", "5 × 45 s" */
+/** Forme courte pour la colonne « Précédent » du tableau : "62,5 × 12", "8 reps", "5 × 45 s", "24 × 40 m" */
 export function formatSetCompact(set = {}) {
-  const what = amount(set.reps, set.durationSec)
+  const what = amount(set)
   return set.weightKg && what ? `${formatNumber(set.weightKg)} × ${what}` : formatSet(set)
 }
 
-/** Objectif d'une ligne : "4 × 5", "3 × 45 s", "4 × 5 · 60 kg" */
-export function formatTarget({ sets, reps, durationSec, weightKg }) {
-  const what = amount(reps, durationSec)
+/** Objectif d'une ligne : "4 × 5", "3 × 45 s", "4 × 30 m", "4 × 5 · 60 kg" */
+export function formatTarget(line) {
+  const what = amount(line)
   if (!what) return ''
-  const base = sets ? `${sets} × ${what}` : formatSet({ reps, durationSec })
-  return weightKg ? `${base} · ${formatNumber(weightKg)} kg` : base
+  const base = line.sets ? `${line.sets} × ${what}` : formatSet({ ...line, weightKg: null })
+  return line.weightKg ? `${base} · ${formatNumber(line.weightKg)} kg` : base
 }
 
-/** Log Directus (set_logs) → série */
+/** Log Directus (set_logs) → série. Un tour de station porte line_key à la place de la ligne d'exercice. */
 export function toSet(log) {
   return {
     id: log.id,
-    lineId: log.block_strength_exercise_id ?? null,
+    lineId: log.block_strength_exercise_id ?? log.line_key ?? null,
     exerciseId: log.exercise_id ?? null,
+    stationId: log.station_id ?? null,
     sessionId: log.session_id ?? null,
     setNumber: log.set_number,
     weightKg: log.weight_kg ?? null,
     reps: log.reps ?? null,
     durationSec: log.duration_sec ?? null,
+    distanceM: log.distance_m ?? null,
     date: log.date_created ?? null,
   }
 }
+
+/**
+ * Clé d'historique d'une série ou d'une ligne : l'exercice, ou la station (« s:6 »), dont le numéro
+ * peut être celui d'un exercice. null si l'un et l'autre ont disparu du catalogue.
+ */
+export const refKeyOf = item => (item.stationId != null ? `s:${item.stationId}` : item.exerciseId ?? null)
 
 /** Identité d'une série pour la boîte d'envoi : sa séance, sa ligne d'exercice, son numéro */
 export const setKey = (sessionId, lineId, setNumber) => `${sessionId}:${lineId}:${setNumber}`
@@ -83,6 +106,7 @@ export const keyOfSet = set =>
 /** Vrai si la série porte déjà les valeurs à enregistrer */
 export const sameSetValues = (values, set) =>
   values.weightKg === set.weightKg && values.reps === set.reps && values.durationSec === set.durationSec
+  && (values.distanceM ?? null) === (set.distanceM ?? null)
 
 // Les dates sont des chaînes ISO : l'ordre alphabétique est l'ordre chronologique.
 const byDate = (a, b) => String(a ?? '').localeCompare(String(b ?? ''))
@@ -105,18 +129,22 @@ export function groupHistory(sets) {
   return list.sort((a, b) => byDate(b.date, a.date))
 }
 
-/** Pour chaque exercice, la dernière séance autre que la séance courante : { [exerciseId]: { date, sets } } */
+/**
+ * Pour chaque exercice et chaque station, la dernière séance autre que la séance courante :
+ * { [clé d'historique]: { date, sets } } (voir refKeyOf)
+ */
 export function previousByExercise(sets, currentSessionId) {
-  const byExercise = new Map()
+  const byRef = new Map()
   for (const s of sets) {
-    if (s.exerciseId == null || s.sessionId === currentSessionId) continue
-    if (!byExercise.has(s.exerciseId)) byExercise.set(s.exerciseId, [])
-    byExercise.get(s.exerciseId).push(s)
+    const key = refKeyOf(s)
+    if (key == null || s.sessionId === currentSessionId) continue
+    if (!byRef.has(key)) byRef.set(key, [])
+    byRef.get(key).push(s)
   }
   const out = {}
-  for (const [exerciseId, list] of byExercise) {
+  for (const [key, list] of byRef) {
     const [latest] = groupHistory(list)
-    out[exerciseId] = { date: latest.date, sets: latest.sets }
+    out[key] = { date: latest.date, sets: latest.sets }
   }
   return out
 }
@@ -138,34 +166,47 @@ export function buildSetRows(line, lineSets, previousSets, extraCount = 0) {
 }
 
 /**
- * Valeurs à enregistrer quand on coche une série : la saisie, sinon la série précédente, sinon le prévu.
- * draft = { weight, value } (chaînes des champs ; value = reps ou secondes selon la ligne).
- * null si les reps (ou la durée) manquent ou si une saisie est invalide.
+ * Valeur proposée pour ce que la ligne compte quand rien n'est tapé : filigrane du champ, valeur cochée telle quelle.
+ * Muscu : la série précédente, sinon le prévu.
+ * Station : le prévu fait foi, car la même station revient dans des circuits qui n'en demandent pas autant.
+ * Le tour précédent n'est repris que s'il tient dans la fourchette prévue (line.plannedMax en est le haut).
+ */
+export function proposedMain(line, previous) {
+  const measure = measureOf(line)
+  const planned = mainOf(line, measure)
+  const before = mainOf(previous, measure)
+  if (line.kind !== 'station' || planned == null || before == null) return before ?? planned
+  return before >= planned && before <= (line.plannedMax ?? planned) ? before : planned
+}
+
+/**
+ * Valeurs à enregistrer quand on coche une série : la saisie, sinon la valeur proposée (proposedMain).
+ * La charge, elle, reprend toujours la série précédente avant le prévu.
+ * draft = { weight, value } (chaînes des champs ; value = reps, secondes ou mètres selon la ligne).
+ * null si la mesure manque ou si une saisie est invalide.
  */
 export function resolveSetValues(line, row, draft) {
   // NaN signale une saisie présente mais invalide : on ne la remplace pas en silence.
   const pick = (text, fallback) => (String(text ?? '').trim() === '' ? fallback ?? null : parseDecimal(text) ?? NaN)
-  const timed = isTimed(line)
+  const field = MAIN_FIELD[measureOf(line)]
   const weightKg = pick(draft.weight, row.previous?.weightKg ?? line.weightKg)
-  const main = pick(draft.value, timed ? row.previous?.durationSec ?? line.durationSec : row.previous?.reps ?? line.reps)
+  const main = pick(draft.value, proposedMain(line, row.previous))
   if (Number.isNaN(weightKg) || main == null || !Number.isInteger(main) || main <= 0) return null
-  return timed
-    ? { weightKg, reps: null, durationSec: main }
-    : { weightKg, reps: main, durationSec: null }
+  return { weightKg, reps: null, durationSec: null, distanceM: null, [field]: main }
 }
 
 // ── Saisie d'un exercice ─────────────────────────────────────────────────────
 // Ce que l'athlète tape pendant un exercice : { own, carry }
 //   own    { [numéro de série]: { weight, value } }  ce qu'il a tapé dans cette série-là
 //   carry  { weight, value }                         sa dernière saisie, reportée sur les séries qu'il n'a pas touchées
-// weight et value sont les textes des champs ; value = reps, ou secondes pour une ligne en durée.
+// weight et value sont les textes des champs ; value = reps, secondes ou mètres selon la mesure de la ligne (measureOf).
 
 export const emptyTyping = () => ({ own: {}, carry: {} })
 
-/** Textes des deux champs pour une série enregistrée */
-export const textsOf = (set, timed) => ({
+/** Textes des deux champs pour une série enregistrée, selon ce que la ligne compte */
+export const textsOf = (set, measure) => ({
   weight: formatNumber(set.weightKg),
-  value: String((timed ? set.durationSec : set.reps) ?? ''),
+  value: String(set[MAIN_FIELD[measure]] ?? ''),
 })
 
 /** L'athlète tape dans un champ (`field` : 'weight' ou 'value') : la valeur se reporte sur les autres séries à faire */
@@ -186,10 +227,10 @@ export function pinTexts(typing, setNumber, texts) {
  * Une série à faire reprend sa dernière saisie dans l'exercice, sinon `latest`, la dernière série cochée
  * de l'exercice : la charge ne se retape pas. Une série cochée ne change jamais toute seule.
  */
-export function draftOf(typing, row, timed, latest = null) {
+export function draftOf(typing, row, measure, latest = null) {
   const own = typing.own[row.setNumber] ?? {}
-  const logged = row.logged ? textsOf(row.logged, timed) : null
-  const carried = latest ? textsOf(latest, timed) : {}
+  const logged = row.logged ? textsOf(row.logged, measure) : null
+  const carried = latest ? textsOf(latest, measure) : {}
   const pick = field => own[field] ?? (logged ? logged[field] : typing.carry[field] ?? carried[field] ?? '')
   return { weight: pick('weight'), value: pick('value') }
 }
@@ -208,7 +249,7 @@ export function syncNotice(waiting, refused) {
   return { tone: 'waiting', text: `${waiting} ${waiting > 1 ? 'séries gardées' : 'série gardée'} sur ton téléphone, en attente de réseau.` }
 }
 
-/** Résumé compact des séries d'un exercice : "62,5 kg × 5, 5, 5, 4", "10, 9 reps", "45, 40 s" */
+/** Résumé compact des séries d'un exercice : "62,5 kg × 5, 5, 5, 4", "10, 9 reps", "45, 40 s", "24 kg × 40, 40 m" */
 export function summarizeSets(sets) {
   // Les séries consécutives de même charge sont regroupées
   const groups = []
@@ -219,21 +260,25 @@ export function summarizeSets(sets) {
     else groups.push({ weight, sets: [s] })
   }
   return groups.map(({ weight, sets: own }) => {
-    const timed = own.every(s => s.reps == null && s.durationSec != null)
-    const values = own.map(s => (timed ? s.durationSec : s.reps) ?? '—').join(', ')
-    const unit = timed ? ' s' : weight ? '' : ' reps'
+    const measure = own.every(s => s.reps == null && s.distanceM != null) ? 'distance' : own.every(isTimed) ? 'duration' : 'reps'
+    const values = own.map(s => s[MAIN_FIELD[measure]] ?? '—').join(', ')
+    const unit = measure === 'distance' ? ' m' : measure === 'duration' ? ' s' : weight ? '' : ' reps'
     return weight ? `${formatNumber(weight)} kg × ${values}${unit}` : `${values}${unit}`
   }).join(' · ')
 }
 
 /**
  * Tendance d'un exercice : meilleure valeur de ses dernières séances, de la plus ancienne à la plus récente.
- * history : séances issues de groupHistory (la plus récente d'abord). → { unit: 'kg' | 'reps' | 's', points: [{ key, value }] }
+ * history : séances issues de groupHistory (la plus récente d'abord).
+ * → { unit: 'kg' | 'reps' | 'm' | 's', points: [{ key, value }] } : la charge quand il y en a une, sinon ce que la ligne compte
  */
 export function historyTrend(history, limit = 8) {
   const all = history.flatMap(session => session.sets)
-  const unit = all.some(s => s.weightKg > 0) || !all.length ? 'kg' : all.some(s => s.reps > 0) ? 'reps' : 's'
-  const valueOf = s => (unit === 'kg' ? s.weightKg : unit === 'reps' ? s.reps : s.durationSec) ?? 0
+  const unit = all.some(s => s.weightKg > 0) || !all.length ? 'kg'
+    : all.some(s => s.reps > 0) ? 'reps'
+      : all.some(s => s.distanceM > 0) ? 'm' : 's'
+  const field = { kg: 'weightKg', reps: 'reps', m: 'distanceM', s: 'durationSec' }[unit]
+  const valueOf = s => s[field] ?? 0
   const points = history.slice(0, limit).reverse()
     .map(session => ({ key: session.key, value: Math.max(...session.sets.map(valueOf)) }))
   return { unit, points }

@@ -94,7 +94,7 @@
       <div v-else-if="visibleBlocks.length" class="mb-6">
         <!-- Ni réseau ni copie de la séance sur le téléphone : la saisie reste ouverte, les séries déjà cochées arriveront -->
         <div
-          v-if="strengthRows.length && setLogStore.loadError"
+          v-if="lines.length && setLogStore.loadError"
           role="status"
           class="mb-3 flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2"
         >
@@ -119,7 +119,7 @@
         </button>
 
         <!-- Muscu : l'avancement de la séance, en séries -->
-        <div v-if="strengthRows.length" class="mb-4">
+        <div v-if="lines.length" class="mb-4">
           <div class="flex items-baseline justify-between gap-3 mb-1.5">
             <h3 class="text-xs uppercase tracking-widest font-semibold text-stone-400">Programme</h3>
             <p class="text-sm font-bold text-stone-800 tabular-nums">
@@ -157,7 +157,7 @@
 
     </div>
 
-    <WorkoutBar v-if="strengthRows.length" :session-id="session.id" :done="progress.done" :planned="progress.planned" />
+    <WorkoutBar v-if="lines.length" :session-id="session.id" :done="progress.done" :planned="progress.planned" />
   </div>
 </template>
 
@@ -167,11 +167,12 @@ import { Icon } from '@iconify/vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import { useSetLogStore } from '@/stores/setLogs'
 import { useWorkoutStore } from '@/stores/workout'
-import { strengthLinesOf, sessionProgress, nextOpenLine, restLabelAfter } from '@/utils/workout'
+import { loggableLinesOf, sessionProgress, nextOpenLine, restAfter } from '@/utils/workout'
 import { SESSION_FLOW } from './session/sessionFlow'
 import { structuredDetailToBlock, extractRunningSegmentsFromStructured } from '@/services/sessionParser'
 import { paceForZone } from '@/utils/paceCalculator'
 import { useTrainingStore } from '@/stores/training'
+import { useAuthStore } from '@/stores/auth'
 import SessionPaceChart    from './session/SessionPaceChart.vue'
 import SessionProgramBlock from './session/SessionProgramBlock.vue'
 import ClampText           from './ClampText.vue'
@@ -203,16 +204,28 @@ const visibleBlocks = computed(() =>
   hasPaceChart.value ? parsedBlocks.value.filter(b => !CHART_COVERED.has(b.type)) : parsedBlocks.value
 )
 
-// Séries réalisées : chargées dès que la séance contient des lignes de muscu
+// Lignes à saisir : exercices de muscu, et stations des circuits à tours quand Directus sait les enregistrer
 const setLogStore = useSetLogStore()
-const strengthRows = computed(() => strengthLinesOf(props.session?.structuredDetails))
+const auth = useAuthStore()
+// Charge prévue sur une station : celle des femmes ou celle des hommes, selon l'athlète
+const female = computed(() => auth.user?.gender === 'femme')
+const lines = computed(() =>
+  loggableLinesOf(props.session?.structuredDetails, { stations: setLogStore.stationLogging, female: female.value }))
 
-// Chrono de séance et de repos (séances de muscu uniquement)
+// Exercices et stations que la séance fait travailler, que Directus sache déjà enregistrer les stations ou non :
+// la liste ne change donc pas quand on l'apprend, et les séries ne se rechargent pas pour autant
+const refs = computed(() => {
+  const all = loggableLinesOf(props.session?.structuredDetails, { stations: true })
+  const ids = field => [...new Set(all.map(line => line[field]).filter(id => id != null))]
+  return { exerciseIds: ids('exerciseId'), stationIds: ids('stationId') }
+})
+
+// Chrono de séance et de repos (séances qui ont des lignes à saisir)
 const workout = useWorkoutStore()
 const workoutRunning = computed(() => workout.isRunningFor(props.session?.id))
-const canStart = computed(() => strengthRows.value.length > 0 && !props.completed && !workoutRunning.value)
+const canStart = computed(() => lines.value.length > 0 && !props.completed && !workoutRunning.value)
 const barVisible = computed(() =>
-  strengthRows.value.length > 0 && (workoutRunning.value || !!workout.rest || workout.restJustDone)
+  lines.value.length > 0 && (workoutRunning.value || !!workout.rest || workout.restJustDone)
 )
 const validateLabel = computed(() => {
   if (props.completed) return '✓ Séance validée — Annuler'
@@ -220,18 +233,18 @@ const validateLabel = computed(() => {
 })
 
 function loadSetLogs() {
-  const exerciseIds = [...new Set(strengthRows.value.map(row => row.exerciseId).filter(id => id != null))]
-  setLogStore.loadSession(props.session.id, exerciseIds)
+  setLogStore.loadSession(props.session.id, refs.value)
 }
 
-watch(strengthRows, (rows) => { if (rows.length) loadSetLogs() }, { immediate: true })
+// Séries réalisées : chargées dès que la séance contient de quoi saisir
+watch(refs, ({ exerciseIds, stationIds }) => { if (exerciseIds.length || stationIds.length) loadSetLogs() }, { immediate: true })
 
 // ── Déroulé d'une séance de muscu ────────────────────────────────────────────
 // Une séance de muscu s'affiche en cartes plates, un exercice ouvert à la fois.
 const flat = computed(() => props.session?.type === 'strength')
 
 const sessionSets = computed(() => (setLogStore.sessionId === props.session?.id ? setLogStore.sets : []))
-const progress = computed(() => sessionProgress(strengthRows.value, sessionSets.value))
+const progress = computed(() => sessionProgress(lines.value, sessionSets.value))
 const progressWidth = computed(() =>
   `${progress.value.planned ? Math.min(100, Math.round((progress.value.done / progress.value.planned) * 100)) : 0}%`)
 
@@ -240,11 +253,11 @@ const revealLineId = shallowRef(null) // exercice à ramener à l'écran
 
 // À l'arrivée, une fois les séries chargées : on ouvre le premier exercice à faire
 let openedFor = null
-watch([() => props.session?.id, () => setLogStore.ready, strengthRows], () => {
+watch([() => props.session?.id, () => setLogStore.ready, lines], () => {
   const id = props.session?.id
-  if (!strengthRows.value.length || !setLogStore.ready || setLogStore.sessionId !== id || openedFor === id) return
+  if (!lines.value.length || !setLogStore.ready || setLogStore.sessionId !== id || openedFor === id) return
   openedFor = id
-  openLineId.value = nextOpenLine(strengthRows.value, sessionSets.value)
+  openLineId.value = nextOpenLine(lines.value, sessionSets.value)
 }, { immediate: true })
 
 provide(SESSION_FLOW, {
@@ -257,9 +270,9 @@ provide(SESSION_FLOW, {
   },
   // Dernière série d'un exercice cochée : on passe au suivant, ou tout se replie si la séance est faite
   lineDone(id) {
-    openLineId.value = nextOpenLine(strengthRows.value, sessionSets.value, id)
+    openLineId.value = nextOpenLine(lines.value, sessionSets.value, id)
     revealLineId.value = openLineId.value
   },
-  restLabel: id => restLabelAfter(strengthRows.value, sessionSets.value, id),
+  restAfter: id => restAfter(lines.value, sessionSets.value, id),
 })
 </script>
