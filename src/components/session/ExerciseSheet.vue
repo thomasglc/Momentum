@@ -52,7 +52,8 @@
       <ul class="divide-y divide-stone-100 border-y border-stone-100">
         <li v-for="entry in entries" :key="entry.key" class="py-2.5">
           <p class="text-xs font-semibold text-stone-500 first-letter:uppercase">{{ entry.day }}</p>
-          <p class="mt-0.5 text-sm font-semibold text-stone-800 tabular-nums leading-relaxed">{{ entry.summary }}</p>
+          <p v-if="entry.summary" class="mt-0.5 text-sm font-semibold text-stone-800 tabular-nums leading-relaxed">{{ entry.summary }}</p>
+          <p v-if="entry.note" class="mt-0.5 text-[13px] italic leading-snug text-stone-600">« {{ entry.note }} »</p>
         </li>
       </ul>
     </template>
@@ -62,7 +63,9 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
+import { useExerciseNoteStore } from '@/stores/exerciseNotes'
 import { formatNumber, formatRest, historyTrend, refKeyOf, summarizeSets } from '@/utils/setLogs'
+import { withNotes } from '@/utils/notes'
 import { describeLine } from '@/utils/workout'
 import BottomSheet from './BottomSheet.vue'
 
@@ -76,6 +79,7 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const store = useSetLogStore()
+const notes = useExerciseNoteStore()
 
 const frame   = shallowRef(0)
 const status  = shallowRef('loading') // loading | ready | error
@@ -91,10 +95,12 @@ const chips = computed(() => [
 const formatDay = iso =>
   new Date(iso).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
 
-const entries = computed(() => history.value.map(session => ({
+// Chaque séance avec ses séries et la note de l'athlète ; une séance qui n'a qu'une note y figure aussi
+const entries = computed(() => withNotes(history.value, notes.available ? notes.notesFor(props.line) : []).map(session => ({
   key: session.key,
   day: formatDay(session.date),
   summary: summarizeSets(session.sets),
+  note: session.note,
 })))
 
 // Hauteur des barres entre le minimum et le maximum affichés, pour que la progression se voie
