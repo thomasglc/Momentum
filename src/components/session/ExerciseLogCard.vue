@@ -51,6 +51,11 @@
     </div>
 
     <div v-if="open" class="px-2 pb-3">
+      <!-- Ce que l'athlète s'était noté la dernière fois -->
+      <p v-if="reminder" class="mx-1 mb-2.5 rounded-xl bg-amber-50 px-3 py-2 text-[13px] leading-snug text-amber-900">
+        <span class="font-semibold">La dernière fois :</span> {{ reminder.text }}
+      </p>
+
       <!-- Repères de l'exercice -->
       <div v-if="chips.length" class="flex flex-wrap gap-1.5 px-1 mb-2.5">
         <span
@@ -96,6 +101,8 @@
       </div>
 
       <p v-if="error" role="alert" class="mx-1 mt-2 text-xs font-medium text-red-600">{{ error }}</p>
+
+      <NoteField v-if="notes.available" :text="notes.noteOf(line)" :disabled="!current" @save="saveNote" />
     </div>
   </article>
 </template>
@@ -103,7 +110,9 @@
 <script setup>
 import { computed, inject, nextTick, shallowRef, watch } from 'vue'
 import { useSetLogStore } from '@/stores/setLogs'
+import { useExerciseNoteStore } from '@/stores/exerciseNotes'
 import { useWorkoutStore } from '@/stores/workout'
+import { lastNote } from '@/utils/notes'
 import { exerciseEmoji } from '@/services/sessionParser'
 import {
   buildSetRows, measureOf, refKeyOf, summarizeSets, resolveSetValues, sameSetValues, typeInto, pinTexts, draftOf, textsOf,
@@ -112,6 +121,7 @@ import { describeLine } from '@/utils/workout'
 import { SET_GRID } from './setGrid'
 import { SESSION_FLOW } from './sessionFlow'
 import ExerciseThumb from './ExerciseThumb.vue'
+import NoteField from './NoteField.vue'
 import SetRow from './SetRow.vue'
 
 // Une ligne à saisir : un exercice de muscu et ses séries, ou une station de circuit et ses tours
@@ -131,6 +141,7 @@ const MISSING = {
 const emit = defineEmits(['open'])
 
 const store   = useSetLogStore()
+const notes   = useExerciseNoteStore()
 const workout = useWorkoutStore()
 const flow    = inject(SESSION_FLOW)
 
@@ -180,6 +191,17 @@ const subtitle = computed(() => {
   if (doneCount.value) return summarizeSets(lineSets.value)
   return [target.value, ...chips.value].filter(Boolean).join(' · ')
 })
+
+// Note de la dernière séance où l'exercice a été travaillé (utils/notes, lastNote)
+const reminder = computed(() => (notes.available
+  ? lastNote(notes.notesFor(props.line), store.previous[refKeyOf(props.line)], flow.sessionId.value)
+  : null))
+
+function saveNote(text) {
+  // Une carte de la séance qu'on quitte ne doit pas écrire dans la suivante
+  if (notes.sessionId !== flow.sessionId.value) return
+  notes.saveNote(props.line, text)
+}
 
 const canRemoveLast = computed(() => {
   const last = rows.value.at(-1)

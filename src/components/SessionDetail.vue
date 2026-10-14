@@ -166,6 +166,7 @@ import { computed, provide, shallowRef, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import { getSessionTypeConfig } from '@/constants/sessionTypes'
 import { useSetLogStore } from '@/stores/setLogs'
+import { useExerciseNoteStore } from '@/stores/exerciseNotes'
 import { useWorkoutStore } from '@/stores/workout'
 import { loggableLinesOf, sessionProgress, nextOpenLine, restAfter } from '@/utils/workout'
 import { SESSION_FLOW } from './session/sessionFlow'
@@ -206,6 +207,7 @@ const visibleBlocks = computed(() =>
 
 // Lignes à saisir : exercices de muscu, et stations des circuits à tours quand Directus sait les enregistrer
 const setLogStore = useSetLogStore()
+const noteStore = useExerciseNoteStore()
 const auth = useAuthStore()
 // Charge prévue sur une station : celle des femmes ou celle des hommes, selon l'athlète
 const female = computed(() => auth.user?.gender === 'femme')
@@ -234,6 +236,7 @@ const validateLabel = computed(() => {
 
 function loadSetLogs() {
   setLogStore.loadSession(props.session.id, refs.value)
+  noteStore.loadSession(props.session.id)
 }
 
 // Séries réalisées : chargées dès que la séance contient de quoi saisir

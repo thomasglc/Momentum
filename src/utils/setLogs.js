@@ -236,17 +236,22 @@ export function draftOf(typing, row, measure, latest = null) {
 }
 
 /**
- * Bandeau d'envoi : rien à dire tant que les séries partent normalement.
- * waiting : séries qui attendent le réseau ; refused : entrées que le serveur a refusées ({ error }).
+ * Bandeau d'envoi : rien à dire tant que les séries et les notes partent normalement.
+ * waiting : séries qui attendent le réseau ; refused : entrées que le serveur a refusées ({ error }) ;
+ * notes : { waiting, refused }, la même chose pour les notes d'exercice.
  * → { tone: 'waiting' | 'refused', text } ou null
  */
-export function syncNotice(waiting, refused) {
-  if (refused.length) {
-    const many = refused.length > 1
-    return { tone: 'refused', text: `${refused.length} ${many ? 'séries refusées' : 'série refusée'} par le serveur : ${refused[0].error}.` }
+export function syncNotice(waiting, refused, notes = { waiting: 0, refused: [] }) {
+  // « 2 séries et 1 note gardées » : l'accord se fait sur l'ensemble
+  const counted = (n, word) => (n ? `${n} ${word}${n > 1 ? 's' : ''}` : null)
+  const describe = (sets, noteCount, verb) =>
+    `${[counted(sets, 'série'), counted(noteCount, 'note')].filter(Boolean).join(' et ')} ${verb}${sets + noteCount > 1 ? 's' : ''}`
+  if (refused.length || notes.refused.length) {
+    const reason = (refused[0] ?? notes.refused[0]).error
+    return { tone: 'refused', text: `${describe(refused.length, notes.refused.length, 'refusée')} par le serveur : ${reason}.` }
   }
-  if (!waiting) return null
-  return { tone: 'waiting', text: `${waiting} ${waiting > 1 ? 'séries gardées' : 'série gardée'} sur ton téléphone, en attente de réseau.` }
+  if (!waiting && !notes.waiting) return null
+  return { tone: 'waiting', text: `${describe(waiting, notes.waiting, 'gardée')} sur ton téléphone, en attente de réseau.` }
 }
 
 /** Résumé compact des séries d'un exercice : "62,5 kg × 5, 5, 5, 4", "10, 9 reps", "45, 40 s", "24 kg × 40, 40 m" */
